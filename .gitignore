@@ -1,0 +1,33 @@
+﻿# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# 后端
+backend/target/
+*.jar
+*.war
+
+# 前端
+frontend-target/node_modules/
+frontend-target/dist/
+frontend-platform/node_modules/
+frontend-platform/dist/
+
+# Python
+ai-agent/__pycache__/
+*.pyc
+ai-agent/.env
+
+# 环境变量
+.env
+.env.local
+*.pem
+*.key
+
+# 系统
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
