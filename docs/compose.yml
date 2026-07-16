@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: follow-up-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: follow_up
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - mysql-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+volumes:
+  mysql-data:
