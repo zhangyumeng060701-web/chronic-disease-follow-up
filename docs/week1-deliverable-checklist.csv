@@ -1,0 +1,20 @@
+﻿角色,姓名,第一周必须查收的产出,验收方式,完成情况
+1号-后端D,____,"① MySQL 6张表已建好
+② GET /api/health 返回200
+③ 患者CRUD 5个接口Postman全通
+④ POST /api/auth/login 返回token","在群里发4张截图：① Navicat/MySQL命令行 show tables ② 浏览器访问 /api/health ③ Postman患者列表接口返回JSON ④ Postman登录接口返回token",☐ 未验收
+3号-AI,____,"① 华为云CodeArts项目开通
+② docs/codearts-research.md 写完
+③ 运行 demo.py 能调通API","在群里发3张截图：① CodeArts控制台界面 ② 调研文档全文 ③ 终端运行demo.py的输出",☐ 未验收
+4号-维护平台,____,"① docs/ui-spec.md 写完
+② 维护平台 npm run dev 能启动
+③ ChatPanel.vue 页面可交互","在群里发3张截图：① ui-spec.md 核心表格 ② 浏览器看维护平台页面 ③ ChatPanel输入框可打字",☐ 未验收
+5号-测试安全,____,"① HealthControllerTest 通过
+② vitest 示例通过
+③ docs/alert-rules.md 写完","在群里发3张截图：① mvn test 输出PASS ② npm run test 输出PASS ③ alert-rules.md 10条规则表格",☐ 未验收
+6号-部署文档,____,"① docs/git-workflow.md 写完
+② docker-compose.yml 能启动MySQL
+③ docs/competition-resources.md 写完","在群里发3张截图：① git-workflow.md 全文 ② docker compose ps 显示mysql running ③ competition-resources.md 内容",☐ 未验收
+前端C,____,"① 全局布局 MainLayout.vue 页面切换正常
+② 登录页 LoginView.vue 双Tab切换+点登录发POST请求
+③ 患者列表 PatientList.vue 表格有3条Mock数据+状态标签颜色正确","在群里发3张截图：① 侧边栏点击菜单切换不同页面 ② 登录页Network面板有POST请求 ③ 患者列表表格页面",☐ 未验收
