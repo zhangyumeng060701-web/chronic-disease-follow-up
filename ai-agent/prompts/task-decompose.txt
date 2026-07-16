@@ -1,0 +1,31 @@
+def task_4_prompt_test():
+    # 模拟用户输入的需求
+    user_input = "我想给高血压患者增加一个‘血压异常实时短信报警’功能。"
+    
+    # 模拟 AI 使用你设计的 Prompt 后的拆解输出
+    deconstructed_result = f"""
+    ## 🛠 架构拆解报告
+    - **需求原句**：{user_input}
+    ---
+    ### 1. 🖥 前端开发任务
+    - [ ] 在随访录入页面增加“开启短信通知”开关。
+    - [ ] 增加预警阈值设置输入框（收缩压/舒张压）。
+
+    ### 2. ⚙️ 后端开发任务
+    - [ ] 开发报警逻辑：判断录入数值是否超过阈值。
+    - [ ] 对接短信网关 API 接口。
+
+    ### 3. 💾 数据库变动
+    - [ ] `patient_config` 表增加 `is_sms_alert` (bool) 字段。
+    - [ ] 增加 `alert_threshold` 字段存储自定义阈值。
+
+    ### 4. 🧪 测试验证点
+    - [ ] 验证收缩压超过 140mmHg 时是否能触发接口。
+    - [ ] 压力测试：高并发录入时短信延迟情况。
+    """
+    
+    print("--- [任务 4：需求拆解演示] ---")
+    print(deconstructed_result)
+
+if __name__ == "__main__":
+    task_4_prompt_test()requests
