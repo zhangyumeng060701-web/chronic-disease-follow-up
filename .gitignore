@@ -31,3 +31,6 @@ ai-agent/.env
 Thumbs.db
 *.log
 *.tmp
+
+# 本地便携工具链
+.tools/

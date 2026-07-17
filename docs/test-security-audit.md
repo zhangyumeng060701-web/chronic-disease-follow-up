@@ -174,3 +174,29 @@ git push origin feature/5-test-security
 - `prompt.txt` 为任务说明文件，不建议纳入提交。
 - 当前仍存在前端依赖审计风险，建议单独开依赖升级分支处理。
 - 当前仍存在后端明文配置、硬编码登录、JWT Authentication 未设置、后端未统一脱敏等安全风险，已在报告中标注为后续修复项。
+
+## 12. 后端测试补充验证记录
+
+已在项目内安装便携版工具链：
+
+- JDK：`.tools/jdk-17.0.19+10`
+- Maven：`.tools/apache-maven-3.9.16`
+
+验证命令：
+
+```powershell
+cd backend
+$env:JAVA_HOME=(Resolve-Path '..\.tools\jdk-17.0.19+10').Path
+$env:MAVEN_HOME=(Resolve-Path '..\.tools\apache-maven-3.9.16').Path
+$env:Path="$env:JAVA_HOME\bin;$env:MAVEN_HOME\bin;$env:Path"
+mvn test
+```
+
+真实结果：
+
+```text
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS
+```
+
+结论：后端基线测试已在本地便携 JDK/Maven 环境下跑通。
