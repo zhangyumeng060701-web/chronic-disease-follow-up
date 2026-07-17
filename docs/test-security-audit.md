@@ -149,3 +149,28 @@ git commit -m "test: add test framework and desensitization checks"
 git push origin feature/5-test-security
 ```
 
+## 10. 为修复测试发现问题而修改的业务代码
+
+本次没有修改后端业务代码。
+
+本次新增了前端脱敏工具函数和展示组件，原因是标准文档要求“脱敏规则不要只写文档不写代码”。具体为：
+
+- `frontend-target/src/utils/desensitize.js`：沉淀姓名、手机号、身份证号、住址脱敏规则，便于单元测试。
+- `frontend-target/src/components/Desensitize.vue`：在前端展示层复用脱敏规则，作为后端脱敏之外的展示兜底。
+
+依赖层面修改：
+
+- `frontend-target/package.json`：新增 `test` 脚本和 `vitest` 开发依赖。
+- `frontend-target/package-lock.json`：记录安装后的确定依赖版本。
+
+## 11. 最终代码审查结论
+
+本次变更未推送、未合并到 `develop` 或 `main`。
+
+审查结论：
+
+- 前端脱敏测试可重复执行，`npm.cmd test` 已通过。
+- 后端测试代码已补充，但当前环境缺少 JDK/Maven，尚未执行，不能声明后端测试通过。
+- `prompt.txt` 为任务说明文件，不建议纳入提交。
+- 当前仍存在前端依赖审计风险，建议单独开依赖升级分支处理。
+- 当前仍存在后端明文配置、硬编码登录、JWT Authentication 未设置、后端未统一脱敏等安全风险，已在报告中标注为后续修复项。
