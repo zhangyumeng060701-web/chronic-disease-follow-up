@@ -1,38 +1,64 @@
 <template>
   <div class="chat-panel">
     <aside class="history-panel">
-      <div class="panel-title">
-        <el-icon>
-          <Clock />
-        </el-icon>
-        <span>历史需求</span>
+      <div class="history-header">
+        <div class="panel-title">
+          <el-icon>
+            <Clock />
+          </el-icon>
+          <span>历史需求</span>
+        </div>
+        <el-button
+          v-if="historyList.length > 0"
+          link
+          type="danger"
+          :disabled="submitting"
+          @click="handleClearAllHistory"
+        >
+          清空全部
+        </el-button>
       </div>
 
       <div v-if="historyList.length > 0" class="history-list">
-        <button
+        <article
           v-for="item in historyList"
           :key="item.id"
           class="history-item"
           :class="{ active: item.id === activeHistoryId }"
-          type="button"
+          role="button"
+          tabindex="0"
           @click="selectHistory(item)"
+          @keydown.enter="selectHistory(item)"
         >
-          <span class="history-title">{{ displayText(item.title) }}</span>
-          <span class="history-time">{{ displayText(item.createTime) }}</span>
-          <el-tag size="small" type="success">{{ displayText(item.status) }}</el-tag>
-        </button>
+          <div class="history-item-content">
+            <span class="history-title">{{ displayText(item.title) }}</span>
+            <div class="history-meta">
+              <time class="history-time">{{ formatHistoryTime(item.createdAt) }}</time>
+              <el-tag size="small" type="success">{{ item.status }}</el-tag>
+            </div>
+          </div>
+          <el-button
+            link
+            type="danger"
+            size="small"
+            :disabled="submitting"
+            @click.stop="handleDeleteHistory(item)"
+          >
+            删除
+          </el-button>
+        </article>
       </div>
 
       <el-empty v-else description="暂无历史需求" />
     </aside>
 
     <section class="main-panel">
-      <div class="input-area">
+      <section class="input-area" aria-labelledby="requirement-input-title">
         <div class="panel-title page-title">
           <el-icon>
             <EditPen />
           </el-icon>
-          <span>需求输入</span>
+          <h1 id="requirement-input-title">需求输入</h1>
         </div>
 
         <el-form label-position="top">
@@ -41,50 +67,70 @@
               v-model="requirement"
               type="textarea"
               :rows="5"
+              :maxlength="MAX_REQUIREMENT_LENGTH"
+              show-word-limit
+              resize="none"
               :disabled="submitting"
-              placeholder="请输入您的需求，例如：在随访页面增加血压趋势图、新增患者用药记录表、修改高危预警阈值为收缩压≥150"
-            />
-          </el-form-item>
-
-          <el-form-item label="补充要求">
-            <el-input
-              v-model="supplementRequirement"
-              type="textarea"
-              :rows="3"
-              :disabled="submitting"
-              placeholder="可选：填写权限范围、脱敏要求、兼容性要求、指定页面或指定接口"
+              placeholder="请输入您的需求，例如：在随访记录页面增加按随访日期范围筛选的功能，并支持查询结果分页。"
             />
           </el-form-item>
         </el-form>
 
         <div class="input-actions">
-          <el-button type="primary" :loading="submitting" @click="handleSubmit">
-            提交需求
+          <el-button
+            type="primary"
+            :loading="submitting"
+            :disabled="!canSubmit"
+            @click="handleSubmit"
+          >
+            开始拆解
           </el-button>
-          <el-button :disabled="submitting" @click="handleClear">清空</el-button>
+          <el-button :disabled="submitting" @click="handleNewRequirement">新建需求</el-button>
         </div>
-      </div>
+      </section>
 
-      <div class="result-area">
-        <template v-if="result">
-          <div class="result-header">
-            <div>
-              <div class="panel-title">
-                <el-icon>
-                  <Operation />
-                </el-icon>
-                <span>需求拆解结果</span>
-              </div>
-              <p class="result-summary">{{ displayText(result.summary) }}</p>
-              <p v-if="result.risk" class="result-risk">
-                <el-icon>
-                  <Warning />
-                </el-icon>
-                <span>{{ result.risk }}</span>
-              </p>
-            </div>
-            <el-tag type="info">共 {{ totalTaskCount }} 项任务</el-tag>
+      <section
+        v-loading="submitting"
+        class="result-area"
+        element-loading-text="正在拆解需求，请稍候..."
+        aria-live="polite"
+      >
+        <div class="result-header">
+          <div class="panel-title">
+            <el-icon>
+              <Operation />
+            </el-icon>
+            <h2>需求拆解结果</h2>
           </div>
+          <el-tag v-if="result" type="info">共 {{ totalTaskCount }} 项任务</el-tag>
+        </div>
+
+        <el-alert
+          v-if="submitting"
+          class="state-alert"
+          title="正在拆解需求，请稍候..."
+          type="info"
+          :closable="false"
+          show-icon
+        />
+        <el-alert
+          v-else-if="submitError"
+          class="state-alert"
+          title="需求拆解失败"
+          :description="submitError"
+          type="error"
+          :closable="false"
+          show-icon
+        />
+
+        <template v-if="result">
+          <p class="result-summary">{{ displayText(result.summary) }}</p>
+          <p v-if="result.risk" class="result-risk">
+            <el-icon>
+              <Warning />
+            </el-icon>
+            <span>{{ result.risk }}</span>
+          </p>
 
           <el-tabs v-model="activeTaskTab">
             <el-tab-pane
@@ -94,7 +140,7 @@
               :name="taskType.type"
             >
               <div v-if="tasksByType[taskType.type].length > 0" class="task-list">
-                <div
+                <article
                   v-for="(task, index) in tasksByType[taskType.type]"
                   :key="`${taskType.type}-${index}`"
                   class="task-card"
@@ -103,11 +149,18 @@
                     <el-tag size="small" :type="taskType.tagType">
                       {{ taskType.label }}
                     </el-tag>
+                    <el-tag size="small" :type="priorityMeta(task.priority).tagType">
+                      优先级：{{ priorityMeta(task.priority).label }}
+                    </el-tag>
                     <h3>{{ displayText(task.title) }}</h3>
                   </div>
                   <p class="task-desc">{{ displayText(task.description) }}</p>
 
                   <dl class="task-meta">
+                    <div>
+                      <dt>预估工时</dt>
+                      <dd>{{ formatEstimatedHours(task.estimatedHours) }}</dd>
+                    </div>
                     <div>
                       <dt>涉及文件</dt>
                       <dd>
@@ -134,10 +187,14 @@
                     </div>
                     <div>
                       <dt>验收标准</dt>
-                      <dd>{{ displayText(task.acceptanceCriteria) }}</dd>
+                      <dd>{{ formatAcceptanceCriteria(task.acceptanceCriteria) }}</dd>
+                    </div>
+                    <div>
+                      <dt>任务风险</dt>
+                      <dd>{{ displayText(task.risk) }}</dd>
                     </div>
                   </dl>
-                </div>
+                </article>
               </div>
 
               <el-empty v-else description="暂无该类任务" />
@@ -145,38 +202,48 @@
           </el-tabs>
         </template>
 
-        <el-empty v-else description="暂无拆解结果" />
-      </div>
+        <el-empty v-else-if="!submitting && !submitError" description="暂无拆解结果" />
+      </section>
     </section>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { Clock, EditPen, Operation, Warning } from '@element-plus/icons-vue'
 import { decomposeRequirement } from '../../api/ai'
 
-// 第一周使用 Mock；切为 false 后会调用 src/api/ai.js 的正式拆解接口。
+// 第一周默认走 Mock；将其设为 false 后，才会通过 ai.js 调用正式接口。
 const USE_MOCK = true
 const HISTORY_STORAGE_KEY = 'platform_requirement_history'
 const MAX_HISTORY_COUNT = 20
+const MAX_REQUIREMENT_LENGTH = 2000
 
 const taskTypes = [
   { type: 'FRONTEND', label: '前端任务', tagType: 'success' },
   { type: 'BACKEND', label: '后端任务', tagType: 'primary' },
   { type: 'DATABASE', label: '数据库', tagType: 'warning' },
   { type: 'TEST', label: '测试任务', tagType: 'info' },
+  // Swagger 规定的第五类正式任务类型为 SECURITY，不使用自定义 DEPLOYMENT 枚举。
   { type: 'SECURITY', label: '安全检查', tagType: 'danger' }
 ]
 
+const priorityLabels = {
+  high: { label: '高', tagType: 'danger' },
+  medium: { label: '中', tagType: 'warning' },
+  low: { label: '低', tagType: 'info' }
+}
+
 const requirement = ref('')
-const supplementRequirement = ref('')
 const result = ref(null)
 const submitting = ref(false)
+const submitError = ref('')
 const activeTaskTab = ref('')
 const activeHistoryId = ref(null)
 const historyList = ref([])
+
+const canSubmit = computed(() => requirement.value.trim().length > 0 && !submitting.value)
 
 const safeTasks = computed(() => {
   return Array.isArray(result.value?.tasks) ? result.value.tasks : []
@@ -191,39 +258,40 @@ const tasksByType = computed(() => {
   }, {})
 })
 
-onMounted(() => {
-  loadHistory()
-})
+onMounted(loadHistory)
 
 async function handleSubmit() {
-  const mergedRequirement = buildRequirement()
+  const submittedRequirement = requirement.value.trim()
 
-  if (!mergedRequirement) {
-    ElMessage.warning('需求不能为空')
+  if (!submittedRequirement || submitting.value) {
     return
   }
 
   submitting.value = true
+  submitError.value = ''
+  result.value = null
+  activeTaskTab.value = ''
 
   try {
-    const response = await requestDecompose(mergedRequirement)
+    const response = await requestDecompose(submittedRequirement)
     const nextResult = normalizeApiResponse(response)
 
     result.value = nextResult
     activeTaskTab.value = taskTypes[0].type
-    appendHistory(mergedRequirement, nextResult)
+    appendHistory(submittedRequirement, nextResult)
     ElMessage.success('任务拆解完成')
   } catch (error) {
-    ElMessage.error(error?.message || '需求拆解失败，请补充描述后重试')
+    submitError.value = error?.message || '需求拆解失败，请补充描述后重试'
+    ElMessage.error(submitError.value)
   } finally {
     submitting.value = false
   }
 }
 
-function handleClear() {
+function handleNewRequirement() {
   requirement.value = ''
-  supplementRequirement.value = ''
   result.value = null
+  submitError.value = ''
   activeTaskTab.value = ''
   activeHistoryId.value = null
 }
@@ -231,92 +299,133 @@ function handleClear() {
 function selectHistory(item) {
   activeHistoryId.value = item.id
   requirement.value = item.requirement || ''
-  supplementRequirement.value = ''
   result.value = item.result || null
+  submitError.value = ''
   activeTaskTab.value = result.value ? taskTypes[0].type : ''
 }
 
-function buildRequirement() {
-  const mainRequirement = requirement.value.trim()
-  const supplement = supplementRequirement.value.trim()
-
-  if (!mainRequirement) {
-    return ''
+async function handleDeleteHistory(item) {
+  try {
+    await ElMessageBox.confirm('确定删除这条历史需求吗？', '提示', { type: 'warning' })
+  } catch {
+    return
   }
 
-  if (!supplement) {
-    return mainRequirement
+  historyList.value = historyList.value.filter((historyItem) => historyItem.id !== item.id)
+  saveHistory()
+
+  if (activeHistoryId.value === item.id) {
+    handleNewRequirement()
   }
 
-  // 正式 AI 接口只允许发送 { requirement }，补充要求必须先合并进同一个字符串。
-  return `${mainRequirement}\n\n补充要求：${supplement}`
+  ElMessage.success('历史需求已删除')
 }
 
-function requestDecompose(mergedRequirement) {
+async function handleClearAllHistory() {
+  try {
+    await ElMessageBox.confirm('确定清空全部历史需求吗？此操作不可恢复。', '提示', {
+      type: 'warning'
+    })
+  } catch {
+    return
+  }
+
+  historyList.value = []
+  localStorage.removeItem(HISTORY_STORAGE_KEY)
+  handleNewRequirement()
+  ElMessage.success('历史需求已清空')
+}
+
+function requestDecompose(submittedRequirement) {
   if (USE_MOCK) {
-    return mockDecomposeRequirement()
+    return mockDecomposeRequirement(submittedRequirement)
   }
 
-  return decomposeRequirement(mergedRequirement)
+  return decomposeRequirement(submittedRequirement)
 }
 
-function mockDecomposeRequirement() {
+function mockDecomposeRequirement(submittedRequirement) {
   const delay = 600 + Math.floor(Math.random() * 401)
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     window.setTimeout(() => {
+      if (submittedRequirement.includes('模拟失败')) {
+        reject(new Error('Mock 模式已模拟拆解失败，请修改需求后重试'))
+        return
+      }
+
       resolve({
         code: 200,
         data: {
-          summary: '随访记录页面增加日期范围筛选',
-          tasks: [
-            {
-              type: 'FRONTEND',
-              title: '随访列表页增加日期范围选择器',
-              description: '在搜索栏增加日期范围选择器，并保持查询条件与分页联动。',
-              filesToModify: ['frontend-target/src/views/followUp/FollowUpList.vue'],
-              apiEndpoint: 'GET /api/follow-ups?startDate=xxx&endDate=xxx',
-              acceptanceCriteria: '选择日期范围后查询，表格只显示范围内记录'
-            },
-            {
-              type: 'BACKEND',
-              title: '随访查询接口支持日期范围参数',
-              description: '确认 FollowUpController 接收 startDate 和 endDate 参数并传递到查询条件。',
-              filesToModify: ['backend/src/main/java/.../FollowUpController.java'],
-              apiEndpoint: 'GET /api/follow-ups',
-              acceptanceCriteria: '传入 startDate/endDate 后，接口仅返回范围内的随访记录'
-            },
-            {
-              type: 'DATABASE',
-              title: '确认随访日期字段索引',
-              description: '检查随访记录表 followUpDate 查询条件是否具备合适索引。',
-              filesToModify: ['backend/src/main/resources/db/migration'],
-              apiEndpoint: '',
-              acceptanceCriteria: '日期范围查询在常规数据量下响应稳定'
-            },
-            {
-              type: 'TEST',
-              title: '补充日期范围筛选测试',
-              description: '覆盖仅开始日期、仅结束日期和完整日期范围三类查询。',
-              filesToModify: ['backend/src/test/java/.../FollowUpControllerTest.java'],
-              apiEndpoint: 'GET /api/follow-ups',
-              acceptanceCriteria: '日期范围筛选相关测试全部通过'
-            },
-            {
-              type: 'SECURITY',
-              title: '校验查询权限与输入边界',
-              description: '确认仅授权用户可查询随访记录，并限制异常日期参数。',
-              filesToModify: [],
-              apiEndpoint: 'GET /api/follow-ups',
-              acceptanceCriteria: '未授权请求返回 401，异常日期参数返回 400'
-            }
-          ],
-          risk: '日期格式需要统一为 YYYY-MM-DD'
+          summary: `需求拆解：${truncateText(submittedRequirement, 30)}`,
+          tasks: createMockTasks(),
+          risk: '日期格式需要统一为 YYYY-MM-DD，筛选条件需覆盖边界日期。'
         },
         message: 'success'
       })
     }, delay)
   })
+}
+
+function createMockTasks() {
+  // priority、estimatedHours 与 task.risk 仅用于第一周 Mock 展示；不会作为正式请求字段发送。
+  return [
+    {
+      type: 'FRONTEND',
+      title: '随访列表页增加日期范围选择器',
+      description: '在搜索栏增加日期范围选择器，并保持查询条件与分页联动。',
+      priority: 'high',
+      estimatedHours: 4,
+      filesToModify: ['frontend-target/src/views/followUp/FollowUpList.vue'],
+      apiEndpoint: 'GET /api/follow-ups?startDate=xxx&endDate=xxx',
+      acceptanceCriteria: '选择日期范围后查询，表格只显示范围内记录。',
+      risk: '日期控件的时区处理可能导致边界日期偏差。'
+    },
+    {
+      type: 'BACKEND',
+      title: '随访查询接口支持日期范围参数',
+      description: '确认随访查询接收 startDate 和 endDate 参数并传递到查询条件。',
+      priority: 'high',
+      estimatedHours: 3,
+      filesToModify: ['backend/src/main/java/.../FollowUpController.java'],
+      apiEndpoint: 'GET /api/follow-ups',
+      acceptanceCriteria: '传入 startDate/endDate 后，接口仅返回范围内的随访记录。',
+      risk: '需要保持未传日期参数时的既有查询行为。'
+    },
+    {
+      type: 'DATABASE',
+      title: '确认随访日期字段索引',
+      description: '检查随访记录表 followUpDate 查询条件是否具备合适索引。',
+      priority: 'medium',
+      estimatedHours: 2,
+      filesToModify: ['backend/src/main/resources/db/migration'],
+      apiEndpoint: null,
+      acceptanceCriteria: '日期范围查询在常规数据量下响应稳定。',
+      risk: '新增索引会增加写入开销，需要评估现有数据量。'
+    },
+    {
+      type: 'TEST',
+      title: '补充日期范围筛选测试',
+      description: '覆盖仅开始日期、仅结束日期和完整日期范围三类查询。',
+      priority: 'medium',
+      estimatedHours: 3,
+      filesToModify: ['backend/src/test/java/.../FollowUpControllerTest.java'],
+      apiEndpoint: 'GET /api/follow-ups',
+      acceptanceCriteria: '日期范围筛选相关测试全部通过，边界日期场景有覆盖。',
+      risk: '测试数据的日期分布不足会遗漏边界条件。'
+    },
+    {
+      type: 'SECURITY',
+      title: '校验查询权限与输入边界',
+      description: '确认仅授权用户可查询随访记录，并限制异常日期参数。',
+      priority: 'low',
+      estimatedHours: 2,
+      filesToModify: [],
+      apiEndpoint: 'GET /api/follow-ups',
+      acceptanceCriteria: '未授权请求返回 401，异常日期参数返回 400。',
+      risk: '权限校验遗漏可能导致非授权人员读取随访数据。'
+    }
+  ]
 }
 
 function normalizeApiResponse(response) {
@@ -331,13 +440,13 @@ function normalizeApiResponse(response) {
   return response || {}
 }
 
-function appendHistory(mergedRequirement, nextResult) {
+function appendHistory(submittedRequirement, nextResult) {
   const historyItem = {
-    id: `${Date.now()}`,
-    title: nextResult?.summary || truncateText(mergedRequirement),
-    createTime: formatLocalDateTime(new Date()),
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    title: nextResult?.summary || truncateText(submittedRequirement, 24),
+    requirement: maskSensitiveText(submittedRequirement),
+    createdAt: new Date().toISOString(),
     status: '已生成',
-    requirement: maskSensitiveText(mergedRequirement),
     result: nextResult
   }
 
@@ -356,23 +465,72 @@ function loadHistory() {
   try {
     const parsedHistory = JSON.parse(rawHistory)
     historyList.value = Array.isArray(parsedHistory)
-      ? parsedHistory.filter(isValidHistoryItem).slice(0, MAX_HISTORY_COUNT)
+      ? parsedHistory.map(normalizeHistoryItem).filter(Boolean).slice(0, MAX_HISTORY_COUNT)
       : []
   } catch {
-    localStorage.removeItem(HISTORY_STORAGE_KEY)
     historyList.value = []
   }
 }
 
+function normalizeHistoryItem(item) {
+  if (!item || typeof item !== 'object' || !item.id || !item.requirement) {
+    return null
+  }
+
+  return {
+    id: String(item.id),
+    title: item.title || truncateText(item.requirement, 24),
+    requirement: item.requirement,
+    // 兼容此前保存的 createTime，新的记录统一使用 createdAt。
+    createdAt: item.createdAt || item.createTime || '',
+    status: item.status || '已生成',
+    result: item.result || null
+  }
+}
+
 function saveHistory() {
-  localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList.value))
+  try {
+    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList.value))
+  } catch {
+    ElMessage.warning('历史记录暂时无法保存到本地浏览器')
+  }
 }
 
-function isValidHistoryItem(item) {
-  return item && typeof item === 'object' && item.id && item.title && item.createTime
+function priorityMeta(priority) {
+  return priorityLabels[priority] || { label: '--', tagType: 'info' }
 }
 
-function formatLocalDateTime(date) {
+function formatEstimatedHours(estimatedHours) {
+  return Number.isFinite(estimatedHours) ? `${estimatedHours} 小时` : '--'
+}
+
+function getFiles(task) {
+  return Array.isArray(task?.filesToModify) ? task.filesToModify.filter(Boolean) : []
+}
+
+function formatAcceptanceCriteria(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean).join('；') || '--'
+  }
+
+  return displayText(value)
+}
+
+function displayText(value) {
+  return value === null || value === undefined || value === '' ? '--' : value
+}
+
+function formatHistoryTime(value) {
+  if (!value) {
+    return '--'
+  }
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+
   const year = date.getFullYear()
   const month = padDatePart(date.getMonth() + 1)
   const day = padDatePart(date.getDate())
@@ -386,22 +544,14 @@ function padDatePart(value) {
   return `${value}`.padStart(2, '0')
 }
 
-function truncateText(text) {
-  return text.length > 24 ? `${text.slice(0, 24)}...` : text
+function truncateText(text, maxLength) {
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
 function maskSensitiveText(text) {
   return text
     .replace(/\b1[3-9]\d{9}\b/g, (phone) => `${phone.slice(0, 3)}****${phone.slice(7)}`)
     .replace(/\b\d{6}(?:19|20)\d{2}\d{4}\d{3}[\dXx]\b/g, (idCard) => `${idCard.slice(0, 6)}********${idCard.slice(-4)}`)
-}
-
-function getFiles(task) {
-  return Array.isArray(task?.filesToModify) ? task.filesToModify.filter(Boolean) : []
-}
-
-function displayText(value) {
-  return value === null || value === undefined || value === '' ? '--' : value
 }
 </script>
 
@@ -430,6 +580,20 @@ function displayText(value) {
   min-width: 0;
 }
 
+.history-header,
+.result-header,
+.task-title-row,
+.history-meta {
+  display: flex;
+  align-items: center;
+}
+
+.history-header,
+.result-header {
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .panel-title {
   display: flex;
   align-items: center;
@@ -440,8 +604,19 @@ function displayText(value) {
   color: var(--color-text-primary);
 }
 
+.history-header .panel-title,
+.result-header .panel-title {
+  margin-bottom: 0;
+}
+
 .panel-title .el-icon {
   color: var(--color-primary);
+}
+
+.panel-title h1,
+.panel-title h2 {
+  margin: 0;
+  font: inherit;
 }
 
 .page-title {
@@ -450,18 +625,18 @@ function displayText(value) {
 
 .history-list {
   display: flex;
+  max-height: 660px;
   flex-direction: column;
   gap: 12px;
+  overflow-y: auto;
 }
 
 .history-item {
-  width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 8px;
   padding: 12px;
-  text-align: left;
   color: var(--color-text-regular);
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -479,12 +654,29 @@ function displayText(value) {
   border-left-color: var(--color-primary);
 }
 
+.history-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.history-item-content {
+  min-width: 0;
+  flex: 1;
+}
+
 .history-title {
-  width: 100%;
+  display: block;
+  overflow: hidden;
   font-size: 14px;
   font-weight: 500;
   color: var(--color-text-primary);
-  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-meta {
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .history-time {
@@ -495,31 +687,28 @@ function displayText(value) {
 .input-actions {
   display: flex;
   gap: 12px;
-  margin-top: 4px;
 }
 
 .result-area {
+  min-height: 280px;
   margin-top: 20px;
 }
 
-.result-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
+.state-alert {
+  margin-bottom: 16px;
 }
 
 .result-summary {
-  margin: 0 0 8px;
+  margin: 16px 0 8px;
   color: var(--color-text-regular);
+  line-height: 1.6;
 }
 
 .result-risk {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin: 0;
+  margin: 0 0 16px;
   font-size: 12px;
   color: var(--color-warning);
 }
@@ -531,16 +720,15 @@ function displayText(value) {
 }
 
 .task-card {
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
   padding: 16px;
   background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
 }
 
 .task-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
@@ -567,7 +755,8 @@ function displayText(value) {
   margin-top: 8px;
 }
 
-.task-meta dt {
+.task-meta dt,
+.empty-value {
   color: var(--color-text-secondary);
 }
 
@@ -575,6 +764,7 @@ function displayText(value) {
   min-width: 0;
   margin: 0;
   color: var(--color-text-regular);
+  overflow-wrap: anywhere;
 }
 
 .code-block {
@@ -590,7 +780,17 @@ function displayText(value) {
   border-radius: 4px;
 }
 
-.empty-value {
-  color: var(--color-text-secondary);
+@media (max-width: 960px) {
+  .chat-panel {
+    flex-direction: column;
+  }
+
+  .history-panel {
+    width: auto;
+  }
+
+  .history-list {
+    max-height: 280px;
+  }
 }
 </style>
