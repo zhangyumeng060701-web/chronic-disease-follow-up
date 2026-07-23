@@ -1,0 +1,42 @@
+:root {
+  --color-primary: #409EFF;
+  --color-primary-light: #ECF5FF;
+  --color-primary-dark: #337ECC;
+  --color-success: #67C23A;
+  --color-warning: #E6A23C;
+  --color-danger: #F56C6C;
+  --color-info: #909399;
+  --color-bg: #F5F7FA;
+  --color-bg-card: #FFFFFF;
+  --color-border: #DCDFE6;
+  --color-text-primary: #303133;
+  --color-text-regular: #606266;
+  --color-text-secondary: #909399;
+  --layout-header-height: 56px;
+  --layout-sidebar-width: 220px;
+  --layout-main-padding: 20px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 1200px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  color: var(--color-text-regular);
+  background: var(--color-bg);
+}
+
+#app {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
