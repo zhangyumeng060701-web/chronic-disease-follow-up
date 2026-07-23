@@ -114,24 +114,23 @@ npm.cmd audit --audit-level=high
 
 失败或阻塞项：
 
-- 后端 `mvn test` 未执行成功，原因是当前环境未安装或未配置 Maven/JDK。
 - 前端依赖安全审计发现高危和严重漏洞，但修复需要破坏性升级，未在本次任务中自动修复。
 
 未覆盖项：
 
-- 后端真实 Controller 集成测试尚未执行。
-- 登录成功/失败测试尚未覆盖。
-- JWT 鉴权链路尚未覆盖。
-- 医生与管理员的数据权限测试尚未覆盖。
-- 后端脱敏尚未实现，因此无法测试后端脱敏结果。
+- 后端患者 Controller 已补充 MockMvc 契约测试，覆盖列表、详情、新增、编辑、删除。
+- 登录成功/失败测试已覆盖。
+- JWT 过滤器已设置 Spring Security `Authentication`，并已补充有效/无效 token 的过滤器单元测试。
+- 医生与管理员的基础脱敏差异已覆盖，跨医生患者归属权限尚未覆盖。
+- 后端患者姓名、手机号、身份证号、住址脱敏已实现并补充单元测试。
 - 随访、预警、统计、用户、日志模块尚未实现或仍是占位，暂无法测试。
 
 ## 7. 剩余安全风险
 
 - `application.yml` 中存在明文数据库密码和 JWT secret，建议改为环境变量。
 - 登录逻辑当前硬编码账号密码，未接入 `t_user` 表和 BCrypt。
-- JWT 过滤器未设置 Spring Security `Authentication`，受保护接口可能无法被真正认证。
-- 患者接口直接返回实体，后端尚未统一脱敏。
+- JWT 过滤器已设置 Spring Security `Authentication`，但仍需补充 401、403、角色权限测试。
+- 患者查询接口已按 `role` 返回 `PatientVO`，不再直接向 Controller 返回 `Patient` entity。
 - CORS 当前允许任意来源，生产环境应收敛到可信域名。
 - 前端依赖存在审计风险，需要独立升级和回归。
 
@@ -151,7 +150,16 @@ git push origin feature/5-test-security
 
 ## 10. 为修复测试发现问题而修改的业务代码
 
-本次没有修改后端业务代码。
+本次补充了后端患者查询返回前的基础脱敏逻辑。
+
+具体为：
+
+- `backend/src/main/java/com/example/followup/util/PatientDesensitizationUtil.java`：集中实现姓名、手机号、身份证号、住址脱敏规则。
+- `backend/src/main/java/com/example/followup/dto/response/PatientVO.java`：作为患者接口统一响应模型，保持 JSON 字段为小驼峰。
+- `backend/src/main/java/com/example/followup/dto/request/PatientSaveRequest.java`：作为新增/编辑患者的请求模型，避免 Controller 直接接收 entity。
+- `backend/src/main/java/com/example/followup/service/impl/PatientServiceImpl.java`：数据库内部使用 `Patient`，对外统一转换为 `PatientVO`，非管理员返回脱敏值。
+- `backend/src/main/java/com/example/followup/controller/PatientController.java`：从请求属性读取 `role`，查询列表和详情时透传到 Service。
+- `backend/src/main/java/com/example/followup/config/SecurityConfig.java`：JWT 过滤器设置 Spring Security `Authentication`。
 
 本次新增了前端脱敏工具函数和展示组件，原因是标准文档要求“脱敏规则不要只写文档不写代码”。具体为：
 
@@ -170,10 +178,10 @@ git push origin feature/5-test-security
 审查结论：
 
 - 前端脱敏测试可重复执行，`npm.cmd test` 已通过。
-- 后端测试代码已补充，但当前环境缺少 JDK/Maven，尚未执行，不能声明后端测试通过。
+- 后端测试代码已补充，已使用项目内便携 JDK/Maven 执行通过。
 - `prompt.txt` 为任务说明文件，不建议纳入提交。
 - 当前仍存在前端依赖审计风险，建议单独开依赖升级分支处理。
-- 当前仍存在后端明文配置、硬编码登录、JWT Authentication 未设置、后端未统一脱敏等安全风险，已在报告中标注为后续修复项。
+- 当前仍存在后端明文配置、硬编码登录、401/403 端到端鉴权测试不足等安全风险，已在报告中标注为后续修复项。
 
 ## 12. 后端测试补充验证记录
 
@@ -195,8 +203,27 @@ mvn test
 真实结果：
 
 ```text
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
 
-结论：后端基线测试已在本地便携 JDK/Maven 环境下跑通。
+结论：后端基线测试、登录接口测试、脱敏差异测试、患者 Controller 契约测试、JWT 过滤器测试已在本地便携 JDK/Maven 环境下跑通。
+
+## 13. CI 测试报告补充记录
+
+前端测试脚本已调整为默认关闭 Vitest 缓存并输出 JUnit XML：
+
+```bash
+cd frontend-target
+npm.cmd run test
+```
+
+真实结果：
+
+```text
+Test Files  1 passed (1)
+Tests       5 passed (5)
+JUNIT report written to frontend-target/test-results/vitest-junit.xml
+```
+
+`frontend-target/test-results/` 为测试产物目录，已加入 `.gitignore`，CI 可按需采集该 XML 文件。

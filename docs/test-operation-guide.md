@@ -328,9 +328,18 @@ npm.cmd audit --audit-level=high
 
 如果流水线使用 Linux 环境，将 `npm.cmd` 改为 `npm`。
 
+前端 `npm.cmd test` 会生成 JUnit XML：
+
+```text
+frontend-target/test-results/vitest-junit.xml
+```
+
+该目录为测试产物，已加入 `.gitignore`；CI/CD 流水线可以采集该文件作为测试报告。
+
 ## 11. 当前已知限制
 
 - 后端测试依赖 JDK/Maven，本地未配置时无法执行。
-- 后端脱敏尚未实现，因此目前只能测试前端展示兜底。
+- 后端患者查询基础脱敏已实现，接口已改为返回 `PatientVO`，新增/编辑接口已改为接收 `PatientSaveRequest`。
+- JWT 过滤器已设置基础认证上下文，并有过滤器单元测试；401、403 端到端鉴权测试仍需后续补齐。
 - 随访、预警、统计、用户、日志模块尚未完整实现，对应测试需要后续补齐。
 - 前端依赖审计已发现风险，建议单独分支处理依赖升级。

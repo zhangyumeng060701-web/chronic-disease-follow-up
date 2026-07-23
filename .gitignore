@@ -12,6 +12,7 @@ backend/target/
 # 前端
 frontend-target/node_modules/
 frontend-target/dist/
+frontend-target/test-results/
 frontend-platform/node_modules/
 frontend-platform/dist/
 
