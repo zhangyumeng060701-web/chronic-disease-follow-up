@@ -1,0 +1,155 @@
+﻿package com.example.followup.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.followup.dto.request.FollowUpQuery;
+import com.example.followup.dto.response.FollowUpVO;
+import com.example.followup.dto.response.PageResponse;
+import com.example.followup.entity.Alert;
+import com.example.followup.entity.AlertRule;
+import com.example.followup.entity.FollowUp;
+import com.example.followup.entity.Patient;
+import com.example.followup.exception.BusinessException;
+import com.example.followup.mapper.*;
+import com.example.followup.service.FollowUpService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Service
+public class FollowUpServiceImpl implements FollowUpService {
+
+    @Autowired
+    private FollowUpMapper followUpMapper;
+    @Autowired
+    private PatientMapper patientMapper;
+    @Autowired
+    private AlertRuleMapper alertRuleMapper;
+    @Autowired
+    private AlertMapper alertMapper;
+
+    @Override
+    public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
+        LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
+        if (query.getPatientId() != null) {
+            wrapper.eq(FollowUp::getPatientId, query.getPatientId());
+        }
+        if (query.getStartDate() != null) {
+            wrapper.ge(FollowUp::getFollowUpDate, query.getStartDate());
+        }
+        if (query.getEndDate() != null) {
+            wrapper.le(FollowUp::getFollowUpDate, query.getEndDate());
+        }
+        wrapper.orderByDesc(FollowUp::getFollowUpDate);
+
+        Page<FollowUp> page = new Page<>(query.getPage(), query.getSize());
+        followUpMapper.selectPage(page, wrapper);
+
+        List<Long> patientIds = page.getRecords().stream()
+                .map(FollowUp::getPatientId).distinct().collect(Collectors.toList());
+        Map<Long, String> nameMap = patientIds.isEmpty() ? Map.of() :
+                patientMapper.selectBatchIds(patientIds).stream()
+                        .collect(Collectors.toMap(Patient::getId, Patient::getName));
+
+        List<FollowUpVO> vos = page.getRecords().stream().map(f -> {
+            FollowUpVO vo = new FollowUpVO();
+            BeanUtils.copyProperties(f, vo);
+            vo.setPatientName(nameMap.getOrDefault(f.getPatientId(), ""));
+            return vo;
+        }).collect(Collectors.toList());
+
+        PageResponse<FollowUpVO> response = new PageResponse<>();
+        response.setRecords(vos);
+        response.setTotal(page.getTotal());
+        response.setPage(query.getPage());
+        response.setSize(query.getSize());
+        return response;
+    }
+
+    @Override
+    public FollowUp getFollowUpById(Long id) {
+        FollowUp followUp = followUpMapper.selectById(id);
+        if (followUp == null) {
+            throw new BusinessException(404, "随访记录不存在");
+        }
+        return followUp;
+    }
+
+    @Override
+    @Transactional
+    public void addFollowUp(FollowUp followUp) {
+        followUp.setId(null);
+        followUpMapper.insert(followUp);
+        checkAndGenerateAlerts(followUp);
+    }
+
+    @Override
+    public void updateFollowUp(FollowUp followUp) {
+        getFollowUpById(followUp.getId());
+        followUpMapper.updateById(followUp);
+    }
+
+    @Override
+    public void deleteFollowUp(Long id) {
+        getFollowUpById(id);
+        followUpMapper.deleteById(id);
+    }
+
+    private void checkAndGenerateAlerts(FollowUp followUp) {
+        Long patientId = followUp.getPatientId();
+
+        LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FollowUp::getPatientId, patientId)
+               .lt(FollowUp::getId, followUp.getId())
+               .orderByDesc(FollowUp::getFollowUpDate)
+               .last("LIMIT 1");
+        FollowUp previous = followUpMapper.selectList(wrapper).stream().findFirst().orElse(null);
+        if (previous == null) return;
+
+        List<AlertRule> rules = alertRuleMapper.findActiveRules();
+        List<Alert> alerts = new ArrayList<>();
+
+        for (AlertRule rule : rules) {
+            boolean currentTriggered = checkIndicator(followUp, rule);
+            boolean previousTriggered = checkIndicator(previous, rule);
+            if (currentTriggered && previousTriggered) {
+                Alert alert = new Alert();
+                alert.setPatientId(patientId);
+                alert.setAlertType("HIGH_RISK");
+                alert.setAlertLevel(rule.getAlertLevel());
+                alert.setAlertReason("连续2次" + rule.getRuleName() + "：最近值" + getIndicatorValue(followUp, rule.getIndicator()));
+                alert.setIsResolved(0);
+                alerts.add(alert);
+            }
+        }
+
+        if (!alerts.isEmpty()) {
+            for (Alert alert : alerts) {
+                alertMapper.insert(alert);
+            }
+        }
+    }
+
+    private boolean checkIndicator(FollowUp f, AlertRule rule) {
+        BigDecimal value = getIndicatorValue(f, rule.getIndicator());
+        if (value == null) return false;
+        return value.compareTo(rule.getThreshold()) >= 0;
+    }
+
+    private BigDecimal getIndicatorValue(FollowUp f, String indicator) {
+        switch (indicator) {
+            case "systolic_bp": return f.getSystolicBp() != null ? BigDecimal.valueOf(f.getSystolicBp()) : null;
+            case "diastolic_bp": return f.getDiastolicBp() != null ? BigDecimal.valueOf(f.getDiastolicBp()) : null;
+            case "fasting_glucose": return f.getFastingGlucose();
+            case "postprandial_glucose": return f.getPostprandialGlucose();
+            default: return null;
+        }
+    }
+}
