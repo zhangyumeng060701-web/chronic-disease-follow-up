@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="followup-list">
     <el-form :model="searchForm" inline>
       <el-form-item label="患者">
@@ -18,7 +18,8 @@
 
     <el-button type="primary" @click="handleAdd">新增随访</el-button>
 
-    <el-table :data="tableData" border stripe v-loading="loading" style="margin-top:16px">
+    <el-table :data="tableData" border stripe v-loading="loading"
+      empty-text="暂无随访记录" style="margin-top:16px">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="followUpDate" label="随访日期" width="110" />
       <el-table-column prop="followUpType" label="随访方式" width="80">
@@ -59,6 +60,7 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
@@ -157,7 +159,9 @@ async function fetchPatients() {
   try {
     const res = await getPatientList({ page: 1, size: 999 })
     patientOptions.value = res.data.records || []
-  } catch { /* ignore */ }
+  } catch {
+    ElMessage.error('加载患者列表失败')
+  }
 }
 
 async function fetchData() {
@@ -170,9 +174,14 @@ async function fetchData() {
       params.endDate = dateRange.value[1]
     }
     const res = await getFollowUpList(params)
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+    tableData.value = res.data.records || []
+    pagination.total = res.data.total || 0
+  } catch {
+    ElMessage.error('加载随访记录失败，请稍后重试')
+    tableData.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 function handleSearch() { pagination.page = 1; fetchData() }
@@ -181,6 +190,7 @@ function handleReset() { searchForm.patientId = ''; dateRange.value = []; handle
 function handleAdd() {
   dialogTitle.value = '新增随访'
   isEdit.value = false
+  editId.value = null
   resetForm()
   dialogVisible.value = true
 }
@@ -200,29 +210,51 @@ function handleEdit(row) {
 }
 
 async function handleDelete(row) {
-  await ElMessageBox.confirm('确定删除该随访记录吗？', '提示', { type: 'warning' })
-  await deleteFollowUp(row.id)
-  ElMessage.success('删除成功')
-  fetchData()
+  try {
+    await ElMessageBox.confirm('确定删除该随访记录吗？', '提示', { type: 'warning' })
+    await deleteFollowUp(row.id)
+    ElMessage.success('删除成功')
+    fetchData()
+  } catch {
+    // user cancels or delete fails
+  }
 }
 
 async function handleSubmit() {
-  await formRef.value.validate()
+  try {
+    await formRef.value.validate()
+  } catch {
+    return
+  }
   submitting.value = true
   try {
     const payload = { ...formData }
     if (isEdit.value) {
       await updateFollowUp(editId.value, payload)
+      ElMessage.success('编辑成功')
     } else {
       await addFollowUp(payload)
+      ElMessage.success('新增成功')
     }
-    ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
     dialogVisible.value = false
     fetchData()
-  } finally { submitting.value = false }
+  } catch {
+    ElMessage.error('操作失败，请稍后重试')
+  } finally {
+    submitting.value = false
+  }
 }
 
-function resetForm() { Object.assign(formData, emptyForm()); formRef.value?.resetFields() }
+function resetForm() {
+  Object.assign(formData, emptyForm())
+  formRef.value?.resetFields()
+}
 
 onMounted(() => { fetchPatients(); fetchData() })
 </script>
+
+<style scoped>
+.followup-list {
+  padding: 16px;
+}
+</style>

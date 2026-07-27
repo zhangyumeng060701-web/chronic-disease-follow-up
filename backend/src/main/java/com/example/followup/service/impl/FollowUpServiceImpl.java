@@ -1,4 +1,4 @@
-﻿package com.example.followup.service.impl;
+package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +10,7 @@ import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
+import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.*;
 import com.example.followup.service.FollowUpService;
 import org.springframework.beans.BeanUtils;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         if (query.getEndDate() != null) {
             wrapper.le(FollowUp::getFollowUpDate, query.getEndDate());
         }
+        if (query.getNextFollowUpDateBefore() != null) {
+            wrapper.le(FollowUp::getNextFollowUpDate, query.getNextFollowUpDateBefore());
+        }
         wrapper.orderByDesc(FollowUp::getFollowUpDate);
 
         Page<FollowUp> page = new Page<>(query.getPage(), query.getSize());
@@ -65,11 +70,8 @@ public class FollowUpServiceImpl implements FollowUpService {
             return vo;
         }).collect(Collectors.toList());
 
-        PageResponse<FollowUpVO> response = new PageResponse<>();
+        PageResponse<FollowUpVO> response = PageResponse.of(page, query.getPage(), query.getSize());
         response.setRecords(vos);
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
         return response;
     }
 
@@ -77,7 +79,7 @@ public class FollowUpServiceImpl implements FollowUpService {
     public FollowUp getFollowUpById(Long id) {
         FollowUp followUp = followUpMapper.selectById(id);
         if (followUp == null) {
-            throw new BusinessException(404, "随访记录不存在");
+            throw new BusinessException(ErrorCode.FOLLOWUP_NOT_FOUND);
         }
         return followUp;
     }
@@ -101,6 +103,17 @@ public class FollowUpServiceImpl implements FollowUpService {
         getFollowUpById(id);
         followUpMapper.deleteById(id);
     }
+
+    @Override
+    public List<FollowUpVO> listOverdueFollowUps() {
+        FollowUpQuery query = new FollowUpQuery();
+        query.setPage(1);
+        query.setSize(Integer.MAX_VALUE);
+        query.setNextFollowUpDateBefore(LocalDate.now());
+        return listFollowUps(query).getRecords();
+    }
+
+    // ---- 连续异常预警 ----
 
     private void checkAndGenerateAlerts(FollowUp followUp) {
         Long patientId = followUp.getPatientId();

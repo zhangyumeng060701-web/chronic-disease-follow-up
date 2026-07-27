@@ -1,4 +1,4 @@
-﻿package com.example.followup.service.impl;
+package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,6 +8,7 @@ import com.example.followup.dto.response.PageResponse;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
+import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.AlertService;
@@ -64,11 +65,8 @@ public class AlertServiceImpl implements AlertService {
             return vo;
         }).collect(Collectors.toList());
 
-        PageResponse<AlertVO> response = new PageResponse<>();
+        PageResponse<AlertVO> response = PageResponse.of(page, query.getPage(), query.getSize());
         response.setRecords(vos);
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
         return response;
     }
 
@@ -76,7 +74,7 @@ public class AlertServiceImpl implements AlertService {
     public void resolveAlert(Long id) {
         Alert alert = alertMapper.selectById(id);
         if (alert == null) {
-            throw new BusinessException(404, "预警记录不存在");
+            throw new BusinessException(ErrorCode.ALERT_NOT_FOUND);
         }
         alert.setIsResolved(1);
         alert.setResolveTime(LocalDateTime.now());

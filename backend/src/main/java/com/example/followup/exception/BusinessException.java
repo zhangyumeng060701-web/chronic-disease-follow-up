@@ -1,15 +1,24 @@
 package com.example.followup.exception;
 
-import lombok.Getter;
-
-@Getter
 public class BusinessException extends RuntimeException {
-    private final Integer code;
-    public BusinessException(Integer code, String message) {
-        super(message);
-        this.code = code;
+
+    private final ErrorCode errorCode;
+
+    public BusinessException(ErrorCode errorCode) {
+        super(errorCode.getDefaultMessage());
+        this.errorCode = errorCode;
     }
-    public BusinessException(String message) {
-        this(400, message);
+
+    public BusinessException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
+    public int getHttpStatus() {
+        return errorCode.getHttpStatus();
     }
 }

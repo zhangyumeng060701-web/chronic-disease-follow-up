@@ -1,4 +1,4 @@
-﻿package com.example.followup.controller;
+package com.example.followup.controller;
 
 import com.example.followup.dto.request.FollowUpQuery;
 import com.example.followup.dto.response.FollowUpVO;
@@ -66,8 +66,8 @@ public class FollowUpController {
     }
 
     @GetMapping("/overdue")
-    @ApiOperation("查询逾期随访患者")
+    @ApiOperation("查询逾期未随访的患者")
     public Result<?> getOverdue() {
-        return Result.success(followUpService.listFollowUps(new FollowUpQuery()));
+        return Result.success(followUpService.listOverdueFollowUps());
     }
 }

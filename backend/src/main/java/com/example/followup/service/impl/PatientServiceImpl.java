@@ -6,6 +6,7 @@ import com.example.followup.dto.request.PatientQuery;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
+import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,19 +34,14 @@ public class PatientServiceImpl implements PatientService {
         Page<Patient> page = new Page<>(query.getPage(), query.getSize());
         patientMapper.selectPage(page, wrapper);
 
-        PageResponse<Patient> response = new PageResponse<>();
-        response.setRecords(page.getRecords());
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponse.of(page, query.getPage(), query.getSize());
     }
 
     @Override
     public Patient getPatientById(Long id) {
         Patient patient = patientMapper.selectById(id);
         if (patient == null || patient.getStatus() == 0) {
-            throw new BusinessException(404, "患者不存在");
+            throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
         return patient;
     }
@@ -59,7 +55,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void updatePatient(Patient patient) {
-        Patient existing = getPatientById(patient.getId());
+        getPatientById(patient.getId());
         patientMapper.updateById(patient);
     }
 

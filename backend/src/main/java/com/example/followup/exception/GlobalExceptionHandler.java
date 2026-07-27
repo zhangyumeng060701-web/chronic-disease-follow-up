@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public Result<Void> handleBusiness(BusinessException e) {
-        return Result.error(e.getCode(), e.getMessage());
+        return Result.error(e.getHttpStatus(), e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -22,12 +22,12 @@ public class GlobalExceptionHandler {
         String msg = e.getBindingResult().getFieldErrors().stream()
                 .map(f -> f.getField() + ": " + f.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        return Result.error(400, msg);
+        return Result.error(ErrorCode.BAD_REQUEST.getHttpStatus(), msg);
     }
 
     @ExceptionHandler(Exception.class)
     public Result<Void> handleUnknown(Exception e) {
         log.error("未知错误", e);
-        return Result.error(500, "服务器内部错误");
+        return Result.error(ErrorCode.INTERNAL_ERROR.getHttpStatus(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
     }
 }

@@ -1,4 +1,4 @@
-﻿package com.example.followup.service.impl;
+package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,6 +7,7 @@ import com.example.followup.dto.request.UserQuery;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
+import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,21 +37,17 @@ public class SysUserServiceImpl implements SysUserService {
         Page<SysUser> page = new Page<>(query.getPage(), query.getSize());
         sysUserMapper.selectPage(page, wrapper);
 
+        // 不返回密码字段
         page.getRecords().forEach(u -> u.setPassword(null));
 
-        PageResponse<SysUser> response = new PageResponse<>();
-        response.setRecords(page.getRecords());
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponse.of(page, query.getPage(), query.getSize());
     }
 
     @Override
     public void createUser(CreateUserRequest request) {
         SysUser existing = sysUserMapper.findByUsername(request.getUsername());
         if (existing != null) {
-            throw new BusinessException(400, "用户名已存在");
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "用户名已存在");
         }
         SysUser user = new SysUser();
         user.setUsername(request.getUsername());
@@ -66,8 +63,9 @@ public class SysUserServiceImpl implements SysUserService {
     public void updateUser(SysUser user) {
         SysUser existing = sysUserMapper.selectById(user.getId());
         if (existing == null) {
-            throw new BusinessException(404, "用户不存在");
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
+        // 密码非空则重新加密，空则保留旧密码不更新
         if (StringUtils.hasText(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
@@ -80,7 +78,7 @@ public class SysUserServiceImpl implements SysUserService {
     public void toggleUserStatus(Long id) {
         SysUser user = sysUserMapper.selectById(id);
         if (user == null) {
-            throw new BusinessException(404, "用户不存在");
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         user.setStatus(user.getStatus() == 1 ? 0 : 1);
         sysUserMapper.updateById(user);
