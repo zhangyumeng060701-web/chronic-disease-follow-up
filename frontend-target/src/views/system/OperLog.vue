@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="oper-log">
     <el-form :model="searchForm" inline>
       <el-form-item label="操作人">
@@ -13,7 +13,14 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe v-loading="loading">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      v-loading="loading"
+      empty-text="暂无操作日志"
+      style="margin-top:16px"
+    >
       <el-table-column prop="username" label="操作人" width="100" />
       <el-table-column prop="operation" label="操作类型" width="140" />
       <el-table-column prop="targetType" label="对象类型" width="100" />
@@ -23,6 +30,7 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
@@ -36,6 +44,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { getLogList } from '@/api/log'
+import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ username: '', operation: '' })
 const tableData = ref([])
@@ -46,13 +55,19 @@ async function fetchData() {
   loading.value = true
   try {
     const res = await getLogList({
-      page: pagination.page, size: pagination.size,
+      page: pagination.page,
+      size: pagination.size,
       username: searchForm.username || undefined,
       operation: searchForm.operation || undefined
     })
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+    tableData.value = res.data.records || []
+    pagination.total = res.data.total || 0
+  } catch {
+    ElMessage.error('加载操作日志失败，请稍后重试')
+    tableData.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 function handleSearch() { pagination.page = 1; fetchData() }
@@ -60,3 +75,9 @@ function handleReset() { searchForm.username = ''; searchForm.operation = ''; ha
 
 onMounted(() => fetchData())
 </script>
+
+<style scoped>
+.oper-log {
+  padding: 16px;
+}
+</style>

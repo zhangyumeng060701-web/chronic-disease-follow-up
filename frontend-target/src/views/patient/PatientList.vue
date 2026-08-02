@@ -19,7 +19,14 @@
 
     <el-button type="primary" @click="handleAdd">新增患者</el-button>
 
-    <el-table :data="tableData" border stripe v-loading="loading" style="margin-top:16px">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      v-loading="loading"
+      empty-text="暂无患者数据"
+      style="margin-top:16px"
+    >
       <el-table-column prop="name" label="姓名" width="100" />
       <el-table-column prop="gender" label="性别" width="60" />
       <el-table-column prop="age" label="年龄" width="60" />
@@ -28,7 +35,21 @@
         <template #default="{ row }">
           <el-tag v-if="row.diseaseType==='HYPERTENSION'" type="primary">高血压</el-tag>
           <el-tag v-else-if="row.diseaseType==='DIABETES'" type="success">糖尿病</el-tag>
-          <el-tag v-else type="warning">两者皆有</el-tag>
+          <el-tag v-else-if="row.diseaseType==='BOTH'" type="warning">两者皆有</el-tag>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="最近随访" width="110">
+        <template #default="{ row }">{{ row.lastFollowUpDate || '-' }}</template>
+      </el-table-column>
+      <el-table-column label="责任医生" width="100">
+        <template #default="{ row }">{{ row.doctorId || '-' }}</template>
+      </el-table-column>
+      <el-table-column label="状态" width="80">
+        <template #default="{ row }">
+          <el-tag :type="row.status===1 ? 'success' : 'info'" size="small">
+            {{ row.status === 1 ? '正常' : '已删除' }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180" fixed="right">
@@ -40,6 +61,7 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
@@ -125,13 +147,19 @@ async function fetchData() {
   loading.value = true
   try {
     const res = await getPatientList({
-      page: pagination.page, size: pagination.size,
+      page: pagination.page,
+      size: pagination.size,
       name: searchForm.name || undefined,
       diseaseType: searchForm.diseaseType || undefined
     })
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+    tableData.value = res.data.records || []
+    pagination.total = res.data.total || 0
+  } catch {
+    ElMessage.error('加载患者列表失败，请稍后重试')
+    tableData.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 function handleSearch() { pagination.page = 1; fetchData() }
@@ -140,6 +168,7 @@ function handleReset() { searchForm.name = ''; searchForm.diseaseType = ''; hand
 function handleAdd() {
   dialogTitle.value = '新增患者'
   isEdit.value = false
+  editId.value = null
   resetForm()
   dialogVisible.value = true
 }
@@ -148,33 +177,55 @@ function handleEdit(row) {
   dialogTitle.value = '编辑患者'
   isEdit.value = true
   editId.value = row.id
-  Object.assign(formData, row)
+  Object.assign(formData, emptyForm(), row)
   dialogVisible.value = true
 }
 
 async function handleDelete(row) {
-  await ElMessageBox.confirm('确定删除该患者吗？', '提示', { type: 'warning' })
-  await deletePatient(row.id)
-  ElMessage.success('删除成功')
-  fetchData()
+  try {
+    await ElMessageBox.confirm('确定删除该患者吗？', '提示', { type: 'warning' })
+    await deletePatient(row.id)
+    ElMessage.success('删除成功')
+    fetchData()
+  } catch {
+    // 用户取消或删除失败
+  }
 }
 
 async function handleSubmit() {
-  await formRef.value.validate()
+  try {
+    await formRef.value.validate()
+  } catch {
+    return
+  }
   submitting.value = true
   try {
     if (isEdit.value) {
-      await updatePatient(editId.value, formData)
+      await updatePatient(editId.value, { ...formData })
+      ElMessage.success('编辑成功')
     } else {
-      await addPatient(formData)
+      await addPatient({ ...formData })
+      ElMessage.success('新增成功')
     }
-    ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
     dialogVisible.value = false
     fetchData()
-  } finally { submitting.value = false }
+  } catch {
+    ElMessage.error('保存失败，请稍后重试')
+  } finally {
+    submitting.value = false
+  }
 }
 
-function resetForm() { Object.assign(formData, emptyForm()); formRef.value?.resetFields() }
+function resetForm() {
+  Object.assign(formData, emptyForm())
+  formRef.value?.resetFields()
+}
 
 onMounted(() => fetchData())
 </script>
+
+<style scoped>
+.patient-list {
+  padding: 16px;
+}
+</style>

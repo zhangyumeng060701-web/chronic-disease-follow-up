@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="user-manage">
     <el-form :model="searchForm" inline>
       <el-form-item label="用户名">
@@ -18,7 +18,14 @@
 
     <el-button type="primary" @click="handleAdd">新增用户</el-button>
 
-    <el-table :data="tableData" border stripe v-loading="loading" style="margin-top:16px">
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      v-loading="loading"
+      empty-text="暂无用户数据"
+      style="margin-top:16px"
+    >
       <el-table-column prop="username" label="用户名" width="120" />
       <el-table-column prop="realName" label="真实姓名" width="100" />
       <el-table-column prop="role" label="角色" width="80">
@@ -40,8 +47,11 @@
       <el-table-column label="操作" width="200" fixed="right">
         <template #default="{ row }">
           <el-button size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button size="small" :type="row.status===1?'warning':'success'"
-            @click="handleToggle(row)">
+          <el-button
+            size="small"
+            :type="row.status===1?'warning':'success'"
+            @click="handleToggle(row)"
+          >
             {{ row.status === 1 ? '禁用' : '启用' }}
           </el-button>
         </template>
@@ -49,6 +59,7 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
@@ -63,8 +74,12 @@
           <el-input v-model="formData.username" :disabled="isEdit" />
         </el-form-item>
         <el-form-item label="密码" :prop="isEdit?'':'password'">
-          <el-input v-model="formData.password" type="password" show-password
-            :placeholder="isEdit ? '留空则不修改' : ''" />
+          <el-input
+            v-model="formData.password"
+            type="password"
+            show-password
+            :placeholder="isEdit ? '留空则不修改' : ''"
+          />
         </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
           <el-input v-model="formData.realName" />
@@ -117,13 +132,19 @@ async function fetchData() {
   loading.value = true
   try {
     const res = await getUserList({
-      page: pagination.page, size: pagination.size,
+      page: pagination.page,
+      size: pagination.size,
       username: searchForm.username || undefined,
       role: searchForm.role || undefined
     })
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+    tableData.value = res.data.records || []
+    pagination.total = res.data.total || 0
+  } catch {
+    ElMessage.error('加载用户列表失败，请稍后重试')
+    tableData.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 function handleSearch() { pagination.page = 1; fetchData() }
@@ -132,6 +153,7 @@ function handleReset() { searchForm.username = ''; searchForm.role = ''; handleS
 function handleAdd() {
   dialogTitle.value = '新增用户'
   isEdit.value = false
+  editId.value = null
   resetForm()
   dialogVisible.value = true
 }
@@ -140,32 +162,60 @@ function handleEdit(row) {
   dialogTitle.value = '编辑用户'
   isEdit.value = true
   editId.value = row.id
-  Object.assign(formData, { username: row.username, password: '', realName: row.realName, role: row.role, phone: row.phone || '' })
+  Object.assign(formData, {
+    username: row.username,
+    password: '',
+    realName: row.realName,
+    role: row.role,
+    phone: row.phone || ''
+  })
   dialogVisible.value = true
 }
 
 async function handleToggle(row) {
-  await toggleUserStatus(row.id)
-  ElMessage.success(row.status === 1 ? '已禁用' : '已启用')
-  fetchData()
+  try {
+    await toggleUserStatus(row.id)
+    ElMessage.success(row.status === 1 ? '已禁用' : '已启用')
+    fetchData()
+  } catch {
+    ElMessage.error('操作失败，请稍后重试')
+  }
 }
 
 async function handleSubmit() {
-  await formRef.value.validate()
+  try {
+    await formRef.value.validate()
+  } catch {
+    return
+  }
   submitting.value = true
   try {
     if (isEdit.value) {
-      await updateUser(editId.value, formData)
+      await updateUser(editId.value, { ...formData })
+      ElMessage.success('编辑成功')
     } else {
-      await createUser(formData)
+      await createUser({ ...formData })
+      ElMessage.success('新增成功')
     }
-    ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
     dialogVisible.value = false
     fetchData()
-  } finally { submitting.value = false }
+  } catch {
+    ElMessage.error('保存失败，请稍后重试')
+  } finally {
+    submitting.value = false
+  }
 }
 
-function resetForm() { Object.assign(formData, emptyForm()); formRef.value?.resetFields() }
+function resetForm() {
+  Object.assign(formData, emptyForm())
+  formRef.value?.resetFields()
+}
 
 onMounted(() => fetchData())
 </script>
+
+<style scoped>
+.user-manage {
+  padding: 16px;
+}
+</style>

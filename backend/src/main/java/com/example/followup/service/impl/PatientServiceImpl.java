@@ -9,9 +9,14 @@ import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.PatientService;
+import com.example.followup.util.DesensitizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -34,6 +39,11 @@ public class PatientServiceImpl implements PatientService {
         Page<Patient> page = new Page<>(query.getPage(), query.getSize());
         patientMapper.selectPage(page, wrapper);
 
+        boolean admin = isAdmin();
+        if (!admin) {
+            page.getRecords().forEach(this::desensitize);
+        }
+
         return PageResponse.of(page, query.getPage(), query.getSize());
     }
 
@@ -42,6 +52,9 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientMapper.selectById(id);
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
+        }
+        if (!isAdmin()) {
+            desensitize(patient);
         }
         return patient;
     }
@@ -64,5 +77,21 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = getPatientById(id);
         patient.setStatus(0);
         patientMapper.updateById(patient);
+    }
+
+    private void desensitize(Patient patient) {
+        patient.setName(DesensitizationUtil.maskName(patient.getName()));
+        patient.setPhone(DesensitizationUtil.maskPhone(patient.getPhone()));
+        patient.setIdCard(DesensitizationUtil.maskIdCard(patient.getIdCard()));
+        patient.setAddress(DesensitizationUtil.maskAddress(patient.getAddress()));
+    }
+
+    private boolean isAdmin() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            return "ADMIN".equals(request.getAttribute("role"));
+        }
+        return false;
     }
 }

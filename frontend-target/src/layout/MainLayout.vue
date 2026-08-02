@@ -1,27 +1,32 @@
-﻿<template>
+<template>
   <el-container class="layout">
     <el-aside width="220px" class="aside">
-      <div class="logo">鎱㈢梾闅忚绯荤粺</div>
-      <el-menu :default-active="activeMenu" router background-color="#304156"
-               text-color="#bfcbd9" active-text-color="#409EFF">
+      <div class="logo">慢病随访系统</div>
+      <el-menu
+        :default-active="activeMenu"
+        router
+        background-color="#304156"
+        text-color="#bfcbd9"
+        active-text-color="#409EFF"
+      >
         <el-menu-item index="/dashboard">
-          <el-icon><DataAnalysis /></el-icon><span>宸ヤ綔鍙?/span>
+          <el-icon><DataAnalysis /></el-icon><span>工作台</span>
         </el-menu-item>
         <el-menu-item index="/patients">
-          <el-icon><UserFilled /></el-icon><span>鎮ｈ€呯鐞?/span>
+          <el-icon><UserFilled /></el-icon><span>患者管理</span>
         </el-menu-item>
         <el-menu-item index="/follow-ups">
-          <el-icon><Document /></el-icon><span>闅忚璁板綍</span>
+          <el-icon><Document /></el-icon><span>随访记录</span>
         </el-menu-item>
         <el-menu-item index="/alerts">
-          <el-icon><Bell /></el-icon><span>棰勮涓績</span>
+          <el-icon><Bell /></el-icon><span>预警中心</span>
         </el-menu-item>
         <el-sub-menu index="system" v-if="userStore.isAdmin">
           <template #title>
-            <el-icon><Setting /></el-icon><span>绯荤粺绠＄悊</span>
+            <el-icon><Setting /></el-icon><span>系统管理</span>
           </template>
-          <el-menu-item index="/system/users">鐢ㄦ埛绠＄悊</el-menu-item>
-          <el-menu-item index="/system/logs">鎿嶄綔鏃ュ織</el-menu-item>
+          <el-menu-item index="/system/users">用户管理</el-menu-item>
+          <el-menu-item index="/system/logs">操作日志</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
@@ -30,7 +35,7 @@
         <span class="header-title">{{ route.meta.title }}</span>
         <div class="header-right">
           <span class="username">{{ userStore.realName || userStore.username }}</span>
-          <el-button text @click="handleLogout">閫€鍑?/el-button>
+          <el-button text @click="handleLogout">退出</el-button>
         </div>
       </el-header>
       <el-main>

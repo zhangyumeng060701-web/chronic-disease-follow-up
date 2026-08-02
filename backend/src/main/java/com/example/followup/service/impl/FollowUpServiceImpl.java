@@ -109,7 +109,8 @@ public class FollowUpServiceImpl implements FollowUpService {
         FollowUpQuery query = new FollowUpQuery();
         query.setPage(1);
         query.setSize(Integer.MAX_VALUE);
-        query.setNextFollowUpDateBefore(LocalDate.now());
+        // 超期 7 天以上：下次随访日期早于 7 天前
+        query.setNextFollowUpDateBefore(LocalDate.now().minusDays(7));
         return listFollowUps(query).getRecords();
     }
 
