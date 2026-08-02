@@ -9,7 +9,7 @@
 - 靶系统：慢病随访管理系统，覆盖登录、患者档案、随访记录、风险预警、统计看板、系统管理等功能。
 - 智能维护方案：围绕 CodeArts 智能体，形成需求理解、架构分析、代码生成与修复、自动化测试、安全检查、部署运维的维护闭环。
 
-当前仓库已完成系统骨架、数据库设计、后端登录与患者管理基础接口、前端登录/布局/患者管理页面，以及较完整的需求、接口、分工和开发标准文档。
+当前仓库已完成系统骨架、数据库设计、靶系统核心业务前后端、维护平台基础页面、AI 需求拆解脚本，以及较完整的需求、接口、分工和开发标准文档。随访、预警、统计、用户管理和操作日志模块均已形成实现代码，当前重点转向自动化测试、权限安全、真实 AI 链路、部署和端到端验收。
 
 ## 2. 当前目录结构
 
@@ -17,14 +17,15 @@
 chronic-disease-follow-up/
 ├── backend/                 Spring Boot 后端
 ├── frontend-target/         Vue 3 靶系统前端
-├── ai-agent/                AI 智能体目录，目前仅保留 outputs/.gitkeep
+├── frontend-platform/       Vue 3 智能维护平台前端
+├── ai-agent/                AI 需求拆解脚本、演示程序与 Prompt
 ├── docs/                    需求、接口、标准、分工、报告文档
 ├── docker-compose.yml       MySQL 本地容器环境
 ├── README.md
 └── package-lock.json
 ```
 
-README 中提到的 `frontend-platform/` 维护平台目录当前尚未出现在工作区。
+`frontend-platform/` 已包含维护平台布局、路由、需求输入与任务拆解页面；页面保留正式 AI 接口封装，但当前默认仍使用 Mock 数据。
 
 ## 3. 技术架构
 
@@ -95,6 +96,12 @@ com.example.followup
 - `POST /api/patients`：新增患者
 - `PUT /api/patients/{id}`：编辑患者
 - `DELETE /api/patients/{id}`：软删除患者
+- `/api/follow-ups`：随访记录分页、详情、新增、编辑、删除及逾期查询
+- `/api/alerts`：预警分页查询与处理
+- `/api/stats`：总览、血压趋势、血糖趋势和医生统计
+- `/api/users`：用户分页、新增、编辑和状态管理
+- `/api/logs`：操作日志分页查询
+- `POST /api/ai/decompose`：调用 Python 脚本进行需求拆解
 
 统一返回格式：
 
@@ -160,12 +167,12 @@ frontend-target/src/
 | 路由 | 页面 | 当前状态 |
 |---|---|---|
 | `/login` | 登录页 | 已实现 |
-| `/dashboard` | 工作台 | 统计卡片占位 |
+| `/dashboard` | 工作台 | 已实现统计卡片和趋势图 |
 | `/patients` | 患者管理 | 已对接真实接口 |
-| `/follow-ups` | 随访记录 | 占位 |
-| `/alerts` | 预警中心 | 占位 |
-| `/system/users` | 用户管理 | 占位 |
-| `/system/logs` | 操作日志 | 占位 |
+| `/follow-ups` | 随访记录 | 已实现 |
+| `/alerts` | 预警中心 | 已实现 |
+| `/system/users` | 用户管理 | 已实现 |
+| `/system/logs` | 操作日志 | 已实现 |
 
 前端请求统一走 `frontend-target/src/api/request.js`：
 
@@ -216,7 +223,7 @@ Docker / 云端部署
 - 维护平台 `ChatPanel`
 - `/api/ai/decompose` 接口
 
-当前这些内容主要仍处于文档规划阶段。
+上述脚本、Prompt、后端接口和维护平台页面均已形成实现代码。当前维护平台默认仍使用 Mock 拆解；真实 Java→Python→模型链路曾完成代码打通，但受模型计费和部署条件影响，尚未完成稳定部署和端到端验收。
 
 ## 9. 团队分工
 
@@ -328,35 +335,37 @@ Docker / 云端部署
 - 项目骨架。
 - 数据库建表脚本。
 - 后端患者管理基础 CRUD。
+- 后端随访、预警、统计、用户管理和操作日志接口。
 - 登录接口雏形。
 - JWT 工具类。
 - 全局异常处理。
 - 前端主布局。
 - 前端登录页。
 - 前端患者管理页。
+- 前端随访、预警、统计、用户管理和操作日志页面。
+- 维护平台布局、需求输入和任务拆解页面。
+- AI 需求拆解脚本与 Prompt。
+- 健康检查和患者 Controller 测试代码。
+- 前端脱敏工具、组件及单元测试。
 - API 封装。
 - 需求、接口、协作、分工文档。
 
-未完成或仍是占位：
+待联调、测试或验收：
 
-- 随访记录后端接口。
-- 预警后端接口。
-- 统计接口。
-- 用户管理接口。
-- 操作日志接口。
-- AI 智能体脚本。
-- 维护平台前端。
-- 自动化测试。
+- 维护平台关闭默认 Mock 后的真实 AI 链路稳定性。
+- 随访、预警、统计、用户和日志模块的自动化测试覆盖。
+- 登录、JWT、角色权限和后端脱敏专项测试。
+- 前端脱敏组件接入患者列表。
+- 修复后端主源码的 UTF-8 BOM 和 `AiController.java` 结构错误后，重新执行后端测试。
 - CI/CD。
 - 华为云部署。
-- 最终报告正文。
+- 端到端测试和最终报告定稿。
 
 当前风险：
 
-- 多个 Java/Vue 文件中的中文文案出现编码异常，需统一为 UTF-8 并编译验证。
+- 多个 Java 文件带 UTF-8 BOM，Maven 编译报 `非法字符: '\ufeff'`；`AiController.java` 另有结构错误，当前会在测试执行前阻断主源码编译。
 - 后端 JWT 过滤器只设置 request attribute，未写入 Spring Security Authentication，受保护接口可能仍被判定未认证。
 - `application.yml` 中存在明文数据库密码和 JWT secret，正式部署前应改为环境变量。
 - 登录逻辑目前硬编码账号密码，尚未接入 `t_user` 表和 BCrypt。
 - Controller 当前直接返回 `Patient` 实体，尚未按标准返回 VO/DTO 并进行脱敏。
 - Docker Compose 当前只启动 MySQL，没有一键启动后端。
-

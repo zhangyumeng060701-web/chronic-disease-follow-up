@@ -2,14 +2,14 @@
 
 ## 1. 执行范围
 
-本报告对应 `docs/standards/STANDARDS_5_TEST_SECURITY.md` 的第一周任务，覆盖自动化测试框架、慢病异常规则、数据脱敏规则、前端脱敏测试、后端最小测试基线和依赖安全审计。
+本报告覆盖自动化测试框架、慢病异常规则、数据脱敏规则、前端脱敏测试、Week 2 后端 P0 最小测试基线和依赖安全审计。
 
 ## 2. 标准条目与测试用例映射
 
 | 标准条目 | 落地文件 | 测试或验证方式 | 当前结果 |
 |---|---|---|---|
-| 后端 `src/test/` 测试框架 | `backend/src/test/java/com/example/followup/controller/HealthControllerTest.java` | MockMvc 验证 `/api/health` 返回统一成功响应 | 已编写，当前环境缺 JDK/Maven，未执行 |
-| 后端 Service 示例测试 | `backend/src/test/java/com/example/followup/service/PatientServiceTest.java` | Mockito mock `PatientMapper`，验证分页、查询异常、新增默认状态、软删除 | 已编写，当前环境缺 JDK/Maven，未执行 |
+| 后端 `src/test/` 测试框架 | `backend/src/test/java/com/example/followup/controller/HealthControllerTest.java` | MockMvc 验证 `/api/health` 返回统一成功响应 | 已编写；主源码编译失败，测试未执行 |
+| 患者 Controller 测试 | `backend/src/test/java/com/example/followup/controller/PatientControllerTest.java` | MockMvc + Mockito 验证分页、详情、新增、编辑、删除 5 个用例 | 已编写；主源码编译失败，测试未执行 |
 | 前端 `__tests__/` 测试框架 | `frontend-target/src/__tests__/desensitize.test.js` | Vitest 验证脱敏纯函数 | 已执行，5 个用例通过 |
 | 慢病异常规则清单 | `docs/alert-rules.md` | 对照标准文档和 `schema.sql` 中 10 条初始化规则 | 已完成 |
 | 异常规则表设计 | `backend/src/main/resources/db/schema.sql` | 检查 `t_alert_rule` 建表和初始化 INSERT | 原项目已包含 |
@@ -29,7 +29,7 @@
 - `frontend-target/src/components/Desensitize.vue`
 - `frontend-target/src/__tests__/desensitize.test.js`
 - `backend/src/test/java/com/example/followup/controller/HealthControllerTest.java`
-- `backend/src/test/java/com/example/followup/service/PatientServiceTest.java`
+- `backend/src/test/java/com/example/followup/controller/PatientControllerTest.java`
 
 修改文件：
 
@@ -47,7 +47,7 @@ cd frontend-target
 npm.cmd test
 ```
 
-结果：
+首次结果：
 
 ```text
 Test Files  1 passed (1)
@@ -71,16 +71,16 @@ mvn test
 mvn : 无法将“mvn”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。
 ```
 
-环境检查：
+随后使用工作区本地 JDK 17 和 Maven 3.9.16 重新执行：
 
 ```bash
-where.exe mvn
-where.exe java
+$env:JAVA_HOME=(Resolve-Path '..\.tools\jdk-17.0.19+10').Path
+& '..\.tools\apache-maven-3.9.16\bin\mvn.cmd' test
 ```
 
-结果：当前环境均未找到 Maven 和 Java。
+结果：Maven 已正常启动并编译 55 个主源码文件，但在测试执行前失败。主要错误为多个 Java 文件带 UTF-8 BOM（`非法字符: '\ufeff'`），同时 `AiController.java` 存在类结构错误。
 
-结论：后端测试代码已补充，但当前机器缺少 JDK/Maven，尚未执行。需要安装 JDK 11 和 Maven，或在 CI 环境中执行 `mvn test`。
+结论：后端已补充健康检查 1 个用例及患者分页、详情、新增、编辑、删除 5 个用例。测试工具环境已经可用，但现有主源码无法编译，因此 6 个目标用例尚未进入执行阶段。需要先修复生产代码编码与结构问题，再重新运行 `mvn test`；运行成功前不能标记为“测试通过”。
 
 ## 5. 依赖安全审计
 
@@ -111,20 +111,23 @@ npm.cmd audit --audit-level=high
 - 慢病异常规则清单已完成。
 - 数据脱敏规则文档已完成。
 - 前端脱敏组件基础实现已完成。
+- 后端 HealthControllerTest 和 PatientControllerTest 已完成代码编写。
+- 随访、预警、统计、用户和日志模块已完成前后端实现，不再属于占位模块。
 
 失败或阻塞项：
 
-- 后端 `mvn test` 未执行成功，原因是当前环境未安装或未配置 Maven/JDK。
+- 后端 `mvn test` 已启动但未进入测试阶段，原因是现有主源码存在 UTF-8 BOM 和 `AiController.java` 结构错误。
 - 前端依赖安全审计发现高危和严重漏洞，但修复需要破坏性升级，未在本次任务中自动修复。
 
 未覆盖项：
 
-- 后端真实 Controller 集成测试尚未执行。
+- 后端 Controller 测试受主源码编译错误阻塞，6 个目标用例尚未执行。
 - 登录成功/失败测试尚未覆盖。
 - JWT 鉴权链路尚未覆盖。
 - 医生与管理员的数据权限测试尚未覆盖。
 - 后端脱敏尚未实现，因此无法测试后端脱敏结果。
-- 随访、预警、统计、用户、日志模块尚未实现或仍是占位，暂无法测试。
+- 随访、预警、统计、用户、日志模块已实现，但尚未补充对应自动化测试和端到端验收。
+- 前端脱敏组件尚未接入患者列表。
 
 ## 7. 剩余安全风险
 
