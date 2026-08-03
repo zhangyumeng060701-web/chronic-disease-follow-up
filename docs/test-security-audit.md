@@ -91,16 +91,23 @@ cd frontend-target
 npm.cmd audit --audit-level=high
 ```
 
-真实结果摘要：
+升级前审计结果：`6 vulnerabilities (4 moderate, 1 high, 1 critical)`，涉及旧版 ECharts、Vite、Vitest 及其 esbuild 依赖链。
 
-- `echarts < 6.1.0`：存在 XSS 漏洞，修复需要升级到 `echarts@6.1.0`，属于破坏性升级。
-- `esbuild <= 0.24.2`：开发服务器相关漏洞，影响 `vite`、`vitest` 依赖链。
-- 审计汇总：`6 vulnerabilities (4 moderate, 1 high, 1 critical)`。
+本次未执行 `npm audit fix --force`，而是在独立分支中受控升级：
 
-处理建议：
+- ECharts：`6.1.0`
+- Vite：`8.2.0`
+- Vitest：`4.1.10`
+- `@vitejs/plugin-vue`：`6.0.8`
 
-- 不建议在当前任务中直接执行 `npm audit fix --force`，因为会升级到破坏性版本，可能影响前端构建和页面行为。
-- 建议后续单独建立 `fix/frontend-dependency-audit` 分支，升级 Vite、Vitest、ECharts 后完整执行 `npm test`、`npm run build` 和页面回归。
+升级后验证结果：
+
+```text
+Test Files  1 passed (1)
+Tests       5 passed (5)
+npm run build  成功
+npm audit --audit-level=high  found 0 vulnerabilities
+```
 
 ## 6. 通过项、失败项、未覆盖项
 
@@ -111,11 +118,11 @@ npm.cmd audit --audit-level=high
 - 慢病异常规则清单已完成。
 - 数据脱敏规则文档已完成。
 - 前端脱敏组件基础实现已完成。
+- 前端依赖已完成受控升级，单元测试和生产构建通过，npm 审计为 0 个漏洞。
 
 失败或阻塞项：
 
 - 后端 `mvn test` 未执行成功，原因是当前环境未安装或未配置 Maven/JDK。
-- 前端依赖安全审计发现高危和严重漏洞，但修复需要破坏性升级，未在本次任务中自动修复。
 
 未覆盖项：
 
@@ -133,7 +140,6 @@ npm.cmd audit --audit-level=high
 - JWT 过滤器未设置 Spring Security `Authentication`，受保护接口可能无法被真正认证。
 - 患者接口直接返回实体，后端尚未统一脱敏。
 - CORS 当前允许任意来源，生产环境应收敛到可信域名。
-- 前端依赖存在审计风险，需要独立升级和回归。
 
 ## 8. 建议 Git 提交信息
 
