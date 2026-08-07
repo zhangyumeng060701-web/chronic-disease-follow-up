@@ -3,6 +3,8 @@ package com.example.followup.dto.request;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
 
 @Data
@@ -20,6 +22,10 @@ public class FollowUpQuery {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate nextFollowUpDateBefore;
 
+    @Min(value = 1, message = "页码不能小于1")
     private long page = 1;
+
+    @Min(value = 1, message = "每页条数不能小于1")
+    @Max(value = 100, message = "每页条数不能超过100")
     private long size = 20;
 }

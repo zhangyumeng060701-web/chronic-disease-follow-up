@@ -1,21 +1,21 @@
-﻿<template>
+<template>
   <div class="login-container">
     <div class="login-card">
-      <h2>鎱㈢梾闅忚绠＄悊绯荤粺</h2>
+      <h2>慢病随访管理系统</h2>
       <el-form :model="form" :rules="rules" ref="formRef" @keyup.enter="handleLogin">
         <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="鐢ㄦ埛鍚? :prefix-icon="User" />
+          <el-input v-model="form.username" placeholder="用户名" :prefix-icon="User" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="form.password" type="password" placeholder="瀵嗙爜"
+          <el-input v-model="form.password" type="password" placeholder="密码"
                     :prefix-icon="Lock" show-password />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" :loading="loading" class="login-btn"
-                     @click="handleLogin">鐧?褰?/el-button>
+                     @click="handleLogin">登录</el-button>
         </el-form-item>
       </el-form>
-      <p class="login-hint">绠＄悊鍛? admin/123456 | 鍖荤敓: doctor/123456</p>
+      <p class="login-hint">管理员: admin / 医生: doctor</p>
     </div>
   </div>
 </template>
@@ -34,19 +34,32 @@ const loading = ref(false)
 
 const form = reactive({ username: '', password: '' })
 const rules = {
-  username: [{ required: true, message: '璇疯緭鍏ョ敤鎴峰悕', trigger: 'blur' }],
-  password: [{ required: true, message: '璇疯緭鍏ュ瘑鐮?, trigger: 'blur' }]
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
 async function handleLogin() {
-  await formRef.value.validate()
+  try {
+    await formRef.value.validate()
+  } catch {
+    return
+  }
+
   loading.value = true
   try {
     const res = await login(form)
-    userStore.setLogin({ token: res.data.token, role: res.data.role, username: form.username, realName: res.data.realName })
+    userStore.setLogin({
+      token: res.data.token,
+      role: res.data.role,
+      username: form.username,
+      realName: res.data.realName
+    })
     router.push('/dashboard')
-  } catch { /* 閿欒宸插湪鎷︽埅鍣ㄥ鐞?*/ }
-  finally { loading.value = false }
+  } catch {
+    // 错误提示已在请求拦截器统一处理
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
