@@ -1,4 +1,4 @@
-﻿package com.example.followup.service;
+package com.example.followup.service;
 
 import com.example.followup.dto.request.CreateUserRequest;
 import com.example.followup.dto.request.UserQuery;
