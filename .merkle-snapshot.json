@@ -1,0 +1,706 @@
+{
+  "rootHash": "c3cf879656e2a9081156de21cdb7504c2a1352953b30a42a69c7c8d4414ebf6c",
+  "timestamp": 1786212776391,
+  "fileCount": 39,
+  "files": [
+    {
+      "path": "frontend-target\\vite.config.js",
+      "hash": "ab396874d704479f29cfbf98b85893495d24c3bdd22b11bec38ebf8c259fbd13",
+      "size": 380,
+      "modified": 1784197105724.6067
+    },
+    {
+      "path": "frontend-target\\src\\App.vue",
+      "hash": "ceb86677e693fe7346af00cc66db8ab57bde104361834fe23bbe2b82aaa9cd52",
+      "size": 42,
+      "modified": 1784197105695.3174
+    },
+    {
+      "path": "frontend-target\\src\\main.js",
+      "hash": "1384dddea8b56eff153553512849411fa6d7fc1945d7376f80019ca7cbc04cf0",
+      "size": 489,
+      "modified": 1784197105703.8347
+    },
+    {
+      "path": "frontend-target\\src\\views\\system\\OperLog.vue",
+      "hash": "b0adb65204c0ea2ff839166ee443cfc225e7e249c14621ab9e42b9058fb3f9a9",
+      "size": 140,
+      "modified": 1784197105722.0867
+    },
+    {
+      "path": "frontend-target\\src\\views\\system\\UserManage.vue",
+      "hash": "9f7dacda06c6b8f581a6c9f76489eb5008c2bb1d54c53870e75aae160eecd08a",
+      "size": 140,
+      "modified": 1784197105723.5964
+    },
+    {
+      "path": "frontend-target\\src\\views\\patient\\PatientList.vue",
+      "hash": "2ce726ee8027fce31c8c53f17f0378df47b58de274743e80a7ce90dda5ad87e3",
+      "size": 6891,
+      "modified": 1784197105720.0833
+    },
+    {
+      "path": "frontend-target\\src\\views\\login\\LoginView.vue",
+      "hash": "e7727922c66d1b7e9c14dbac4610ff2d98732d88107d41b0e6714fdb7d365bd7",
+      "size": 2375,
+      "modified": 1784197105718.0864
+    },
+    {
+      "path": "frontend-target\\src\\views\\followUp\\FollowUpList.vue",
+      "hash": "c7cdbad56c854358ddb7b05e8ba9ae0c01c1aeead03c8a287a561b741e31635e",
+      "size": 146,
+      "modified": 1784197105716.083
+    },
+    {
+      "path": "frontend-target\\src\\views\\dashboard\\Dashboard.vue",
+      "hash": "f99d82950d4bb8c527d5958d6d7955f4ab73e50b0bc465b86d6d92356c114eb7",
+      "size": 765,
+      "modified": 1784197105715.0764
+    },
+    {
+      "path": "frontend-target\\src\\views\\alert\\AlertList.vue",
+      "hash": "e9f7875d864d0dc80a1d02580d56798e2894e1079632223a9a596c6182d667ae",
+      "size": 140,
+      "modified": 1784197105712.3484
+    },
+    {
+      "path": "frontend-target\\src\\store\\user.js",
+      "hash": "cf09ee2e5d717f5906e57c458c9c0630e973f15b0de1dd13376f362bea475711",
+      "size": 849,
+      "modified": 1784197105709.3518
+    },
+    {
+      "path": "frontend-target\\src\\router\\index.js",
+      "hash": "c38c470c2437985ce5569fcf54d2a6d181e61adb37478ea9cfb985bafb88615b",
+      "size": 1775,
+      "modified": 1784197105707.3477
+    },
+    {
+      "path": "frontend-target\\src\\layout\\MainLayout.vue",
+      "hash": "71a45f24befab22fab7c289287d46fa2dfee3cbc261a0c08b8835d7c79d30092",
+      "size": 2754,
+      "modified": 1784197105702.8257
+    },
+    {
+      "path": "frontend-target\\src\\api\\auth.js",
+      "hash": "be9f3fced6acd147b6f0d7585aaafab92706d72b78e2aa13c670832b4edb9c8a",
+      "size": 111,
+      "modified": 1784197105697.3171
+    },
+    {
+      "path": "frontend-target\\src\\api\\patient.js",
+      "hash": "f40e89fa87adc45a6bce2206d99d05f3b67d88f29dc8326cff2821e82cdc98fc",
+      "size": 473,
+      "modified": 1784197105698.3135
+    },
+    {
+      "path": "frontend-target\\src\\api\\request.js",
+      "hash": "263d28dd2985c8d08d070494da4bbbfc82cee5db2b8e12ed187005f0d4003050",
+      "size": 914,
+      "modified": 1784197105699.317
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\FollowUpApplication.java",
+      "hash": "850885975e3997ecf8ed9c35119cf7d5faff5341d942a1a15523f2378087ee9f",
+      "size": 336,
+      "modified": 1784197105636.7173
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\util\\JwtUtil.java",
+      "hash": "bed98136464ffed663953215ddccf00cfec57e6faf6f7aa84c5c2335858f5b0c",
+      "size": 1432,
+      "modified": 1784197105666.2664
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\service\\PatientService.java",
+      "hash": "501c25897de557ee211884d0f8081a733c34a0d6d097668a76975d8277ae5725",
+      "size": 449,
+      "modified": 1784197105661.0312
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\service\\impl\\PatientServiceImpl.java",
+      "hash": "bc19770dcf70560058b4e215932dbe63c2dd9aa8518735c0034a4c3b0698a633",
+      "size": 2566,
+      "modified": 1784197105663.0417
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\mapper\\PatientMapper.java",
+      "hash": "d03dad773de5dd1f95c83bd370c0c3a38b33811989774abcd2cb7a87038dbdee",
+      "size": 262,
+      "modified": 1784197105658.9922
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\exception\\BusinessException.java",
+      "hash": "52a935b678aa05100e449e6a22a8abe0472fc8f1956e0dca214468f4245d5e5a",
+      "size": 375,
+      "modified": 1784197105655.9924
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\exception\\GlobalExceptionHandler.java",
+      "hash": "625c07e0d721b28487f4a2e9e717b6faddff18addcbef05d88d55b1545f9ae17",
+      "size": 1211,
+      "modified": 1784197105657.9963
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\entity\\Patient.java",
+      "hash": "74e44f9dc26bf10f0b732585c0ddb8d5d3f058d60f88baebe446e8dec2a8f1c6",
+      "size": 773,
+      "modified": 1784197105653.9966
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\response\\PageResponse.java",
+      "hash": "40c1a2b5f07d4f40880574825e54707b7fe3d024468b637b1968be385c1bb06d",
+      "size": 242,
+      "modified": 1784197105651.4856
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\response\\Result.java",
+      "hash": "c44602c80d6d41230fd0a9c3035f75aea4813fd631baaa7af769e8d61b67614b",
+      "size": 639,
+      "modified": 1784197105652.99
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\request\\LoginRequest.java",
+      "hash": "4dbfd4c2ac265d0b0e2e935aa2e91f0c75d772736f9b07dbd34253403f37e807",
+      "size": 309,
+      "modified": 1784197105647.9663
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\request\\PatientQuery.java",
+      "hash": "193c8fe48e55fa106077ca27e8be4ac48ad0e93e054e5c3dc53302bc129b8c4f",
+      "size": 227,
+      "modified": 1784197105648.9666
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\AiController.java",
+      "hash": "2a297ae2abf73eaa509cf81fdc59c153305fd445514709978a0f27bcf095b880",
+      "size": 2445,
+      "modified": 1786208284803.167
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\AuthController.java",
+      "hash": "9ac6d02b8e49aebbb357bad70bd5ff7ca1db3d50dcff32de8d60f86ba9d51578",
+      "size": 1700,
+      "modified": 1784197105643.453
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\HealthController.java",
+      "hash": "a3d2a20ce94f3bbd9facfef85bee75ba5dbe5351d0805cf5821d7b62138669e5",
+      "size": 471,
+      "modified": 1784197105644.4524
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\PatientController.java",
+      "hash": "6e2c5447cc8da261eac6a7b3e9a0cc8467c6bce9c161990b00194f6b3d0a6cb6",
+      "size": 1838,
+      "modified": 1784197105645.4563
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\CorsConfig.java",
+      "hash": "5481945091eadbfbd045d4fcd5fb0b12853812f641551c4f2ab29f631533f467",
+      "size": 849,
+      "modified": 1784197105637.7185
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\Knife4jConfig.java",
+      "hash": "ebaf42d33159b36ae8f495a5f2c6d77461cfe7b648899b2ca6536e798eb56165",
+      "size": 1080,
+      "modified": 1784197105638.7185
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\MybatisPlusConfig.java",
+      "hash": "e9e354707dcac6052c616cb465bd11f3a2d7a433c6297fbb0f820475f711bb0b",
+      "size": 693,
+      "modified": 1784197105641.235
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\SecurityConfig.java",
+      "hash": "4b93153538dc9ffa21f08dda329207d59cbada43e0e61b5b17b30f8bec0758ce",
+      "size": 2813,
+      "modified": 1784197105642.235
+    },
+    {
+      "path": "ai-agent\\demo_sim.py",
+      "hash": "dd4129bd9f8a99cfad3e51475359a19ac94ae0e092bd1f82c508fdc0fdf3f6f3",
+      "size": 1611,
+      "modified": 1784198968666.7834
+    },
+    {
+      "path": "ai-agent\\scripts1\\decomse1.py",
+      "hash": "61b7a0a7213ed465cef571c80039bef245de8f19d9cfb0a5812a8f7282d842d9",
+      "size": 3027,
+      "modified": 1785484420152.8833
+    },
+    {
+      "path": "ai-agent\\scripts\\decompose.py",
+      "hash": "c63679d4183f5fd99675603955151f6c11c40c7948a943df36259298762b0146",
+      "size": 1771,
+      "modified": 1785979798830.7515
+    }
+  ],
+  "tree": {
+    "hash": "c3cf879656e2a9081156de21cdb7504c2a1352953b30a42a69c7c8d4414ebf6c",
+    "left": {
+      "hash": "c6997cc5f0729f8777bb4402ce050e580b843a95413ac6c21547bf17e23d80f9",
+      "left": {
+        "hash": "2260a28c6d3aa2bdcb5607c18a99920a2fda5160143be19f5aa185946daa131a",
+        "left": {
+          "hash": "0fb89f67e23f4308cc82393505a1f3bf319a170de2a4698cbaaa9655e20cad99",
+          "left": {
+            "hash": "07f4c9c3affb2eb4fee1c385fea2106b50a3b40f2c3e845acc7e1b32657d3e22",
+            "left": {
+              "hash": "f4a0b9bbe1e928d712615cd32eb56ffff857a9722f1114a0bf15a919ca6ecbfb",
+              "left": {
+                "hash": "dd4129bd9f8a99cfad3e51475359a19ac94ae0e092bd1f82c508fdc0fdf3f6f3",
+                "file": {
+                  "path": "ai-agent\\demo_sim.py",
+                  "hash": "dd4129bd9f8a99cfad3e51475359a19ac94ae0e092bd1f82c508fdc0fdf3f6f3",
+                  "size": 1611,
+                  "modified": 1784198968666.7834
+                }
+              },
+              "right": {
+                "hash": "c63679d4183f5fd99675603955151f6c11c40c7948a943df36259298762b0146",
+                "file": {
+                  "path": "ai-agent\\scripts\\decompose.py",
+                  "hash": "c63679d4183f5fd99675603955151f6c11c40c7948a943df36259298762b0146",
+                  "size": 1771,
+                  "modified": 1785979798830.7515
+                }
+              }
+            },
+            "right": {
+              "hash": "04ce89d349f57d1b17b1355aae93e6cc384361da9008f3723607ed0ba25e51a5",
+              "left": {
+                "hash": "61b7a0a7213ed465cef571c80039bef245de8f19d9cfb0a5812a8f7282d842d9",
+                "file": {
+                  "path": "ai-agent\\scripts1\\decomse1.py",
+                  "hash": "61b7a0a7213ed465cef571c80039bef245de8f19d9cfb0a5812a8f7282d842d9",
+                  "size": 3027,
+                  "modified": 1785484420152.8833
+                }
+              },
+              "right": {
+                "hash": "5481945091eadbfbd045d4fcd5fb0b12853812f641551c4f2ab29f631533f467",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\CorsConfig.java",
+                  "hash": "5481945091eadbfbd045d4fcd5fb0b12853812f641551c4f2ab29f631533f467",
+                  "size": 849,
+                  "modified": 1784197105637.7185
+                }
+              }
+            }
+          },
+          "right": {
+            "hash": "7b004fee5354e7cc1df2316e8f6ff176f2ba711e947725e0ca5ca7c4cf8339c4",
+            "left": {
+              "hash": "42533c2873c91dc18eeb6ebe1455ab8cd10f27ea439ef7544f8630af7e0ae163",
+              "left": {
+                "hash": "ebaf42d33159b36ae8f495a5f2c6d77461cfe7b648899b2ca6536e798eb56165",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\Knife4jConfig.java",
+                  "hash": "ebaf42d33159b36ae8f495a5f2c6d77461cfe7b648899b2ca6536e798eb56165",
+                  "size": 1080,
+                  "modified": 1784197105638.7185
+                }
+              },
+              "right": {
+                "hash": "e9e354707dcac6052c616cb465bd11f3a2d7a433c6297fbb0f820475f711bb0b",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\MybatisPlusConfig.java",
+                  "hash": "e9e354707dcac6052c616cb465bd11f3a2d7a433c6297fbb0f820475f711bb0b",
+                  "size": 693,
+                  "modified": 1784197105641.235
+                }
+              }
+            },
+            "right": {
+              "hash": "35385bfee818869899360130def1cc48ca6fe288d0efa80f83b55de31e5bc2bf",
+              "left": {
+                "hash": "4b93153538dc9ffa21f08dda329207d59cbada43e0e61b5b17b30f8bec0758ce",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\config\\SecurityConfig.java",
+                  "hash": "4b93153538dc9ffa21f08dda329207d59cbada43e0e61b5b17b30f8bec0758ce",
+                  "size": 2813,
+                  "modified": 1784197105642.235
+                }
+              },
+              "right": {
+                "hash": "2a297ae2abf73eaa509cf81fdc59c153305fd445514709978a0f27bcf095b880",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\AiController.java",
+                  "hash": "2a297ae2abf73eaa509cf81fdc59c153305fd445514709978a0f27bcf095b880",
+                  "size": 2445,
+                  "modified": 1786208284803.167
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "hash": "ff02d547a64a5416cb4e606c30b7eb95691323e602e21e614ac5a901272c818d",
+          "left": {
+            "hash": "077b39a3dd3bd161d7c983bffbbbfe9af1e6ce00b7f77a53949c2725b731c029",
+            "left": {
+              "hash": "17ce2a9d9e6bc2b0e1871b229a724f52dbdf1b6246017417bb6b2733f8cf9281",
+              "left": {
+                "hash": "9ac6d02b8e49aebbb357bad70bd5ff7ca1db3d50dcff32de8d60f86ba9d51578",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\AuthController.java",
+                  "hash": "9ac6d02b8e49aebbb357bad70bd5ff7ca1db3d50dcff32de8d60f86ba9d51578",
+                  "size": 1700,
+                  "modified": 1784197105643.453
+                }
+              },
+              "right": {
+                "hash": "a3d2a20ce94f3bbd9facfef85bee75ba5dbe5351d0805cf5821d7b62138669e5",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\HealthController.java",
+                  "hash": "a3d2a20ce94f3bbd9facfef85bee75ba5dbe5351d0805cf5821d7b62138669e5",
+                  "size": 471,
+                  "modified": 1784197105644.4524
+                }
+              }
+            },
+            "right": {
+              "hash": "9dd78d9663232eee78023554153ea9b9bd3017ff330827ca46ae82ba9d3fa608",
+              "left": {
+                "hash": "6e2c5447cc8da261eac6a7b3e9a0cc8467c6bce9c161990b00194f6b3d0a6cb6",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\controller\\PatientController.java",
+                  "hash": "6e2c5447cc8da261eac6a7b3e9a0cc8467c6bce9c161990b00194f6b3d0a6cb6",
+                  "size": 1838,
+                  "modified": 1784197105645.4563
+                }
+              },
+              "right": {
+                "hash": "4dbfd4c2ac265d0b0e2e935aa2e91f0c75d772736f9b07dbd34253403f37e807",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\request\\LoginRequest.java",
+                  "hash": "4dbfd4c2ac265d0b0e2e935aa2e91f0c75d772736f9b07dbd34253403f37e807",
+                  "size": 309,
+                  "modified": 1784197105647.9663
+                }
+              }
+            }
+          },
+          "right": {
+            "hash": "94d82561c9aa555fadc023deded38b9e9e00d4303b37eaf82cefff50bc2e1d20",
+            "left": {
+              "hash": "234d720f14f002c3818e714cf5b566a36ce020dc5097ed6a369c69589d0bfe0e",
+              "left": {
+                "hash": "193c8fe48e55fa106077ca27e8be4ac48ad0e93e054e5c3dc53302bc129b8c4f",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\request\\PatientQuery.java",
+                  "hash": "193c8fe48e55fa106077ca27e8be4ac48ad0e93e054e5c3dc53302bc129b8c4f",
+                  "size": 227,
+                  "modified": 1784197105648.9666
+                }
+              },
+              "right": {
+                "hash": "40c1a2b5f07d4f40880574825e54707b7fe3d024468b637b1968be385c1bb06d",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\response\\PageResponse.java",
+                  "hash": "40c1a2b5f07d4f40880574825e54707b7fe3d024468b637b1968be385c1bb06d",
+                  "size": 242,
+                  "modified": 1784197105651.4856
+                }
+              }
+            },
+            "right": {
+              "hash": "98a98239435f02b44a26c25e8a17632a75143c86b597029fcf55407c6da112cd",
+              "left": {
+                "hash": "c44602c80d6d41230fd0a9c3035f75aea4813fd631baaa7af769e8d61b67614b",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\dto\\response\\Result.java",
+                  "hash": "c44602c80d6d41230fd0a9c3035f75aea4813fd631baaa7af769e8d61b67614b",
+                  "size": 639,
+                  "modified": 1784197105652.99
+                }
+              },
+              "right": {
+                "hash": "74e44f9dc26bf10f0b732585c0ddb8d5d3f058d60f88baebe446e8dec2a8f1c6",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\entity\\Patient.java",
+                  "hash": "74e44f9dc26bf10f0b732585c0ddb8d5d3f058d60f88baebe446e8dec2a8f1c6",
+                  "size": 773,
+                  "modified": 1784197105653.9966
+                }
+              }
+            }
+          }
+        }
+      },
+      "right": {
+        "hash": "bb8988999b073f473581ccf2d2a314a40231a3cf6583002b1683f39759d4b53a",
+        "left": {
+          "hash": "d935b398302cb744ddecb3642858cb82b6d424fa20b8ffa9323eb4461df58a32",
+          "left": {
+            "hash": "2f1d2f91fe3d44eb471dd30cb17a63ab5c96b629592f0039213a01c2743b5a88",
+            "left": {
+              "hash": "736f7770a96b49cab9ffe4cbaa8941f418f01171e37b911b8d7afee41cf53434",
+              "left": {
+                "hash": "52a935b678aa05100e449e6a22a8abe0472fc8f1956e0dca214468f4245d5e5a",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\exception\\BusinessException.java",
+                  "hash": "52a935b678aa05100e449e6a22a8abe0472fc8f1956e0dca214468f4245d5e5a",
+                  "size": 375,
+                  "modified": 1784197105655.9924
+                }
+              },
+              "right": {
+                "hash": "625c07e0d721b28487f4a2e9e717b6faddff18addcbef05d88d55b1545f9ae17",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\exception\\GlobalExceptionHandler.java",
+                  "hash": "625c07e0d721b28487f4a2e9e717b6faddff18addcbef05d88d55b1545f9ae17",
+                  "size": 1211,
+                  "modified": 1784197105657.9963
+                }
+              }
+            },
+            "right": {
+              "hash": "ceee6cda21bca0a77aa7c5c42c9575a1e038ee8c69f27e93178fe2553da45d5c",
+              "left": {
+                "hash": "850885975e3997ecf8ed9c35119cf7d5faff5341d942a1a15523f2378087ee9f",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\FollowUpApplication.java",
+                  "hash": "850885975e3997ecf8ed9c35119cf7d5faff5341d942a1a15523f2378087ee9f",
+                  "size": 336,
+                  "modified": 1784197105636.7173
+                }
+              },
+              "right": {
+                "hash": "d03dad773de5dd1f95c83bd370c0c3a38b33811989774abcd2cb7a87038dbdee",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\mapper\\PatientMapper.java",
+                  "hash": "d03dad773de5dd1f95c83bd370c0c3a38b33811989774abcd2cb7a87038dbdee",
+                  "size": 262,
+                  "modified": 1784197105658.9922
+                }
+              }
+            }
+          },
+          "right": {
+            "hash": "47e0be347ffbce69800cd739a1caf6ecb42a1fe3c6eda9b00b32ca1d26ad7238",
+            "left": {
+              "hash": "2257c84a770c37644d3c354136bb76280c03a83e58cb43f0bf8f84b64770d4b1",
+              "left": {
+                "hash": "bc19770dcf70560058b4e215932dbe63c2dd9aa8518735c0034a4c3b0698a633",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\service\\impl\\PatientServiceImpl.java",
+                  "hash": "bc19770dcf70560058b4e215932dbe63c2dd9aa8518735c0034a4c3b0698a633",
+                  "size": 2566,
+                  "modified": 1784197105663.0417
+                }
+              },
+              "right": {
+                "hash": "501c25897de557ee211884d0f8081a733c34a0d6d097668a76975d8277ae5725",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\service\\PatientService.java",
+                  "hash": "501c25897de557ee211884d0f8081a733c34a0d6d097668a76975d8277ae5725",
+                  "size": 449,
+                  "modified": 1784197105661.0312
+                }
+              }
+            },
+            "right": {
+              "hash": "691ce0fce20a376fa35ebd60ceb0887537cb65b5f218d0645d7e01dcd3054b27",
+              "left": {
+                "hash": "bed98136464ffed663953215ddccf00cfec57e6faf6f7aa84c5c2335858f5b0c",
+                "file": {
+                  "path": "backend\\src\\main\\java\\com\\example\\followup\\util\\JwtUtil.java",
+                  "hash": "bed98136464ffed663953215ddccf00cfec57e6faf6f7aa84c5c2335858f5b0c",
+                  "size": 1432,
+                  "modified": 1784197105666.2664
+                }
+              },
+              "right": {
+                "hash": "be9f3fced6acd147b6f0d7585aaafab92706d72b78e2aa13c670832b4edb9c8a",
+                "file": {
+                  "path": "frontend-target\\src\\api\\auth.js",
+                  "hash": "be9f3fced6acd147b6f0d7585aaafab92706d72b78e2aa13c670832b4edb9c8a",
+                  "size": 111,
+                  "modified": 1784197105697.3171
+                }
+              }
+            }
+          }
+        },
+        "right": {
+          "hash": "6a6f35a1a4577a227edc35e7ffc9765b5a39dd99bf8a8cc76c0b89b2b6f18bc8",
+          "left": {
+            "hash": "fedd5db256c96abf7b97b93c2d1bd5b4e393b44c07e251186b98295c40299be3",
+            "left": {
+              "hash": "988c25b64af89d8991225d2f18da916e9ab4ac36d74ee525b52f866973dde881",
+              "left": {
+                "hash": "f40e89fa87adc45a6bce2206d99d05f3b67d88f29dc8326cff2821e82cdc98fc",
+                "file": {
+                  "path": "frontend-target\\src\\api\\patient.js",
+                  "hash": "f40e89fa87adc45a6bce2206d99d05f3b67d88f29dc8326cff2821e82cdc98fc",
+                  "size": 473,
+                  "modified": 1784197105698.3135
+                }
+              },
+              "right": {
+                "hash": "263d28dd2985c8d08d070494da4bbbfc82cee5db2b8e12ed187005f0d4003050",
+                "file": {
+                  "path": "frontend-target\\src\\api\\request.js",
+                  "hash": "263d28dd2985c8d08d070494da4bbbfc82cee5db2b8e12ed187005f0d4003050",
+                  "size": 914,
+                  "modified": 1784197105699.317
+                }
+              }
+            },
+            "right": {
+              "hash": "5e4fb21792e18066fef79e42de6dca38ab30eca47f055eedca6821316b1ac091",
+              "left": {
+                "hash": "ceb86677e693fe7346af00cc66db8ab57bde104361834fe23bbe2b82aaa9cd52",
+                "file": {
+                  "path": "frontend-target\\src\\App.vue",
+                  "hash": "ceb86677e693fe7346af00cc66db8ab57bde104361834fe23bbe2b82aaa9cd52",
+                  "size": 42,
+                  "modified": 1784197105695.3174
+                }
+              },
+              "right": {
+                "hash": "71a45f24befab22fab7c289287d46fa2dfee3cbc261a0c08b8835d7c79d30092",
+                "file": {
+                  "path": "frontend-target\\src\\layout\\MainLayout.vue",
+                  "hash": "71a45f24befab22fab7c289287d46fa2dfee3cbc261a0c08b8835d7c79d30092",
+                  "size": 2754,
+                  "modified": 1784197105702.8257
+                }
+              }
+            }
+          },
+          "right": {
+            "hash": "0427693d8738bff67389c59e40cdac34ebb4df0039b7630412f75d6bcea23640",
+            "left": {
+              "hash": "e2719304939b57ce6262cd7eaae80dffcdc6c0b38412c09f178416385f0f236b",
+              "left": {
+                "hash": "1384dddea8b56eff153553512849411fa6d7fc1945d7376f80019ca7cbc04cf0",
+                "file": {
+                  "path": "frontend-target\\src\\main.js",
+                  "hash": "1384dddea8b56eff153553512849411fa6d7fc1945d7376f80019ca7cbc04cf0",
+                  "size": 489,
+                  "modified": 1784197105703.8347
+                }
+              },
+              "right": {
+                "hash": "c38c470c2437985ce5569fcf54d2a6d181e61adb37478ea9cfb985bafb88615b",
+                "file": {
+                  "path": "frontend-target\\src\\router\\index.js",
+                  "hash": "c38c470c2437985ce5569fcf54d2a6d181e61adb37478ea9cfb985bafb88615b",
+                  "size": 1775,
+                  "modified": 1784197105707.3477
+                }
+              }
+            },
+            "right": {
+              "hash": "3c51945782394e4e00ebc3b29d9a7fb7cd033fd0b42cecf13bad6180c1cd4f97",
+              "left": {
+                "hash": "cf09ee2e5d717f5906e57c458c9c0630e973f15b0de1dd13376f362bea475711",
+                "file": {
+                  "path": "frontend-target\\src\\store\\user.js",
+                  "hash": "cf09ee2e5d717f5906e57c458c9c0630e973f15b0de1dd13376f362bea475711",
+                  "size": 849,
+                  "modified": 1784197105709.3518
+                }
+              },
+              "right": {
+                "hash": "e9f7875d864d0dc80a1d02580d56798e2894e1079632223a9a596c6182d667ae",
+                "file": {
+                  "path": "frontend-target\\src\\views\\alert\\AlertList.vue",
+                  "hash": "e9f7875d864d0dc80a1d02580d56798e2894e1079632223a9a596c6182d667ae",
+                  "size": 140,
+                  "modified": 1784197105712.3484
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "right": {
+      "hash": "e62ff0f094d0b1aff2fa3dec5699a7c312a3ab0c3689fa88bf27857a2f388bbb",
+      "left": {
+        "hash": "094cfaa6bc9095e82ce6f70e8a18fe7f2aecafa24e694a7ae8e14905715bbd79",
+        "left": {
+          "hash": "6ec56a58af1da2044fe737a17a1d95008d8712c28ce5e80c06c1dcad164654f2",
+          "left": {
+            "hash": "f99d82950d4bb8c527d5958d6d7955f4ab73e50b0bc465b86d6d92356c114eb7",
+            "file": {
+              "path": "frontend-target\\src\\views\\dashboard\\Dashboard.vue",
+              "hash": "f99d82950d4bb8c527d5958d6d7955f4ab73e50b0bc465b86d6d92356c114eb7",
+              "size": 765,
+              "modified": 1784197105715.0764
+            }
+          },
+          "right": {
+            "hash": "c7cdbad56c854358ddb7b05e8ba9ae0c01c1aeead03c8a287a561b741e31635e",
+            "file": {
+              "path": "frontend-target\\src\\views\\followUp\\FollowUpList.vue",
+              "hash": "c7cdbad56c854358ddb7b05e8ba9ae0c01c1aeead03c8a287a561b741e31635e",
+              "size": 146,
+              "modified": 1784197105716.083
+            }
+          }
+        },
+        "right": {
+          "hash": "8825de62d9c7f32a533d1ac0967af8a5c2654264856c2b5cda943e44ba303497",
+          "left": {
+            "hash": "e7727922c66d1b7e9c14dbac4610ff2d98732d88107d41b0e6714fdb7d365bd7",
+            "file": {
+              "path": "frontend-target\\src\\views\\login\\LoginView.vue",
+              "hash": "e7727922c66d1b7e9c14dbac4610ff2d98732d88107d41b0e6714fdb7d365bd7",
+              "size": 2375,
+              "modified": 1784197105718.0864
+            }
+          },
+          "right": {
+            "hash": "2ce726ee8027fce31c8c53f17f0378df47b58de274743e80a7ce90dda5ad87e3",
+            "file": {
+              "path": "frontend-target\\src\\views\\patient\\PatientList.vue",
+              "hash": "2ce726ee8027fce31c8c53f17f0378df47b58de274743e80a7ce90dda5ad87e3",
+              "size": 6891,
+              "modified": 1784197105720.0833
+            }
+          }
+        }
+      },
+      "right": {
+        "hash": "aabb20d6cfbc8e856c0cd9a37582cf3a468e521f12dcfee42f9b638ffcccc1df",
+        "left": {
+          "hash": "a061db4bb1373416c2b844a047a86f474a8d9fe3bcdbdb1d6561ea23d0b21a1f",
+          "left": {
+            "hash": "b0adb65204c0ea2ff839166ee443cfc225e7e249c14621ab9e42b9058fb3f9a9",
+            "file": {
+              "path": "frontend-target\\src\\views\\system\\OperLog.vue",
+              "hash": "b0adb65204c0ea2ff839166ee443cfc225e7e249c14621ab9e42b9058fb3f9a9",
+              "size": 140,
+              "modified": 1784197105722.0867
+            }
+          },
+          "right": {
+            "hash": "9f7dacda06c6b8f581a6c9f76489eb5008c2bb1d54c53870e75aae160eecd08a",
+            "file": {
+              "path": "frontend-target\\src\\views\\system\\UserManage.vue",
+              "hash": "9f7dacda06c6b8f581a6c9f76489eb5008c2bb1d54c53870e75aae160eecd08a",
+              "size": 140,
+              "modified": 1784197105723.5964
+            }
+          }
+        },
+        "right": {
+          "hash": "ab396874d704479f29cfbf98b85893495d24c3bdd22b11bec38ebf8c259fbd13",
+          "file": {
+            "path": "frontend-target\\vite.config.js",
+            "hash": "ab396874d704479f29cfbf98b85893495d24c3bdd22b11bec38ebf8c259fbd13",
+            "size": 380,
+            "modified": 1784197105724.6067
+          }
+        }
+      }
+    }
+  }
+}
