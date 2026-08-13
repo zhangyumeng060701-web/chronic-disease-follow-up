@@ -1,4 +1,4 @@
-﻿package com.example.followup.controller;
+package com.example.followup.controller;
 
 import com.example.followup.dto.request.LoginRequest;
 import com.example.followup.dto.response.Result;

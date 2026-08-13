@@ -1,4 +1,4 @@
-﻿package com.example.followup.mapper;
+package com.example.followup.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.followup.entity.Alert;
