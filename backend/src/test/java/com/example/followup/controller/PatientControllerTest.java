@@ -1,6 +1,7 @@
 package com.example.followup.controller;
 
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.Patient;
 import com.example.followup.service.PatientService;
 import org.junit.jupiter.api.Test;
@@ -28,14 +29,14 @@ class PatientControllerTest {
     private MockMvc mvc() { return MockMvcBuilders.standaloneSetup(patientController).build(); }
 
     @Test void listReturnsPage() throws Exception {
-        PageResponse<Patient> page = new PageResponse<>();
-        page.setRecords(List.of(patient())); page.setTotal(1L); page.setPage(1); page.setSize(20);
+        PageResponse<PatientVO> page = new PageResponse<>();
+        page.setRecords(List.of(patientVO())); page.setTotal(1L); page.setPage(1); page.setSize(20);
         when(patientService.listPatients(any())).thenReturn(page);
         mvc().perform(get("/api/patients").param("page", "1").param("size", "20"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.total").value(1));
     }
     @Test void getReturnsPatient() throws Exception {
-        when(patientService.getPatientById(1L)).thenReturn(patient());
+        when(patientService.getPatientById(1L)).thenReturn(patientVO());
         mvc().perform(get("/api/patients/1")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(1));
     }
@@ -54,5 +55,6 @@ class PatientControllerTest {
         verify(patientService).deletePatient(9L);
     }
     private Patient patient() { Patient p = new Patient(); p.setId(1L); p.setName("张三"); p.setStatus(1); return p; }
+    private PatientVO patientVO() { PatientVO p = new PatientVO(); p.setId(1L); p.setName("张三"); return p; }
     private String json() { return "{\"name\":\"张三\",\"gender\":\"男\",\"age\":65,\"phone\":\"13812345678\",\"idCard\":\"320102199001011234\",\"address\":\"南京市鼓楼区\",\"diseaseType\":\"HYPERTENSION\",\"doctorId\":1}"; }
 }

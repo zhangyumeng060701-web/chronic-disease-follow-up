@@ -39,17 +39,12 @@ public class AuthController {
         if (user.getStatus() != null && user.getStatus() == 0) {
             return Result.error(403, "账号已被禁用");
         }
-        boolean passwordMatch;
-        if (user.getPassword().startsWith("$2a$")) {
-            passwordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        } else {
-            passwordMatch = request.getPassword().equals(user.getPassword());
-        }
+        boolean passwordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!passwordMatch) {
             return Result.error(401, "用户名或密码错误");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getRole());
         Map<String, String> data = new HashMap<>();
         data.put("token", token);
         data.put("role", user.getRole());

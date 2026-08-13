@@ -10,12 +10,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
 @Api(tags = "用户管理")
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
     @Autowired

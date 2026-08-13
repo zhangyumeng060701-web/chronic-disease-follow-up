@@ -30,7 +30,8 @@ class AuthControllerTest {
     }
     @Test void loginReturnsToken() throws Exception {
         SysUser user=user(1,"123456"); when(mapper.findByUsername("admin")).thenReturn(user);
-        when(jwt.generateToken("admin","ADMIN")).thenReturn("token");
+        when(encoder.matches("123456","123456")).thenReturn(true);
+        when(jwt.generateToken(1L,"admin","ADMIN")).thenReturn("token");
         mvc.perform(login("123456")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.token").value("token"));
     }
@@ -40,6 +41,7 @@ class AuthControllerTest {
     }
     @Test void wrongPasswordIsRejected() throws Exception {
         when(mapper.findByUsername("admin")).thenReturn(user(1,"secret"));
+        when(encoder.matches("wrong","secret")).thenReturn(false);
         mvc.perform(login("wrong")).andExpect(jsonPath("$.code").value(401));
     }
     @Test void disabledUserIsRejected() throws Exception {
@@ -50,5 +52,5 @@ class AuthControllerTest {
         return post("/api/auth/login").contentType("application/json")
                 .content("{\"username\":\"admin\",\"password\":\""+password+"\"}");
     }
-    private SysUser user(int status,String password) { SysUser u=new SysUser(); u.setUsername("admin"); u.setRole("ADMIN"); u.setRealName("管理员"); u.setStatus(status); u.setPassword(password); return u; }
+    private SysUser user(int status,String password) { SysUser u=new SysUser(); u.setId(1L); u.setUsername("admin"); u.setRole("ADMIN"); u.setRealName("管理员"); u.setStatus(status); u.setPassword(password); return u; }
 }
