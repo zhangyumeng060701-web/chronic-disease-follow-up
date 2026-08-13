@@ -56,7 +56,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+export function authGuard(to, from, next) {
   const token = localStorage.getItem('token')
   if (to.path !== '/login' && !token) {
     next('/login')
@@ -65,6 +65,8 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-})
+}
+
+router.beforeEach(authGuard)
 
 export default router
