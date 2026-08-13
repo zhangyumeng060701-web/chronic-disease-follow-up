@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { clearAuthSession, redirectToLogin } from '../utils/auth'
 
 const errorMessages = {
   400: '参数校验失败，请检查需求内容',
@@ -34,7 +35,8 @@ request.interceptors.response.use(
     }
 
     if (code === 401) {
-      localStorage.removeItem('token')
+      clearAuthSession()
+      redirectToLogin()
     }
 
     const errorMessage = errorMessages[code] || message || '请求失败'
@@ -45,7 +47,8 @@ request.interceptors.response.use(
     const status = error.response?.status
 
     if (status === 401) {
-      localStorage.removeItem('token')
+      clearAuthSession()
+      redirectToLogin()
     }
 
     const errorMessage = errorMessages[status] || error.message || '接口调用失败，请稍后重试'
