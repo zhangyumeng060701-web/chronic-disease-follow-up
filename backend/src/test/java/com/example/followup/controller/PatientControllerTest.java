@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -48,7 +49,7 @@ class PatientControllerTest {
     @Test void updateDelegates() throws Exception {
         mvc().perform(put("/api/patients/9").contentType("application/json").content(json()))
                 .andExpect(status().isOk());
-        verify(patientService).updatePatient(any());
+        verify(patientService).updatePatient(eq(9L), any());
     }
     @Test void deleteDelegates() throws Exception {
         mvc().perform(delete("/api/patients/9")).andExpect(status().isOk());

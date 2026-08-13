@@ -71,7 +71,7 @@ public class SysUserServiceImpl implements SysUserService {
         if (StringUtils.hasText(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         } else {
-            user.setPassword(null);
+            user.setPassword(existing.getPassword());
         }
         sysUserMapper.updateById(user);
     }

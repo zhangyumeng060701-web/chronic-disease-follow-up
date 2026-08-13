@@ -2,6 +2,8 @@ package com.example.followup.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.Patient;
@@ -62,13 +64,14 @@ class PatientServiceTest {
         assertEquals(p.getId(), service.getPatientById(1L).getId());
     }
     @Test void addClearsIdAndActivates() {
-        Patient p=active(8L); service.addPatient(p);
-        assertNull(p.getId()); assertEquals(1, p.getStatus()); verify(mapper).insert(p);
+        PatientSaveRequest request=saveRequest(); service.addPatient(request);
+        ArgumentCaptor<Patient> c=ArgumentCaptor.forClass(Patient.class); verify(mapper).insert(c.capture());
+        assertNull(c.getValue().getId()); assertEquals(1, c.getValue().getStatus());
     }
     @Test void updateDelegates() {
         Patient existing=active(2L); when(mapper.selectById(2L)).thenReturn(existing);
-        Patient update=active(2L); update.setName("李四"); service.updatePatient(update);
-        verify(mapper).updateById(update);
+        PatientUpdateRequest update=new PatientUpdateRequest(); update.setName("李四"); service.updatePatient(2L,update);
+        verify(mapper).updateById(existing); assertEquals("李四",existing.getName());
     }
     @Test void deleteSoftDeletes() {
         Patient p=active(2L); when(mapper.selectById(2L)).thenReturn(p); service.deletePatient(2L);
@@ -76,4 +79,5 @@ class PatientServiceTest {
         assertEquals(0, c.getValue().getStatus());
     }
     private Patient active(Long id) { Patient p=new Patient(); p.setId(id); p.setStatus(1); p.setName("张三"); return p; }
+    private PatientSaveRequest saveRequest(){PatientSaveRequest r=new PatientSaveRequest();r.setName("张三");r.setGender("男");r.setDiseaseType("HYPERTENSION");r.setDoctorId(7L);return r;}
 }

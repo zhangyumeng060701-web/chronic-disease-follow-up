@@ -51,7 +51,7 @@
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px" @closed="resetForm">
       <el-form :model="formData" :rules="rules" ref="formRef" label-width="100px">
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="formData.name" />
+          <el-input v-model="formData.name" :disabled="isDoctorEdit" />
         </el-form-item>
         <el-form-item label="性别" prop="gender">
           <el-select v-model="formData.gender">
@@ -70,13 +70,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input v-model="formData.phone" />
+          <el-input v-model="formData.phone" :disabled="isDoctorEdit" />
         </el-form-item>
         <el-form-item label="身份证号">
-          <el-input v-model="formData.idCard" />
+          <el-input v-model="formData.idCard" :disabled="isDoctorEdit" />
         </el-form-item>
         <el-form-item label="住址">
-          <el-input v-model="formData.address" />
+          <el-input v-model="formData.address" :disabled="isDoctorEdit" />
         </el-form-item>
         <el-form-item label="病史">
           <el-input v-model="formData.medicalHistory" type="textarea" :rows="2" />
@@ -94,9 +94,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/patient'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useUserStore } from '@/store/user'
+import { buildPatientUpdatePayload } from '@/utils/patientPayload'
+
+const userStore = useUserStore()
 
 const searchForm = reactive({ name: '', diseaseType: '' })
 const tableData = ref([])
@@ -109,6 +113,7 @@ const formRef = ref(null)
 const submitting = ref(false)
 const isEdit = ref(false)
 const editId = ref(null)
+const isDoctorEdit = computed(() => isEdit.value && !userStore.isAdmin)
 
 const emptyForm = () => ({
   name: '', gender: '', age: null, diseaseType: '',
@@ -164,7 +169,8 @@ async function handleSubmit() {
   submitting.value = true
   try {
     if (isEdit.value) {
-      await updatePatient(editId.value, formData)
+      const payload = buildPatientUpdatePayload(formData, userStore.isAdmin)
+      await updatePatient(editId.value, payload)
     } else {
       await addPatient(formData)
     }
