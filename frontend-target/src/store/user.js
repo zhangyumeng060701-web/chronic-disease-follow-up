@@ -25,7 +25,10 @@ export const useUserStore = defineStore('user', () => {
     role.value = ''
     username.value = ''
     realName.value = ''
-    localStorage.clear()
+    localStorage.removeItem('token')
+    localStorage.removeItem('role')
+    localStorage.removeItem('username')
+    localStorage.removeItem('realName')
   }
 
   return { token, role, username, realName, isAdmin, setLogin, logout }

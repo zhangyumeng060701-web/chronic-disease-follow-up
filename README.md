@@ -33,4 +33,6 @@
 
 ## 快速开始
 
+启动 MySQL 前设置 `MYSQL_ROOT_PASSWORD`；启动后端前设置 `DB_PASSWORD` 和至少 32 字节的 `JWT_SECRET`。可选变量包括 `DB_URL`、`DB_USERNAME` 和 `JWT_EXPIRATION`。真实凭据不得提交到仓库。
+
 见各目录下的 README 和 docs/standards/ 下的开发标准文档。
