@@ -1,10 +1,11 @@
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.Result;
 import com.example.followup.dto.response.PatientVO;
-import com.example.followup.entity.Patient;
 import com.example.followup.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,16 +36,15 @@ public class PatientController {
 
     @PostMapping
     @ApiOperation("新增患者")
-    public Result<Void> add(@Valid @RequestBody Patient patient) {
-        patientService.addPatient(patient);
+    public Result<Void> add(@Valid @RequestBody PatientSaveRequest request) {
+        patientService.addPatient(request);
         return Result.success();
     }
 
     @PutMapping("/{id}")
     @ApiOperation("编辑患者")
-    public Result<Void> update(@PathVariable Long id, @Valid @RequestBody Patient patient) {
-        patient.setId(id);
-        patientService.updatePatient(patient);
+    public Result<Void> update(@PathVariable Long id, @Valid @RequestBody PatientUpdateRequest request) {
+        patientService.updatePatient(id, request);
         return Result.success();
     }
 

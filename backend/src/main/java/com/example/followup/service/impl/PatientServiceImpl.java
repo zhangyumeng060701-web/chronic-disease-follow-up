@@ -3,6 +3,8 @@ package com.example.followup.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.Patient;
@@ -63,21 +65,22 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void addPatient(Patient patient) {
+    public void addPatient(PatientSaveRequest request) {
         CurrentUser currentUser = SecurityUtils.currentUser();
-        patient.setId(null);
+        Patient patient = new Patient();
+        applyEditableFields(patient, request, true);
         patient.setStatus(1);
-        if (!currentUser.isAdmin()) patient.setDoctorId(currentUser.getUserId());
+        patient.setDoctorId(currentUser.isAdmin() ? request.getDoctorId() : currentUser.getUserId());
         patientMapper.insert(patient);
     }
 
     @Override
-    public void updatePatient(Patient patient) {
+    public void updatePatient(Long id, PatientUpdateRequest request) {
         CurrentUser currentUser = SecurityUtils.currentUser();
-        Patient existing = getAccessiblePatient(patient.getId(), currentUser);
-        if (!currentUser.isAdmin()) patient.setDoctorId(existing.getDoctorId());
-        patient.setStatus(existing.getStatus());
-        patientMapper.updateById(patient);
+        Patient existing = getAccessiblePatient(id, currentUser);
+        applyUpdateFields(existing, request, currentUser.isAdmin());
+        if (currentUser.isAdmin() && request.getDoctorId() != null) existing.setDoctorId(request.getDoctorId());
+        patientMapper.updateById(existing);
     }
 
     @Override
@@ -95,5 +98,47 @@ public class PatientServiceImpl implements PatientService {
             throw new BusinessException(404, "患者不存在");
         }
         return patient;
+    }
+
+    private void applyEditableFields(Patient target, PatientSaveRequest request, boolean allowSensitiveFields) {
+        if (allowSensitiveFields) {
+            rejectMaskedValue(request.getName(), "姓名");
+            rejectMaskedValue(request.getPhone(), "手机号");
+            rejectMaskedValue(request.getIdCard(), "身份证号");
+            rejectMaskedValue(request.getAddress(), "地址");
+            target.setName(request.getName());
+            target.setPhone(request.getPhone());
+            target.setIdCard(request.getIdCard());
+            target.setAddress(request.getAddress());
+        }
+        target.setGender(request.getGender());
+        target.setAge(request.getAge());
+        target.setDiseaseType(request.getDiseaseType());
+        target.setMedicalHistory(request.getMedicalHistory());
+        target.setMedicationInfo(request.getMedicationInfo());
+    }
+
+    private void rejectMaskedValue(String value, String field) {
+        if (value != null && value.contains("*")) {
+            throw new BusinessException(400, field + "不能包含脱敏占位符");
+        }
+    }
+
+    private void applyUpdateFields(Patient target, PatientUpdateRequest request, boolean admin) {
+        if (admin) {
+            rejectMaskedValue(request.getName(), "姓名");
+            rejectMaskedValue(request.getPhone(), "手机号");
+            rejectMaskedValue(request.getIdCard(), "身份证号");
+            rejectMaskedValue(request.getAddress(), "地址");
+            if (request.getName() != null) target.setName(request.getName());
+            if (request.getPhone() != null) target.setPhone(request.getPhone());
+            if (request.getIdCard() != null) target.setIdCard(request.getIdCard());
+            if (request.getAddress() != null) target.setAddress(request.getAddress());
+        }
+        if (request.getGender() != null) target.setGender(request.getGender());
+        if (request.getAge() != null) target.setAge(request.getAge());
+        if (request.getDiseaseType() != null) target.setDiseaseType(request.getDiseaseType());
+        if (request.getMedicalHistory() != null) target.setMedicalHistory(request.getMedicalHistory());
+        if (request.getMedicationInfo() != null) target.setMedicationInfo(request.getMedicationInfo());
     }
 }
