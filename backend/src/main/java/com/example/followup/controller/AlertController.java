@@ -1,4 +1,4 @@
-﻿package com.example.followup.controller;
+package com.example.followup.controller;
 
 import com.example.followup.dto.request.AlertQuery;
 import com.example.followup.dto.response.AlertVO;

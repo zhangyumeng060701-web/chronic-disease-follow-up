@@ -1,4 +1,4 @@
-﻿package com.example.followup.dto.response;
+package com.example.followup.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

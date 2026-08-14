@@ -1,4 +1,4 @@
-﻿package com.example.followup.service.impl;
+package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
