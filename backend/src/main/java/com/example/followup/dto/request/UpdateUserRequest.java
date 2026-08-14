@@ -5,10 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class CreateUserRequest {
-    @NotBlank(message = "用户名不能为空")
-    private String username;
-    @NotBlank(message = "密码不能为空")
+public class UpdateUserRequest {
     private String password;
     @NotBlank(message = "真实姓名不能为空")
     private String realName;

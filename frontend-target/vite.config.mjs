@@ -13,12 +13,6 @@ export default defineConfig({
     maxWorkers: 1,
     fileParallelism: false
   },
-  test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/__tests__/setup.js'],
-    clearMocks: true,
-    restoreMocks: true
-  },
   resolve: {
     alias: { '@': path.resolve(import.meta.dirname, 'src') }
   },

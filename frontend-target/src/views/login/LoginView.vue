@@ -15,7 +15,6 @@
                      @click="handleLogin">登录</el-button>
         </el-form-item>
       </el-form>
-      <p class="login-hint">管理员：admin/123456 | 医生：doctor/123456</p>
     </div>
   </div>
 </template>
@@ -72,10 +71,4 @@ async function handleLogin() {
   font-size: 22px;
 }
 .login-btn { width: 100%; }
-.login-hint {
-  text-align: center;
-  color: #909399;
-  font-size: 12px;
-  margin-top: 16px;
-}
 </style>

@@ -2,9 +2,10 @@ package com.example.followup.controller;
 
 import com.example.followup.dto.request.CreateUserRequest;
 import com.example.followup.dto.request.UserQuery;
+import com.example.followup.dto.request.UpdateUserRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.Result;
-import com.example.followup.entity.SysUser;
+import com.example.followup.dto.response.UserVO;
 import com.example.followup.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,7 +26,7 @@ public class UserController {
 
     @GetMapping
     @ApiOperation("分页查询用户列表")
-    public Result<PageResponse<SysUser>> list(@Valid UserQuery query) {
+    public Result<PageResponse<UserVO>> list(@Valid UserQuery query) {
         return Result.success(sysUserService.listUsers(query));
     }
 
@@ -38,9 +39,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ApiOperation("编辑用户")
-    public Result<Void> update(@PathVariable Long id, @RequestBody SysUser user) {
-        user.setId(id);
-        sysUserService.updateUser(user);
+    public Result<Void> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
+        sysUserService.updateUser(id, request);
         return Result.success();
     }
 

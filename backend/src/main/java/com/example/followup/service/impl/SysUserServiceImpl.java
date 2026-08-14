@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.CreateUserRequest;
 import com.example.followup.dto.request.UserQuery;
+import com.example.followup.dto.request.UpdateUserRequest;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.UserVO;
 import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.SysUserMapper;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.stream.Collectors;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -23,7 +27,7 @@ public class SysUserServiceImpl implements SysUserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public PageResponse<SysUser> listUsers(UserQuery query) {
+    public PageResponse<UserVO> listUsers(UserQuery query) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {
             wrapper.like(SysUser::getUsername, query.getUsername());
@@ -36,10 +40,8 @@ public class SysUserServiceImpl implements SysUserService {
         Page<SysUser> page = new Page<>(query.getPage(), query.getSize());
         sysUserMapper.selectPage(page, wrapper);
 
-        page.getRecords().forEach(u -> u.setPassword(null));
-
-        PageResponse<SysUser> response = new PageResponse<>();
-        response.setRecords(page.getRecords());
+        PageResponse<UserVO> response = new PageResponse<>();
+        response.setRecords(page.getRecords().stream().map(this::toUserVO).collect(Collectors.toList()));
         response.setTotal(page.getTotal());
         response.setPage(query.getPage());
         response.setSize(query.getSize());
@@ -63,17 +65,18 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void updateUser(SysUser user) {
-        SysUser existing = sysUserMapper.selectById(user.getId());
+    public void updateUser(Long id, UpdateUserRequest request) {
+        SysUser existing = sysUserMapper.selectById(id);
         if (existing == null) {
             throw new BusinessException(404, "用户不存在");
         }
-        if (StringUtils.hasText(user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        } else {
-            user.setPassword(existing.getPassword());
+        existing.setRealName(request.getRealName());
+        existing.setRole(request.getRole());
+        existing.setPhone(request.getPhone());
+        if (StringUtils.hasText(request.getPassword())) {
+            existing.setPassword(passwordEncoder.encode(request.getPassword()));
         }
-        sysUserMapper.updateById(user);
+        sysUserMapper.updateById(existing);
     }
 
     @Override
@@ -84,5 +87,17 @@ public class SysUserServiceImpl implements SysUserService {
         }
         user.setStatus(user.getStatus() == 1 ? 0 : 1);
         sysUserMapper.updateById(user);
+    }
+
+    private UserVO toUserVO(SysUser user) {
+        UserVO vo = new UserVO();
+        vo.setId(user.getId());
+        vo.setUsername(user.getUsername());
+        vo.setRealName(user.getRealName());
+        vo.setRole(user.getRole());
+        vo.setPhone(user.getPhone());
+        vo.setStatus(user.getStatus());
+        vo.setCreateTime(user.getCreateTime());
+        return vo;
     }
 }
