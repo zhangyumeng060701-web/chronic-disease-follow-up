@@ -3,6 +3,7 @@ package com.example.followup.controller;
 import com.example.followup.dto.request.PatientQuery;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.Result;
+import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.Patient;
 import com.example.followup.service.PatientService;
 import io.swagger.annotations.Api;
@@ -22,13 +23,13 @@ public class PatientController {
 
     @GetMapping
     @ApiOperation("分页查询患者列表")
-    public Result<PageResponse<Patient>> list(@Valid PatientQuery query) {
+    public Result<PageResponse<PatientVO>> list(@Valid PatientQuery query) {
         return Result.success(patientService.listPatients(query));
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取患者详情")
-    public Result<Patient> getById(@PathVariable Long id) {
+    public Result<PatientVO> getById(@PathVariable Long id) {
         return Result.success(patientService.getPatientById(id));
     }
 
