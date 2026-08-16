@@ -7,22 +7,18 @@ import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
-import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
-import com.example.followup.mapper.SysUserMapper;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.PatientService;
 import com.example.followup.util.DesensitizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +32,6 @@ public class PatientServiceImpl implements PatientService {
     private PatientMapper patientMapper;
     @Autowired
     private FollowUpMapper followUpMapper;
-    @Autowired
-    private SysUserMapper sysUserMapper;
 
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
@@ -49,8 +43,8 @@ public class PatientServiceImpl implements PatientService {
         if (StringUtils.hasText(query.getDiseaseType())) {
             wrapper.eq(Patient::getDiseaseType, query.getDiseaseType());
         }
-        if (!isAdmin()) {
-            wrapper.eq(Patient::getDoctorId, currentUserId());
+        if (!SecurityUtils.isAdmin()) {
+            wrapper.eq(Patient::getDoctorId, SecurityUtils.currentUser().getUserId());
         }
         wrapper.orderByDesc(Patient::getCreateTime);
 
@@ -62,7 +56,7 @@ public class PatientServiceImpl implements PatientService {
                 .collect(Collectors.toList());
         enrich(vos);
 
-        boolean admin = isAdmin();
+        boolean admin = SecurityUtils.isAdmin();
         if (!admin) {
             vos.forEach(this::desensitize);
         }
@@ -81,13 +75,13 @@ public class PatientServiceImpl implements PatientService {
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
-        if (!isAdmin() && !Objects.equals(patient.getDoctorId(), currentUserId())) {
+        if (!SecurityUtils.isAdmin() && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
         PatientVO vo = toVO(patient);
         enrich(List.of(vo));
-        if (!isAdmin()) {
+        if (!SecurityUtils.isAdmin()) {
             desensitize(vo);
         }
         return vo;
@@ -112,7 +106,7 @@ public class PatientServiceImpl implements PatientService {
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
-        if (!isAdmin() && !Objects.equals(patient.getDoctorId(), currentUserId())) {
+        if (!SecurityUtils.isAdmin() && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         patient.setStatus(0);
@@ -170,31 +164,4 @@ public class PatientServiceImpl implements PatientService {
         vo.setAddress(DesensitizationUtil.maskAddress(vo.getAddress()));
     }
 
-    private Long currentUserId() {
-        String username = currentUsername();
-        SysUser user = sysUserMapper.findByUsername(username);
-        if (user == null) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
-        return user.getId();
-    }
-
-    private String currentUsername() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            return "";
-        }
-        HttpServletRequest request = attributes.getRequest();
-        Object username = request.getAttribute("username");
-        return username == null ? "" : String.valueOf(username);
-    }
-
-    private boolean isAdmin() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            HttpServletRequest request = attributes.getRequest();
-            return "ADMIN".equals(request.getAttribute("role"));
-        }
-        return false;
-    }
 }

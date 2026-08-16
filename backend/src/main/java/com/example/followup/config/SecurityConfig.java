@@ -1,5 +1,6 @@
 package com.example.followup.config;
 
+import com.example.followup.security.CurrentUser;
 import com.example.followup.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,11 +62,15 @@ public class SecurityConfig {
                     String username = claims.getSubject();
                     Object roleValue = claims.get("role");
                     String role = roleValue == null ? "" : String.valueOf(roleValue);
+                    Object userIdValue = claims.get("userId");
+                    Long userId = userIdValue == null ? null : Long.valueOf(String.valueOf(userIdValue));
                     var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
-                    var authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    CurrentUser currentUser = new CurrentUser(userId, username, role);
+                    var authentication = new UsernamePasswordAuthenticationToken(currentUser, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     request.setAttribute("username", username);
                     request.setAttribute("role", role);
+                    request.setAttribute("userId", userId);
                 } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;

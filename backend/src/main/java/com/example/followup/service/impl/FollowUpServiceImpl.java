@@ -9,20 +9,17 @@ import com.example.followup.entity.Alert;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
-import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.*;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.FollowUpService;
 import com.example.followup.util.DesensitizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,15 +39,13 @@ public class FollowUpServiceImpl implements FollowUpService {
     private AlertRuleMapper alertRuleMapper;
     @Autowired
     private AlertMapper alertMapper;
-    @Autowired
-    private SysUserMapper sysUserMapper;
 
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
         LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
-        boolean admin = isAdmin();
+        boolean admin = SecurityUtils.isAdmin();
         if (!admin) {
-            wrapper.eq(FollowUp::getDoctorId, currentUserId());
+            wrapper.eq(FollowUp::getDoctorId, SecurityUtils.currentUser().getUserId());
         }
         if (query.getPatientId() != null) {
             wrapper.eq(FollowUp::getPatientId, query.getPatientId());
@@ -97,7 +92,8 @@ public class FollowUpServiceImpl implements FollowUpService {
         if (followUp == null) {
             throw new BusinessException(ErrorCode.FOLLOWUP_NOT_FOUND);
         }
-        if (!isAdmin() && !Objects.equals(followUp.getDoctorId(), currentUserId())) {
+        if (!SecurityUtils.isAdmin()
+                && !Objects.equals(followUp.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         return followUp;
@@ -131,34 +127,6 @@ public class FollowUpServiceImpl implements FollowUpService {
         // 超期 7 天以上：下次随访日期早于 7 天前
         query.setNextFollowUpDateBefore(LocalDate.now().minusDays(7));
         return listFollowUps(query).getRecords();
-    }
-
-    private Long currentUserId() {
-        String username = currentUsername();
-        SysUser user = sysUserMapper.findByUsername(username);
-        if (user == null) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
-        }
-        return user.getId();
-    }
-
-    private String currentUsername() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            return "";
-        }
-        HttpServletRequest request = attributes.getRequest();
-        Object username = request.getAttribute("username");
-        return username == null ? "" : String.valueOf(username);
-    }
-
-    private boolean isAdmin() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            HttpServletRequest request = attributes.getRequest();
-            return "ADMIN".equals(request.getAttribute("role"));
-        }
-        return false;
     }
 
     // ---- 连续异常预警 ----

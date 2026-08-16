@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.followup.dto.response.DoctorStats;
 import com.example.followup.dto.response.StatsOverview;
 import com.example.followup.dto.response.TrendItem;
+import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
 import com.example.followup.entity.SysUser;
 import com.example.followup.mapper.*;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,14 +35,28 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public StatsOverview getOverview() {
+        boolean admin = SecurityUtils.isAdmin();
+        Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
+
         LambdaQueryWrapper<Patient> patientWrapper = new LambdaQueryWrapper<>();
         patientWrapper.eq(Patient::getStatus, 1);
+        if (!admin) {
+            patientWrapper.eq(Patient::getDoctorId, currentDoctorId);
+        }
         Long totalPatients = patientMapper.selectCount(patientWrapper);
 
-        Integer monthlyCompleted = followUpMapper.countMonthlyCompleted();
+        LambdaQueryWrapper<FollowUp> monthlyWrapper = new LambdaQueryWrapper<>();
+        monthlyWrapper.ge(FollowUp::getFollowUpDate, LocalDate.now().withDayOfMonth(1));
+        if (!admin) {
+            monthlyWrapper.eq(FollowUp::getDoctorId, currentDoctorId);
+        }
+        Long monthlyCompleted = followUpMapper.selectCount(monthlyWrapper);
 
         LambdaQueryWrapper<Patient> patientWithNext = new LambdaQueryWrapper<>();
         patientWithNext.eq(Patient::getStatus, 1).isNotNull(Patient::getId);
+        if (!admin) {
+            patientWithNext.eq(Patient::getDoctorId, currentDoctorId);
+        }
         Long totalWithFollowUp = patientMapper.selectCount(patientWithNext);
         Integer monthlyExpected = totalWithFollowUp != null ? totalWithFollowUp.intValue() : 0;
 
@@ -52,13 +68,21 @@ public class StatsServiceImpl implements StatsService {
             completionRate = rate + "%";
         }
 
-        Long highRiskCount = alertMapper.countHighRisk();
-        Long lostFollowUpCount = alertMapper.countLostFollowUp();
+        Long highRiskCount = admin
+                ? alertMapper.countHighRisk()
+                : countAlertsForDoctor(currentDoctorId, null, "RED");
+        Long lostFollowUpCount = admin
+                ? alertMapper.countLostFollowUp()
+                : countAlertsForDoctor(currentDoctorId, "LOST_FOLLOW_UP", null);
 
-        return new StatsOverview(totalPatients != null ? totalPatients : 0,
-                monthlyCompleted != null ? monthlyCompleted : 0, monthlyExpected,
-                completionRate, highRiskCount != null ? highRiskCount : 0,
-                lostFollowUpCount != null ? lostFollowUpCount : 0);
+        return new StatsOverview(
+                totalPatients != null ? totalPatients : 0,
+                monthlyCompleted != null ? monthlyCompleted : 0,
+                monthlyExpected,
+                completionRate,
+                highRiskCount != null ? highRiskCount : 0,
+                lostFollowUpCount != null ? lostFollowUpCount : 0
+        );
     }
 
     @Override
@@ -72,6 +96,8 @@ public class StatsServiceImpl implements StatsService {
     }
 
     private List<TrendItem> getTrend(String type) {
+        boolean admin = SecurityUtils.isAdmin();
+        Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
         List<TrendItem> result = new ArrayList<>();
         LocalDate now = LocalDate.now();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM");
@@ -83,6 +109,9 @@ public class StatsServiceImpl implements StatsService {
             LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
             wrapper.between(FollowUp::getFollowUpDate, monthStart, monthEnd)
                    .orderByDesc(FollowUp::getFollowUpDate);
+            if (!admin) {
+                wrapper.eq(FollowUp::getDoctorId, currentDoctorId);
+            }
             List<FollowUp> records = followUpMapper.selectList(wrapper);
 
             Map<Long, FollowUp> latestMap = records.stream()
@@ -113,6 +142,9 @@ public class StatsServiceImpl implements StatsService {
     public List<DoctorStats> getDoctorComparison() {
         LambdaQueryWrapper<SysUser> userWrapper = new LambdaQueryWrapper<>();
         userWrapper.eq(SysUser::getRole, "DOCTOR").eq(SysUser::getStatus, 1);
+        if (!SecurityUtils.isAdmin()) {
+            userWrapper.eq(SysUser::getId, SecurityUtils.currentUser().getUserId());
+        }
         List<SysUser> doctors = sysUserMapper.selectList(userWrapper);
         List<DoctorStats> result = new ArrayList<>();
 
@@ -136,9 +168,9 @@ public class StatsServiceImpl implements StatsService {
             String rate = totalWithPlan > 0
                     ? Math.round(completed * 10000.0 / totalWithPlan) / 100.0 + "%" : "-";
 
-            LambdaQueryWrapper<com.example.followup.entity.Alert> aWrapper = new LambdaQueryWrapper<>();
-            aWrapper.eq(com.example.followup.entity.Alert::getIsResolved, 0)
-                    .eq(com.example.followup.entity.Alert::getAlertLevel, "RED");
+            LambdaQueryWrapper<Alert> aWrapper = new LambdaQueryWrapper<>();
+            aWrapper.eq(Alert::getIsResolved, 0)
+                    .eq(Alert::getAlertLevel, "RED");
             Long highRisk = alertMapper.selectCount(aWrapper);
 
             result.add(new DoctorStats(doc.getId(), doc.getRealName(),
@@ -146,5 +178,27 @@ public class StatsServiceImpl implements StatsService {
                     highRisk != null ? highRisk : 0));
         }
         return result;
+    }
+
+    private Long countAlertsForDoctor(Long doctorId, String alertType, String alertLevel) {
+        List<Patient> patients = patientMapper.selectList(
+                new LambdaQueryWrapper<Patient>()
+                        .eq(Patient::getDoctorId, doctorId)
+                        .eq(Patient::getStatus, 1)
+        );
+        if (patients.isEmpty()) {
+            return 0L;
+        }
+        List<Long> patientIds = patients.stream().map(Patient::getId).collect(Collectors.toList());
+        LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(Alert::getPatientId, patientIds)
+               .eq(Alert::getIsResolved, 0);
+        if (alertType != null) {
+            wrapper.eq(Alert::getAlertType, alertType);
+        }
+        if (alertLevel != null) {
+            wrapper.eq(Alert::getAlertLevel, alertLevel);
+        }
+        return alertMapper.selectCount(wrapper);
     }
 }

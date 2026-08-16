@@ -48,7 +48,7 @@ public class AuthController {
                     ErrorCode.USER_PASSWORD_WRONG.getDefaultMessage());
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getId());
         Map<String, String> data = new HashMap<>();
         data.put("token", token);
         data.put("role", user.getRole());
