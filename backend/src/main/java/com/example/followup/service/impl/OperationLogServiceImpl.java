@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.LogQuery;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.OperationLog;
 import com.example.followup.mapper.OperationLogMapper;
 import com.example.followup.service.OperationLogService;
@@ -35,12 +36,7 @@ public class OperationLogServiceImpl implements OperationLogService {
         Page<OperationLog> page = new Page<>(query.getPage(), query.getSize());
         operationLogMapper.selectPage(page, wrapper);
 
-        PageResponse<OperationLog> response = new PageResponse<>();
-        response.setRecords(page.getRecords());
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
     @Override

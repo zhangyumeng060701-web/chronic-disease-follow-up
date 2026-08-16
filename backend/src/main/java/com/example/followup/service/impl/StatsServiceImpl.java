@@ -8,7 +8,10 @@ import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
 import com.example.followup.entity.SysUser;
-import com.example.followup.mapper.*;
+import com.example.followup.mapper.AlertMapper;
+import com.example.followup.mapper.FollowUpMapper;
+import com.example.followup.mapper.PatientMapper;
+import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

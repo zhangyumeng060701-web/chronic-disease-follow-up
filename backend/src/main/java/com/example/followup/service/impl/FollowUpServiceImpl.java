@@ -5,13 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.FollowUpQuery;
 import com.example.followup.dto.response.FollowUpVO;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
-import com.example.followup.mapper.*;
+import com.example.followup.mapper.AlertMapper;
+import com.example.followup.mapper.AlertRuleMapper;
+import com.example.followup.mapper.FollowUpMapper;
+import com.example.followup.mapper.PatientMapper;
+import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.FollowUpService;
 import com.example.followup.util.DesensitizationUtil;
@@ -42,6 +47,10 @@ public class FollowUpServiceImpl implements FollowUpService {
 
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
+        if (query.getStartDate() != null && query.getEndDate() != null
+                && query.getStartDate().isAfter(query.getEndDate())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "开始日期不能晚于结束日期");
+        }
         LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
         boolean admin = SecurityUtils.isAdmin();
         if (!admin) {
@@ -78,12 +87,7 @@ public class FollowUpServiceImpl implements FollowUpService {
             return vo;
         }).collect(Collectors.toList());
 
-        PageResponse<FollowUpVO> response = new PageResponse<>();
-        response.setRecords(vos);
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
     @Override
@@ -108,12 +112,14 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     @Override
+    @Transactional
     public void updateFollowUp(FollowUp followUp) {
         getFollowUpById(followUp.getId());
         followUpMapper.updateById(followUp);
     }
 
     @Override
+    @Transactional
     public void deleteFollowUp(Long id) {
         getFollowUpById(id);
         followUpMapper.deleteById(id);
@@ -160,9 +166,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         }
 
         if (!alerts.isEmpty()) {
-            for (Alert alert : alerts) {
-                alertMapper.insert(alert);
-            }
+            alertMapper.batchInsert(alerts);
         }
     }
 

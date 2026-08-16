@@ -6,6 +6,7 @@ import com.example.followup.dto.request.PatientQuery;
 import com.example.followup.dto.request.PatientSaveRequest;
 import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
@@ -21,6 +22,7 @@ import com.example.followup.util.DesensitizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -67,12 +69,7 @@ public class PatientServiceImpl implements PatientService {
             vos.forEach(this::desensitize);
         }
 
-        PageResponse<PatientVO> response = new PageResponse<>();
-        response.setRecords(vos);
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
     @Override
@@ -106,6 +103,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public void updatePatient(Long id, PatientUpdateRequest request) {
         Patient patient = getExistingPatient(id);
         assertNotMasked(request);
@@ -117,6 +115,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    @Transactional
     public void deletePatient(Long id) {
         Patient patient = getExistingPatient(id);
         patient.setStatus(0);

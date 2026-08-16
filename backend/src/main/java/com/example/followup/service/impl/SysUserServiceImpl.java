@@ -6,6 +6,7 @@ import com.example.followup.dto.request.CreateUserRequest;
 import com.example.followup.dto.request.UpdateUserRequest;
 import com.example.followup.dto.request.UserQuery;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.dto.response.UserVO;
 import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
@@ -41,12 +42,12 @@ public class SysUserServiceImpl implements SysUserService {
         Page<SysUser> page = new Page<>(query.getPage(), query.getSize());
         sysUserMapper.selectPage(page, wrapper);
 
-        PageResponse<UserVO> response = new PageResponse<>();
-        response.setRecords(page.getRecords().stream().map(this::toVO).collect(Collectors.toList()));
-        response.setTotal(page.getTotal());
-        response.setPage(query.getPage());
-        response.setSize(query.getSize());
-        return response;
+        return PageResponseUtil.of(
+                page,
+                page.getRecords().stream().map(this::toVO).collect(Collectors.toList()),
+                query.getPage(),
+                query.getSize()
+        );
     }
 
     private UserVO toVO(SysUser user) {

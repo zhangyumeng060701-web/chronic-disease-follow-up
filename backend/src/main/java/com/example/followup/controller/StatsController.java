@@ -1,6 +1,9 @@
 package com.example.followup.controller;
 
-import com.example.followup.dto.response.*;
+import com.example.followup.dto.response.DoctorStats;
+import com.example.followup.dto.response.Result;
+import com.example.followup.dto.response.StatsOverview;
+import com.example.followup.dto.response.TrendItem;
 import com.example.followup.service.StatsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
