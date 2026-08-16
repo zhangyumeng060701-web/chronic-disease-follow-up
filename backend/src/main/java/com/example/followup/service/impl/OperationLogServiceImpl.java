@@ -10,6 +10,10 @@ import com.example.followup.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class OperationLogServiceImpl implements OperationLogService {
@@ -40,13 +44,27 @@ public class OperationLogServiceImpl implements OperationLogService {
     }
 
     @Override
-    public void log(String username, String operation, String targetType, Long targetId) {
+    public void log(Long userId, String username, String operation, String targetType, Long targetId) {
         OperationLog log = new OperationLog();
+        log.setUserId(userId);
         log.setUsername(username);
         log.setOperation(operation);
         log.setTargetType(targetType);
         log.setTargetId(targetId);
-        log.setIpAddress("127.0.0.1");
+        log.setIpAddress(currentIp());
         operationLogMapper.insert(log);
+    }
+
+    private String currentIp() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return "unknown";
+        }
+        HttpServletRequest request = attributes.getRequest();
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (StringUtils.hasText(forwarded)) {
+            return forwarded.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

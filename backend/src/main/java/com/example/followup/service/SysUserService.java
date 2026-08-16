@@ -1,13 +1,14 @@
 package com.example.followup.service;
 
 import com.example.followup.dto.request.CreateUserRequest;
+import com.example.followup.dto.request.UpdateUserRequest;
 import com.example.followup.dto.request.UserQuery;
 import com.example.followup.dto.response.PageResponse;
-import com.example.followup.entity.SysUser;
+import com.example.followup.dto.response.UserVO;
 
 public interface SysUserService {
-    PageResponse<SysUser> listUsers(UserQuery query);
+    PageResponse<UserVO> listUsers(UserQuery query);
     void createUser(CreateUserRequest request);
-    void updateUser(SysUser user);
+    void updateUser(Long id, UpdateUserRequest request);
     void toggleUserStatus(Long id);
 }

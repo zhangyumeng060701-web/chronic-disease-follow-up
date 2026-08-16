@@ -1,9 +1,10 @@
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
-import com.example.followup.entity.Patient;
 import com.example.followup.service.PatientService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -98,10 +100,10 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.message").value("success"));
 
-        ArgumentCaptor<Patient> patientCaptor = ArgumentCaptor.forClass(Patient.class);
-        verify(patientService).addPatient(patientCaptor.capture());
-        assertEquals("张三", patientCaptor.getValue().getName());
-        assertEquals("13812345678", patientCaptor.getValue().getPhone());
+        ArgumentCaptor<PatientSaveRequest> requestCaptor = ArgumentCaptor.forClass(PatientSaveRequest.class);
+        verify(patientService).addPatient(requestCaptor.capture());
+        assertEquals("张三", requestCaptor.getValue().getName());
+        assertEquals("13812345678", requestCaptor.getValue().getPhone());
     }
 
     @Test
@@ -114,10 +116,9 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.message").value("success"));
 
-        ArgumentCaptor<Patient> patientCaptor = ArgumentCaptor.forClass(Patient.class);
-        verify(patientService).updatePatient(patientCaptor.capture());
-        assertEquals(9L, patientCaptor.getValue().getId());
-        assertEquals("张三", patientCaptor.getValue().getName());
+        ArgumentCaptor<PatientUpdateRequest> requestCaptor = ArgumentCaptor.forClass(PatientUpdateRequest.class);
+        verify(patientService).updatePatient(eq(9L), requestCaptor.capture());
+        assertEquals("张三", requestCaptor.getValue().getName());
     }
 
     @Test

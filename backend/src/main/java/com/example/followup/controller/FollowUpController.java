@@ -1,18 +1,17 @@
 package com.example.followup.controller;
 
+import com.example.followup.annotation.OperationLog;
 import com.example.followup.dto.request.FollowUpQuery;
 import com.example.followup.dto.response.FollowUpVO;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.Result;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.service.FollowUpService;
-import com.example.followup.service.OperationLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -22,8 +21,6 @@ public class FollowUpController {
 
     @Autowired
     private FollowUpService followUpService;
-    @Autowired
-    private OperationLogService operationLogService;
 
     @GetMapping
     @ApiOperation("分页查询随访记录")
@@ -39,29 +36,26 @@ public class FollowUpController {
 
     @PostMapping
     @ApiOperation("新增随访记录")
-    public Result<Void> add(@Valid @RequestBody FollowUp followUp, HttpServletRequest request) {
+    @OperationLog(operation = "新增随访记录", targetType = "FollowUp")
+    public Result<Void> add(@Valid @RequestBody FollowUp followUp) {
         followUpService.addFollowUp(followUp);
-        String username = (String) request.getAttribute("username");
-        operationLogService.log(username, "新增随访记录", "FollowUp", followUp.getId());
         return Result.success();
     }
 
     @PutMapping("/{id}")
     @ApiOperation("编辑随访记录")
-    public Result<Void> update(@PathVariable Long id, @Valid @RequestBody FollowUp followUp, HttpServletRequest request) {
+    @OperationLog(operation = "编辑随访记录", targetType = "FollowUp")
+    public Result<Void> update(@PathVariable Long id, @Valid @RequestBody FollowUp followUp) {
         followUp.setId(id);
         followUpService.updateFollowUp(followUp);
-        String username = (String) request.getAttribute("username");
-        operationLogService.log(username, "编辑随访记录", "FollowUp", id);
         return Result.success();
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除随访记录")
-    public Result<Void> delete(@PathVariable Long id, HttpServletRequest request) {
+    @OperationLog(operation = "删除随访记录", targetType = "FollowUp")
+    public Result<Void> delete(@PathVariable Long id) {
         followUpService.deleteFollowUp(id);
-        String username = (String) request.getAttribute("username");
-        operationLogService.log(username, "删除随访记录", "FollowUp", id);
         return Result.success();
     }
 

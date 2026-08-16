@@ -3,6 +3,8 @@ package com.example.followup.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.FollowUp;
@@ -92,20 +94,36 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void addPatient(Patient patient) {
+    public void addPatient(PatientSaveRequest request) {
+        Patient patient = new Patient();
+        BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime");
         patient.setId(null);
         patient.setStatus(1);
+        if (!SecurityUtils.isAdmin()) {
+            patient.setDoctorId(SecurityUtils.currentUser().getUserId());
+        }
         patientMapper.insert(patient);
     }
 
     @Override
-    public void updatePatient(Patient patient) {
-        getPatientById(patient.getId());
+    public void updatePatient(Long id, PatientUpdateRequest request) {
+        Patient patient = getExistingPatient(id);
+        assertNotMasked(request);
+        BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime", "doctorId");
+        if (SecurityUtils.isAdmin()) {
+            patient.setDoctorId(request.getDoctorId());
+        }
         patientMapper.updateById(patient);
     }
 
     @Override
     public void deletePatient(Long id) {
+        Patient patient = getExistingPatient(id);
+        patient.setStatus(0);
+        patientMapper.updateById(patient);
+    }
+
+    private Patient getExistingPatient(Long id) {
         Patient patient = patientMapper.selectById(id);
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
@@ -113,8 +131,18 @@ public class PatientServiceImpl implements PatientService {
         if (!SecurityUtils.isAdmin() && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
-        patient.setStatus(0);
-        patientMapper.updateById(patient);
+        return patient;
+    }
+
+    private void assertNotMasked(PatientUpdateRequest request) {
+        if (containsMask(request.getName()) || containsMask(request.getPhone())
+                || containsMask(request.getIdCard()) || containsMask(request.getAddress())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "不能提交脱敏后的患者敏感数据");
+        }
+    }
+
+    private boolean containsMask(String value) {
+        return value != null && value.contains("*");
     }
 
     private PatientVO toVO(Patient patient) {
