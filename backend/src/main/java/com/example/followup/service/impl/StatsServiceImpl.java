@@ -77,7 +77,7 @@ public class StatsServiceImpl implements StatsService {
 
         return new StatsOverview(
                 totalPatients != null ? totalPatients : 0,
-                monthlyCompleted != null ? monthlyCompleted : 0,
+                monthlyCompleted != null ? monthlyCompleted.intValue() : 0,
                 monthlyExpected,
                 completionRate,
                 highRiskCount != null ? highRiskCount : 0,
