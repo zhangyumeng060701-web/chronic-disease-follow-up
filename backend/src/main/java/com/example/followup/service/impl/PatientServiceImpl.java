@@ -7,10 +7,12 @@ import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
+import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
+import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.PatientService;
 import com.example.followup.util.DesensitizationUtil;
@@ -32,6 +34,8 @@ public class PatientServiceImpl implements PatientService {
     private PatientMapper patientMapper;
     @Autowired
     private FollowUpMapper followUpMapper;
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {

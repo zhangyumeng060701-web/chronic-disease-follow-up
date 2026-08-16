@@ -4,6 +4,7 @@ import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
+import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.CurrentUser;
 import com.example.followup.service.impl.PatientServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +31,8 @@ class PatientServiceAccessControlTest {
     private PatientMapper patientMapper;
     @Mock
     private FollowUpMapper followUpMapper;
+    @Mock
+    private SysUserMapper sysUserMapper;
     @InjectMocks
     private PatientServiceImpl patientService;
 
