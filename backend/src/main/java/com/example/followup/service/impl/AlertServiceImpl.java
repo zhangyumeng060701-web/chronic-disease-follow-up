@@ -65,8 +65,11 @@ public class AlertServiceImpl implements AlertService {
             return vo;
         }).collect(Collectors.toList());
 
-        PageResponse<AlertVO> response = PageResponse.of(page, query.getPage(), query.getSize());
+        PageResponse<AlertVO> response = new PageResponse<>();
         response.setRecords(vos);
+        response.setTotal(page.getTotal());
+        response.setPage(query.getPage());
+        response.setSize(query.getSize());
         return response;
     }
 

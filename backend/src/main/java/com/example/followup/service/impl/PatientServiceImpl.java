@@ -67,8 +67,11 @@ public class PatientServiceImpl implements PatientService {
             vos.forEach(this::desensitize);
         }
 
-        PageResponse<PatientVO> response = PageResponse.of(page, query.getPage(), query.getSize());
+        PageResponse<PatientVO> response = new PageResponse<>();
         response.setRecords(vos);
+        response.setTotal(page.getTotal());
+        response.setPage(query.getPage());
+        response.setSize(query.getSize());
         return response;
     }
 
