@@ -2,6 +2,7 @@ package com.example.followup.controller;
 
 import com.example.followup.dto.request.PatientQuery;
 import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PatientVO;
 import com.example.followup.entity.Patient;
 import com.example.followup.service.PatientService;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +40,8 @@ class PatientControllerTest {
     @Test
     @DisplayName("分页查询应返回患者列表和分页信息")
     void list_shouldReturnPagedPatients() throws Exception {
-        PageResponse<Patient> page = new PageResponse<>();
-        page.setRecords(List.of(createPatient()));
+        PageResponse<PatientVO> page = new PageResponse<>();
+        page.setRecords(List.of(createPatientVO()));
         page.setTotal(1L);
         page.setPage(1);
         page.setSize(20);
@@ -56,6 +57,7 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.data.records[0].id").value(1))
                 .andExpect(jsonPath("$.data.records[0].name").value("张三"))
                 .andExpect(jsonPath("$.data.records[0].diseaseType").value("HYPERTENSION"))
+                .andExpect(jsonPath("$.data.records[0].doctorName").value("李医生"))
                 .andExpect(jsonPath("$.data.total").value(1))
                 .andExpect(jsonPath("$.data.page").value(1))
                 .andExpect(jsonPath("$.data.size").value(20))
@@ -73,7 +75,7 @@ class PatientControllerTest {
     @Test
     @DisplayName("按ID查询应返回患者详情")
     void getById_shouldReturnPatient() throws Exception {
-        when(patientService.getPatientById(1L)).thenReturn(createPatient());
+        when(patientService.getPatientById(1L)).thenReturn(createPatientVO());
 
         mockMvc().perform(get("/api/patients/1"))
                 .andExpect(status().isOk())
@@ -133,21 +135,22 @@ class PatientControllerTest {
         return MockMvcBuilders.standaloneSetup(patientController).build();
     }
 
-    private Patient createPatient() {
-        Patient patient = new Patient();
-        patient.setId(1L);
-        patient.setName("张三");
-        patient.setGender("男");
-        patient.setAge(65);
-        patient.setPhone("13812345678");
-        patient.setIdCard("320102199001011234");
-        patient.setAddress("南京市鼓楼区汉口路22号");
-        patient.setDiseaseType("HYPERTENSION");
-        patient.setMedicalHistory("高血压病史10年");
-        patient.setMedicationInfo("硝苯地平 30mg qd");
-        patient.setDoctorId(1L);
-        patient.setStatus(1);
-        return patient;
+    private PatientVO createPatientVO() {
+        PatientVO vo = new PatientVO();
+        vo.setId(1L);
+        vo.setName("张三");
+        vo.setGender("男");
+        vo.setAge(65);
+        vo.setPhone("13812345678");
+        vo.setIdCard("320102199001011234");
+        vo.setAddress("南京市鼓楼区汉口路22号");
+        vo.setDiseaseType("HYPERTENSION");
+        vo.setMedicalHistory("高血压病史10年");
+        vo.setMedicationInfo("硝苯地平 30mg qd");
+        vo.setDoctorId(1L);
+        vo.setDoctorName("李医生");
+        vo.setStatus(1);
+        return vo;
     }
 
     private String patientJson() {

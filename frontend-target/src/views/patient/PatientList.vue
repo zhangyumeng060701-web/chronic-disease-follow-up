@@ -43,7 +43,7 @@
         <template #default="{ row }">{{ row.lastFollowUpDate || '-' }}</template>
       </el-table-column>
       <el-table-column label="责任医生" width="100">
-        <template #default="{ row }">{{ row.doctorId || '-' }}</template>
+        <template #default="{ row }">{{ row.doctorName || row.doctorId || '-' }}</template>
       </el-table-column>
       <el-table-column label="状态" width="80">
         <template #default="{ row }">
