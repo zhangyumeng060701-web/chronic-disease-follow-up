@@ -1,41 +1,109 @@
-# scripts/decompose.py
-import sys
 import json
-import requests
-from huaweicloudsdkcore.auth.credentials import BasicCredentials
-# 注意：你需要安装 huaweicloudsdkcore
+import os
+import sys
+import time
 
-def call_pangu_ai(requirement):
-    # 1. 读取 Prompt 模板
-    with open('prompts/task-decompose.txt', 'r', encoding='utf-8') as f:
-        prompt_template = f.read()
+try:
+    import requests
+except ImportError:
+    requests = None
 
-    # 2. 构造请求体 (根据华为云 API 文档)
-    url = "https://{endpoint}/v1/{project_id}/pangu/chat" # 替换为真实 API 地址
-    payload = {
-        "messages": [
-            {"role": "system", "content": prompt_template},
-            {"role": "user", "content": requirement}
-        ],
-        "temperature": 0.7
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROMPT_PATH = os.path.join(BASE_DIR, "..", "prompts", "task-decompose.txt")
+AGENT_ARTS_URL = os.environ.get("AGENT_ARTS_URL", "")
+AGENT_ARTS_API_KEY = os.environ.get("AGENT_ARTS_API_KEY", "")
+AGENT_ARTS_SESSION_ID = os.environ.get("AGENT_ARTS_SESSION_ID", "")
+
+
+def read_prompt():
+    try:
+        with open(PROMPT_PATH, "r", encoding="utf-8") as f:
+            return f.read()
+    except OSError:
+        return "你是一个慢病随访系统开发任务拆解助手。"
+
+
+def mock_decompose(requirement):
+    return {
+        "code": 200,
+        "data": {
+            "summary": f"需求拆解：{requirement[:30]}",
+            "tasks": [
+                {
+                    "type": "FRONTEND",
+                    "title": "前端页面实现",
+                    "description": "根据需求调整对应前端页面和交互。",
+                    "filesToModify": ["frontend-target/src/views/"],
+                    "apiEndpoint": "",
+                    "acceptanceCriteria": "页面可交互且与后端联调通过。"
+                },
+                {
+                    "type": "BACKEND",
+                    "title": "后端接口实现",
+                    "description": "根据需求实现或调整后端接口。",
+                    "filesToModify": ["backend/src/main/java/com/example/followup/"],
+                    "apiEndpoint": "POST /api/ai/decompose",
+                    "acceptanceCriteria": "接口返回统一 Result 结构。"
+                },
+                {
+                    "type": "DATABASE",
+                    "title": "数据库变更评估",
+                    "description": "评估是否需要新增字段、索引或表。",
+                    "filesToModify": ["backend/src/main/resources/db/schema.sql"],
+                    "apiEndpoint": "",
+                    "acceptanceCriteria": "数据库变更脚本可执行。"
+                },
+                {
+                    "type": "TEST",
+                    "title": "自动化测试",
+                    "description": "为本次需求补充测试用例。",
+                    "filesToModify": ["backend/src/test/java/", "frontend-target/src/__tests__/"],
+                    "apiEndpoint": "",
+                    "acceptanceCriteria": "测试全部通过。"
+                }
+            ],
+            "risk": "当前未配置真实 Agent Arts，请配置环境变量后切换真实链路。"
+        },
+        "message": "success"
     }
 
-    # 3. 鉴权与发送 (这里建议使用华为云 SDK 或标准签名算法)
-    # response = requests.post(url, json=payload, headers=headers)
-    
-    # 假设此时已获取 AI 返回的字符串
-    ai_raw_content = response.json()['choices'][0]['message']['content']
-    
-    # 4. 强制格式化并输出
-    try:
-        data = json.loads(ai_raw_content)
-        return {"code": 200, "data": data, "message": "success"}
-    except:
-        return {"code": 500, "message": "AI 返回格式非标准 JSON"}
+
+def call_agent_arts(requirement):
+    if not AGENT_ARTS_URL or not AGENT_ARTS_API_KEY or requests is None:
+        return mock_decompose(requirement)
+
+    prompt = read_prompt()
+    payload = {"query": prompt + "\n用户需求：" + requirement}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {AGENT_ARTS_API_KEY}"
+    }
+    if AGENT_ARTS_SESSION_ID:
+        headers["x-hw-agentarts-session-id"] = AGENT_ARTS_SESSION_ID
+
+    last_error = None
+    for attempt in range(2):
+        try:
+            response = requests.post(AGENT_ARTS_URL, headers=headers, json=payload, timeout=12)
+            if response.status_code == 200:
+                result = response.json()
+                answer = result.get("answer") or result.get("result")
+                if answer:
+                    parsed = json.loads(answer) if isinstance(answer, str) else answer
+                    return {"code": 200, "data": parsed, "message": "success"}
+            last_error = f"Agent Arts 返回状态码 {response.status_code}"
+        except Exception as exc:
+            last_error = str(exc)
+        time.sleep(1)
+
+    return {
+        "code": 500,
+        "message": f"Agent Arts 调用失败：{last_error}",
+        "data": None
+    }
+
 
 if __name__ == "__main__":
-    user_input = sys.argv[1]
-    result = call_pangu_ai(user_input)
-    print(json.dumps(result, ensure_ascii=False))
-
-    #由于需要调用的盘古大模型需要付费，目前正在申请代金券中，购买部署后会补全SDK以及deployment_id
+    requirement = sys.argv[1] if len(sys.argv) > 1 else "测试需求"
+    print(json.dumps(call_agent_arts(requirement), ensure_ascii=False))
