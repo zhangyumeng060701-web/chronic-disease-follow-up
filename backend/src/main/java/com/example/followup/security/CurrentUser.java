@@ -1,5 +1,6 @@
 package com.example.followup.security;
 
+import com.example.followup.constant.DomainConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +12,6 @@ public class CurrentUser {
     private String role;
 
     public boolean isAdmin() {
-        return "ADMIN".equals(role);
+        return DomainConstants.ROLE_ADMIN.equals(role);
     }
 }

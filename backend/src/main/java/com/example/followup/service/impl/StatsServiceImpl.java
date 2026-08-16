@@ -1,6 +1,7 @@
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.followup.constant.DomainConstants;
 import com.example.followup.dto.response.DoctorStats;
 import com.example.followup.dto.response.StatsOverview;
 import com.example.followup.dto.response.TrendItem;
@@ -75,10 +76,10 @@ public class StatsServiceImpl implements StatsService {
 
         Long highRiskCount = admin
                 ? alertMapper.countHighRisk()
-                : countAlertsForDoctor(currentDoctorId, null, "RED");
+                : countAlertsForDoctor(currentDoctorId, null, DomainConstants.ALERT_LEVEL_RED);
         Long lostFollowUpCount = admin
                 ? alertMapper.countLostFollowUp()
-                : countAlertsForDoctor(currentDoctorId, "LOST_FOLLOW_UP", null);
+                : countAlertsForDoctor(currentDoctorId, DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null);
 
         return new StatsOverview(
                 totalPatients != null ? totalPatients : 0,
@@ -146,43 +147,72 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<DoctorStats> getDoctorComparison() {
         LambdaQueryWrapper<SysUser> userWrapper = new LambdaQueryWrapper<>();
-        userWrapper.eq(SysUser::getRole, "DOCTOR").eq(SysUser::getStatus, 1);
+        userWrapper.eq(SysUser::getRole, DomainConstants.ROLE_DOCTOR).eq(SysUser::getStatus, 1);
         if (!SecurityUtils.isAdmin()) {
             userWrapper.eq(SysUser::getId, SecurityUtils.currentUser().getUserId());
         }
         List<SysUser> doctors = sysUserMapper.selectList(userWrapper);
-        List<DoctorStats> result = new ArrayList<>();
+        if (doctors.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-        for (SysUser doc : doctors) {
-            LambdaQueryWrapper<Patient> pWrapper = new LambdaQueryWrapper<>();
-            pWrapper.eq(Patient::getDoctorId, doc.getId()).eq(Patient::getStatus, 1);
-            Long patientCount = patientMapper.selectCount(pWrapper);
+        List<Long> doctorIds = doctors.stream().map(SysUser::getId).collect(Collectors.toList());
 
-            List<Patient> patients = patientMapper.selectList(pWrapper);
-            long completed = 0;
-            long totalWithPlan = 0;
-            for (Patient p : patients) {
-                LambdaQueryWrapper<FollowUp> fWrapper = new LambdaQueryWrapper<>();
-                LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
-                fWrapper.eq(FollowUp::getPatientId, p.getId())
-                       .ge(FollowUp::getFollowUpDate, monthStart);
-                if (followUpMapper.selectCount(fWrapper) > 0) completed++;
-                totalWithPlan++;
-            }
+        List<Patient> patients = patientMapper.selectList(
+                new LambdaQueryWrapper<Patient>()
+                        .in(Patient::getDoctorId, doctorIds)
+                        .eq(Patient::getStatus, 1)
+        );
+        if (patients.isEmpty()) {
+            return doctors.stream()
+                    .map(doc -> new DoctorStats(doc.getId(), doc.getRealName(), 0, "-", 0))
+                    .collect(Collectors.toList());
+        }
+        Map<Long, Long> patientCountByDoctor = patients.stream()
+                .collect(Collectors.groupingBy(Patient::getDoctorId, Collectors.counting()));
 
+        Map<Long, Long> patientDoctorMap = patients.stream()
+                .collect(Collectors.toMap(Patient::getId, Patient::getDoctorId, (a, b) -> a));
+
+        LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
+        List<FollowUp> monthlyFollowUps = followUpMapper.selectList(
+                new LambdaQueryWrapper<FollowUp>()
+                        .in(FollowUp::getPatientId, patientDoctorMap.keySet())
+                        .ge(FollowUp::getFollowUpDate, monthStart)
+        );
+        Map<Long, Long> completedByDoctor = monthlyFollowUps.stream()
+                .map(FollowUp::getPatientId)
+                .filter(patientDoctorMap::containsKey)
+                .distinct()
+                .collect(Collectors.toMap(
+                        patientDoctorMap::get,
+                        patientId -> 1L,
+                        Long::sum
+                ));
+
+        List<Alert> highRiskAlerts = alertMapper.selectList(
+                new LambdaQueryWrapper<Alert>()
+                        .in(Alert::getPatientId, patientDoctorMap.keySet())
+                        .eq(Alert::getIsResolved, 0)
+                        .eq(Alert::getAlertLevel, DomainConstants.ALERT_LEVEL_RED)
+        );
+        Map<Long, Long> highRiskByDoctor = highRiskAlerts.stream()
+                .map(Alert::getPatientId)
+                .filter(patientDoctorMap::containsKey)
+                .collect(Collectors.toMap(
+                        patientDoctorMap::get,
+                        patientId -> 1L,
+                        Long::sum
+                ));
+
+        return doctors.stream().map(doc -> {
+            long totalWithPlan = patientCountByDoctor.getOrDefault(doc.getId(), 0L);
+            long completed = completedByDoctor.getOrDefault(doc.getId(), 0L);
             String rate = totalWithPlan > 0
                     ? Math.round(completed * 10000.0 / totalWithPlan) / 100.0 + "%" : "-";
-
-            LambdaQueryWrapper<Alert> aWrapper = new LambdaQueryWrapper<>();
-            aWrapper.eq(Alert::getIsResolved, 0)
-                    .eq(Alert::getAlertLevel, "RED");
-            Long highRisk = alertMapper.selectCount(aWrapper);
-
-            result.add(new DoctorStats(doc.getId(), doc.getRealName(),
-                    patientCount != null ? patientCount : 0, rate,
-                    highRisk != null ? highRisk : 0));
-        }
-        return result;
+            long highRisk = highRiskByDoctor.getOrDefault(doc.getId(), 0L);
+            return new DoctorStats(doc.getId(), doc.getRealName(), totalWithPlan, rate, highRisk);
+        }).collect(Collectors.toList());
     }
 
     private Long countAlertsForDoctor(Long doctorId, String alertType, String alertLevel) {

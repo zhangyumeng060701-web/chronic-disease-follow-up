@@ -6,6 +6,7 @@ import com.example.followup.dto.request.FollowUpQuery;
 import com.example.followup.dto.response.FollowUpVO;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PageResponseUtil;
+import com.example.followup.constant.DomainConstants;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
@@ -157,7 +158,7 @@ public class FollowUpServiceImpl implements FollowUpService {
             if (currentTriggered && previousTriggered) {
                 Alert alert = new Alert();
                 alert.setPatientId(patientId);
-                alert.setAlertType("HIGH_RISK");
+                alert.setAlertType(DomainConstants.ALERT_TYPE_HIGH_RISK);
                 alert.setAlertLevel(rule.getAlertLevel());
                 alert.setAlertReason("连续2次" + rule.getRuleName() + "：最近值" + getIndicatorValue(followUp, rule.getIndicator()));
                 alert.setIsResolved(0);
