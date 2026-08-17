@@ -109,6 +109,26 @@ class FollowUpServiceTest {
         verify(alertMapper).batchInsert(anyList());
     }
 
+    @Test
+    @DisplayName("低于阈值时连续两次也不生成预警")
+    void addFollowUpBelowThresholdDoesNotGenerateAlert() {
+        FollowUp previous = followUp(1L, 1L, 179);
+        FollowUp current = followUp(2L, 1L, 179);
+        when(followUpMapper.selectList(any())).thenReturn(List.of(previous));
+
+        AlertRule rule = new AlertRule();
+        rule.setRuleName("收缩压高危");
+        rule.setIndicator("systolic_bp");
+        rule.setThreshold(new BigDecimal("180"));
+        rule.setAlertLevel("RED");
+        when(alertRuleMapper.findActiveRules()).thenReturn(List.of(rule));
+
+        followUpService.addFollowUp(current);
+
+        verify(alertMapper, never()).insert(any());
+        verify(alertMapper, never()).batchInsert(anyList());
+    }
+
     private FollowUp followUp(Long id, Long patientId, int systolicBp) {
         FollowUp followUp = new FollowUp();
         followUp.setId(id);
