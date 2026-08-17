@@ -12,7 +12,7 @@
           <el-icon>
             <User />
           </el-icon>
-          开发维护人员
+          {{ currentUserName }}
         </span>
         <el-button link type="primary" @click="handleLogout">
           <el-icon>
@@ -29,9 +29,6 @@
           router
           class="platform-menu"
           :default-active="activeMenu"
-          active-text-color="#409EFF"
-          background-color="#FFFFFF"
-          text-color="#303133"
         >
           <el-menu-item index="/requirement">
             <el-icon>
@@ -52,14 +49,16 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import { EditPen, Operation, SwitchButton, User } from '@element-plus/icons-vue'
+import { clearAuthSession, getCurrentUserName, redirectToLogin } from '../utils/auth'
 
 const route = useRoute()
 const activeMenu = computed(() => route.path)
+const currentUserName = computed(() => getCurrentUserName())
 
 function handleLogout() {
-  ElMessage.info('退出功能暂未接入')
+  clearAuthSession()
+  redirectToLogin()
 }
 </script>
 
@@ -116,6 +115,9 @@ function handleLogout() {
 }
 
 .platform-menu {
+  --el-menu-active-color: var(--color-primary);
+  --el-menu-bg-color: var(--color-bg-card);
+  --el-menu-text-color: var(--color-text-primary);
   border-right: none;
 }
 
