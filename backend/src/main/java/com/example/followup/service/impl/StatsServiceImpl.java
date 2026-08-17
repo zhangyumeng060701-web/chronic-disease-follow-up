@@ -165,7 +165,7 @@ public class StatsServiceImpl implements StatsService {
         );
         if (patients.isEmpty()) {
             return doctors.stream()
-                    .map(doc -> new DoctorStats(doc.getId(), doc.getRealName(), 0, "-", 0))
+                    .map(doc -> new DoctorStats(doc.getId(), doc.getRealName(), 0L, "-", 0L))
                     .collect(Collectors.toList());
         }
         Map<Long, Long> patientCountByDoctor = patients.stream()
