@@ -1,5 +1,6 @@
 package com.example.followup.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper; // 1. 增加 Jackson 导入
 import org.springframework.web.bind.annotation.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin
 public class AiController {
 
+    // 2. 初始化 ObjectMapper（Spring Boot 自带，用于解析 JSON）
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @PostMapping("/decompose")
     public Map<String, Object> decompose(@RequestBody Map<String, String> request) {
         String requirement = request.get("requirement");
@@ -25,9 +29,6 @@ public class AiController {
             String scriptPath = "../ai-agent/scripts/decompose.py";
             ProcessBuilder pb = new ProcessBuilder("python", scriptPath, requirement);
             
-            // 解决安全：可以在这里向 ProcessBuilder 注入环境变量
-            // pb.environment().put("AGENT_API_KEY", "你的KEY"); 
-
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
@@ -42,13 +43,16 @@ public class AiController {
                 return Map.of("code", 504, "message", "AI 响应超时", "data", null);
             }
 
-            String output = reader.lines().collect(Collectors.joining("\n"));
+            // 获取 Python 打印的 JSON 字符串
+            String output = reader.lines().collect(Collectors.joining("\n")).trim();
             
-            // 统一返回格式 Result<T> 的模拟实现
             if (process.exitValue() == 0 && output.startsWith("{")) {
-                // 如果 Python 已经返回了 JSON 字符串，直接返回（Spring 会自动转为 JSON 对象）
-                // 建议这里用 Jackson 解析一下确保格式合法
-                return Map.of("code", 200, "message", "success", "data", jsonToMap(output));
+                // 3. 核心修正：调用下方补全的解析方法
+                return Map.of(
+                    "code", 200, 
+                    "message", "success", 
+                    "data", jsonToMap(output) 
+                );
             } else {
                 log.error("AI 脚本执行异常: {}", output);
                 return Map.of("code", 500, "message", "AI 拆解失败", "detail", output);
@@ -60,9 +64,16 @@ public class AiController {
         }
     }
 
-    // 简易工具：将 Python 字符串转为 Map
+    /**
+     * 补全后的解析方法：将 Python 吐出的字符串解析为真正的 JSON 对象
+     */
     private Object jsonToMap(String json) {
-        // 实际开发中请使用 ObjectMapper.readValue
-        return json; 
+        try {
+            // 将字符串解析为 Object（Jackson 会根据 JSON 内容自动转为 Map 或 List）
+            return objectMapper.readValue(json, Object.class);
+        } catch (Exception e) {
+            log.error("JSON 解析失败: {}", e.getMessage());
+            return json; // 解析失败则降级返回字符串
+        }
     }
 }
