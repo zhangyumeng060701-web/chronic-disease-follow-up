@@ -10,6 +10,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
 mybatis-plus:
   configuration:

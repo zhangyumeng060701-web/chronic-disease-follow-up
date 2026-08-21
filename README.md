@@ -34,3 +34,38 @@
 ## 快速开始
 
 见各目录下的 README 和 docs/standards/ 下的开发标准文档。
+
+## 后端模块说明
+
+| 模块 | 说明 |
+|---|---|
+| `controller` | REST API 入口，负责参数校验和统一返回 |
+| `service` / `service.impl` | 业务逻辑、权限校验、事务和预警规则调用 |
+| `mapper` | MyBatis-Plus 数据访问层 |
+| `entity` | 数据库实体 |
+| `dto/request` | 请求 DTO，禁止直接绑定实体 |
+| `dto/response` | 返回 VO，避免泄露实体字段 |
+| `security` | JWT 认证上下文和当前用户工具 |
+| `engine` | 预警规则引擎等独立业务组件 |
+| `util` | 脱敏、VO 映射等通用工具 |
+
+## 接口索引
+
+- `POST /api/auth/login`：登录，返回 JWT
+- `GET /api/patients`、`GET /api/patients/{id}`、`POST /api/patients`、`PUT /api/patients/{id}`、`DELETE /api/patients/{id}`：患者管理
+- `GET /api/follow-ups`、`GET /api/follow-ups/{id}`、`POST /api/follow-ups`、`PUT /api/follow-ups/{id}`、`DELETE /api/follow-ups/{id}`、`GET /api/follow-ups/overdue`：随访管理
+- `GET /api/alerts`、`PUT /api/alerts/{id}/resolve`：预警管理
+- `GET /api/stats/overview`、`/bp-trend`、`/glucose-trend`、`/doctor-comparison`：统计看板
+- `GET /api/users`、`POST /api/users`、`PUT /api/users/{id}`、`PUT /api/users/{id}/toggle-status`：用户管理
+- `GET /api/logs`：操作日志
+
+接口详细字段见 `docs/swagger-api.md`，本地可通过 Knife4j `/doc.html` 查看。
+
+## 数据库迁移
+
+数据库脚本采用 Flyway 版本化迁移：
+
+- `backend/src/main/resources/db/migration/` 是迁移脚本唯一来源
+- `V1__init_schema.sql`：初始 6 张表
+- `schema.sql` 仅保留为历史参考
+- Docker Compose 启动时由 Flyway 自动执行迁移
