@@ -39,13 +39,13 @@ const routes = [
         path: 'system/users',
         name: 'Users',
         component: () => import('@/views/system/UserManage.vue'),
-        meta: { title: '用户管理' }
+        meta: { title: '用户管理', requiresAdmin: true }
       },
       {
         path: 'system/logs',
         name: 'Logs',
         component: () => import('@/views/system/OperLog.vue'),
-        meta: { title: '操作日志' }
+        meta: { title: '操作日志', requiresAdmin: true }
       }
     ]
   }
@@ -58,9 +58,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
   if (to.path !== '/login' && !token) {
     next('/login')
   } else if (to.path === '/login' && token) {
+    next('/dashboard')
+  } else if (to.meta?.requiresAdmin && role !== 'ADMIN') {
     next('/dashboard')
   } else {
     next()

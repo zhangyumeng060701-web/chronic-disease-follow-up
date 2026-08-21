@@ -2,10 +2,10 @@
   <div class="patient-list">
     <el-form :model="searchForm" inline>
       <el-form-item label="姓名">
-        <el-input v-model="searchForm.name" placeholder="请输入" clearable />
+        <el-input v-model="searchForm.name" placeholder="请输入" clearable @input="debouncedSearch" />
       </el-form-item>
       <el-form-item label="慢病类型">
-        <el-select v-model="searchForm.diseaseType" placeholder="请选择" clearable>
+        <el-select v-model="searchForm.diseaseType" placeholder="请选择" clearable @change="handleSearch">
           <el-option label="高血压" value="HYPERTENSION" />
           <el-option label="糖尿病" value="DIABETES" />
           <el-option label="两者皆有" value="BOTH" />
@@ -18,6 +18,15 @@
     </el-form>
 
     <el-button type="primary" @click="handleAdd">新增患者</el-button>
+
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-top:12px"
+    />
 
     <el-table
       :data="tableData"
@@ -66,7 +75,7 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
 
@@ -116,14 +125,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/patient'
+import { useTable } from '@/composables/useTable'
+import { useDebounce } from '@/composables/useDebounce'
+import { toPatientPayload } from '@/utils/patientPayload'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ name: '', diseaseType: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getPatientList
+})
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -143,27 +155,28 @@ const rules = {
   diseaseType: [{ required: true, message: '请选择慢病类型', trigger: 'change' }]
 }
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const res = await getPatientList({
-      page: pagination.page,
-      size: pagination.size,
-      name: searchForm.name || undefined,
-      diseaseType: searchForm.diseaseType || undefined
-    })
-    tableData.value = res.data.records || []
-    pagination.total = res.data.total || 0
-  } catch {
-    ElMessage.error('加载患者列表失败，请稍后重试')
-    tableData.value = []
-  } finally {
-    loading.value = false
+function queryParams() {
+  return {
+    name: searchForm.name || undefined,
+    diseaseType: searchForm.diseaseType || undefined
   }
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.name = ''; searchForm.diseaseType = ''; handleSearch() }
+function handleSearch() {
+  search(queryParams())
+}
+
+function handlePageChange() {
+  load()
+}
+
+const debouncedSearch = useDebounce(() => search(queryParams()), 300)
+
+function handleReset() {
+  searchForm.name = ''
+  searchForm.diseaseType = ''
+  search(queryParams())
+}
 
 function handleAdd() {
   dialogTitle.value = '新增患者'
@@ -186,9 +199,9 @@ async function handleDelete(row) {
     await ElMessageBox.confirm('确定删除该患者吗？', '提示', { type: 'warning' })
     await deletePatient(row.id)
     ElMessage.success('删除成功')
-    fetchData()
+    load()
   } catch {
-    // 用户取消或删除失败
+    // 用户取消或删除失败，错误提示由请求层统一处理
   }
 }
 
@@ -198,19 +211,19 @@ async function handleSubmit() {
   } catch {
     return
   }
+  if (submitting.value) return
   submitting.value = true
   try {
+    const payload = toPatientPayload({ ...formData })
     if (isEdit.value) {
-      await updatePatient(editId.value, { ...formData })
+      await updatePatient(editId.value, payload)
       ElMessage.success('编辑成功')
     } else {
-      await addPatient({ ...formData })
+      await addPatient(payload)
       ElMessage.success('新增成功')
     }
     dialogVisible.value = false
-    fetchData()
-  } catch {
-    ElMessage.error('保存失败，请稍后重试')
+    load()
   } finally {
     submitting.value = false
   }
@@ -221,7 +234,7 @@ function resetForm() {
   formRef.value?.resetFields()
 }
 
-onMounted(() => fetchData())
+onMounted(() => load())
 </script>
 
 <style scoped>

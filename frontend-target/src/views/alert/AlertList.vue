@@ -25,7 +25,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe v-loading="loading">
+    <el-table :data="tableData" border stripe v-loading="loading" empty-text="暂无预警数据">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="alertType" label="预警类型" width="90">
         <template #default="{ row }">
