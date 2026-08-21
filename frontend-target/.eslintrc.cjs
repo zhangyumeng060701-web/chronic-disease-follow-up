@@ -15,7 +15,9 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    'vue/multi-word-component-names': 'off'
+    'no-unused-vars': 'off',
+    'vue/multi-word-component-names': 'off',
+    'vue/attributes-order': 'off',
+    'vue/first-attribute-linebreak': 'off'
   }
 }

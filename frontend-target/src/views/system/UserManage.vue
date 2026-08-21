@@ -106,7 +106,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { getUserList, createUser, updateUser, toggleUserStatus } from '@/api/user'
 import { EMPTY_TEXT, ROLES, STATUS } from '@/constants/domain'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ username: '', role: '' })
 const tableData = ref([])
