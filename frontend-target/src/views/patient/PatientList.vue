@@ -33,7 +33,7 @@
       border
       stripe
       v-loading="loading"
-      empty-text="暂无患者数据"
+      :empty-text="EMPTY_TEXT.PATIENT"
       style="margin-top:16px"
     >
       <el-table-column prop="name" label="姓名" width="100" />
@@ -42,9 +42,9 @@
       <el-table-column prop="phone" label="手机号" width="130" />
       <el-table-column prop="diseaseType" label="慢病类型" width="100">
         <template #default="{ row }">
-          <el-tag v-if="row.diseaseType==='HYPERTENSION'" type="primary">高血压</el-tag>
-          <el-tag v-else-if="row.diseaseType==='DIABETES'" type="success">糖尿病</el-tag>
-          <el-tag v-else-if="row.diseaseType==='BOTH'" type="warning">两者皆有</el-tag>
+          <el-tag v-if="row.diseaseType==='HYPERTENSION'" type="primary">{{ DISEASE_TYPES.HYPERTENSION }}</el-tag>
+          <el-tag v-else-if="row.diseaseType==='DIABETES'" type="success">{{ DISEASE_TYPES.DIABETES }}</el-tag>
+          <el-tag v-else-if="row.diseaseType==='BOTH'" type="warning">{{ DISEASE_TYPES.BOTH }}</el-tag>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -56,8 +56,8 @@
       </el-table-column>
       <el-table-column label="状态" width="80">
         <template #default="{ row }">
-          <el-tag :type="row.status===1 ? 'success' : 'info'" size="small">
-            {{ row.status === 1 ? '正常' : '已删除' }}
+          <el-tag :type="row.status===STATUS.ACTIVE ? 'success' : 'info'" size="small">
+            {{ row.status === STATUS.ACTIVE ? '正常' : '已删除' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -130,6 +130,7 @@ import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/
 import { useTable } from '@/composables/useTable'
 import { useDebounce } from '@/composables/useDebounce'
 import { toPatientPayload } from '@/utils/patientPayload'
+import { DISEASE_TYPES, EMPTY_TEXT, STATUS } from '@/constants/domain'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ name: '', diseaseType: '' })
@@ -239,6 +240,6 @@ onMounted(() => load())
 
 <style scoped>
 .patient-list {
-  padding: 16px;
+  padding: var(--layout-main-padding);
 }
 </style>

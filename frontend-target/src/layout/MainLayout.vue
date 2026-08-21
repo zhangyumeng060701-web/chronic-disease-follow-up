@@ -65,13 +65,13 @@ function handleLogout() {
 
 <style scoped>
 .layout { height: 100vh; }
-.aside { background: #304156; overflow-y: auto; }
+.aside { background: var(--color-text-primary); overflow-y: auto; }
 .logo {
   height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-bg-card);
   font-size: 16px;
   font-weight: 600;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -80,11 +80,30 @@ function handleLogout() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-bottom: 1px solid #e6e6e6;
+  background: var(--color-bg-card);
+  border-bottom: 1px solid var(--color-border);
   padding: 0 20px;
 }
 .header-title { font-size: 16px; font-weight: 500; }
 .header-right { display: flex; align-items: center; gap: 12px; }
-.username { color: #606266; }
+.username { color: var(--color-text-regular); }
+
+@media (max-width: 768px) {
+  :deep(.el-aside) {
+    width: 64px !important;
+  }
+  .logo {
+    font-size: 0;
+  }
+  :deep(.el-menu-item span),
+  :deep(.el-sub-menu__title span) {
+    display: none;
+  }
+  .header-title {
+    font-size: 14px;
+  }
+  .header {
+    padding: 0 12px;
+  }
+}
 </style>

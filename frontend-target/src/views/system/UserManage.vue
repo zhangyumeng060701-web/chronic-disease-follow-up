@@ -23,7 +23,7 @@
       border
       stripe
       v-loading="loading"
-      empty-text="暂无用户数据"
+      :empty-text="EMPTY_TEXT.USER"
       style="margin-top:16px"
     >
       <el-table-column prop="username" label="用户名" width="120" />
@@ -31,15 +31,15 @@
       <el-table-column prop="role" label="角色" width="80">
         <template #default="{ row }">
           <el-tag :type="row.role==='ADMIN'?'danger':'primary'" size="small">
-            {{ row.role === 'ADMIN' ? '管理员' : '医生' }}
+            {{ ROLES[row.role] || row.role }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="phone" label="手机号" width="130" />
       <el-table-column label="状态" width="80">
         <template #default="{ row }">
-          <el-tag :type="row.status===1?'success':'info'" size="small">
-            {{ row.status === 1 ? '正常' : '已禁用' }}
+          <el-tag :type="row.status===STATUS.ACTIVE?'success':'info'" size="small">
+            {{ row.status === STATUS.ACTIVE ? '正常' : '已禁用' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -105,6 +105,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { getUserList, createUser, updateUser, toggleUserStatus } from '@/api/user'
+import { EMPTY_TEXT, ROLES, STATUS } from '@/constants/domain'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ username: '', role: '' })

@@ -1,11 +1,12 @@
-﻿import { defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import storage from '@/utils/storage'
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref(localStorage.getItem('token') || '')
-  const role = ref(localStorage.getItem('role') || '')
-  const username = ref(localStorage.getItem('username') || '')
-  const realName = ref(localStorage.getItem('realName') || '')
+  const token = ref(storage.get('token'))
+  const role = ref(storage.get('role'))
+  const username = ref(storage.get('username'))
+  const realName = ref(storage.get('realName'))
 
   const isAdmin = computed(() => role.value === 'ADMIN')
 
@@ -14,10 +15,10 @@ export const useUserStore = defineStore('user', () => {
     role.value = data.role
     username.value = data.username || ''
     realName.value = data.realName || ''
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('role', data.role)
-    localStorage.setItem('username', data.username || '')
-    localStorage.setItem('realName', data.realName || '')
+    storage.set('token', data.token)
+    storage.set('role', data.role)
+    storage.set('username', data.username || '')
+    storage.set('realName', data.realName || '')
   }
 
   function logout() {
@@ -25,7 +26,7 @@ export const useUserStore = defineStore('user', () => {
     role.value = ''
     username.value = ''
     realName.value = ''
-    localStorage.clear()
+    storage.clear()
   }
 
   return { token, role, username, realName, isAdmin, setLogin, logout }

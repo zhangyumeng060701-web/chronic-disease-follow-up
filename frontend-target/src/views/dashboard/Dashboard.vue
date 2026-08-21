@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <el-row :gutter="20">
-      <el-col :span="6" v-for="card in cards" :key="card.title">
+      <el-col :xs="12" :sm="12" :md="6" v-for="card in cards" :key="card.title">
         <el-card shadow="hover" v-loading="overviewLoading">
           <div class="card-value">{{ card.value }}</div>
           <div class="card-title">{{ card.title }}</div>
@@ -9,22 +9,22 @@
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" style="margin-top:20px">
-      <el-col :span="12">
+    <el-row :gutter="20" class="chart-row">
+      <el-col :xs="24" :md="12">
         <el-card v-loading="chartLoading">
           <template #header><span>近12个月血压控制率趋势</span></template>
-          <div ref="bpChart" style="height:320px"></div>
+          <LineChart :data="bpData" name="血压控制" />
         </el-card>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :md="12">
         <el-card v-loading="chartLoading">
           <template #header><span>近12个月血糖控制率趋势</span></template>
-          <div ref="glucoseChart" style="height:320px"></div>
+          <LineChart :data="glucoseData" name="血糖控制" />
         </el-card>
       </el-col>
     </el-row>
 
-    <el-card style="margin-top:20px" v-loading="doctorLoading">
+    <el-card class="doctor-card" v-loading="doctorLoading">
       <template #header><span>医生对比</span></template>
       <el-table :data="doctorData" border stripe empty-text="暂无医生数据">
         <el-table-column prop="doctorName" label="医生" width="120" />
@@ -37,8 +37,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import * as echarts from 'echarts'
+import { ref, reactive, onMounted } from 'vue'
+import LineChart from '@/components/LineChart.vue'
 import { getStatsOverview, getBpTrend, getGlucoseTrend, getDoctorComparison } from '@/api/dashboard'
 
 const cards = reactive([
@@ -49,29 +49,11 @@ const cards = reactive([
 ])
 
 const doctorData = ref([])
+const bpData = ref([])
+const glucoseData = ref([])
 const overviewLoading = ref(false)
 const chartLoading = ref(false)
 const doctorLoading = ref(false)
-const bpChart = ref(null)
-const glucoseChart = ref(null)
-let bpInstance = null
-let glucoseInstance = null
-
-function makeChart(dom, data, name) {
-  const instance = echarts.init(dom)
-  instance.setOption({
-    tooltip: { trigger: 'axis', formatter: p => `${p[0].axisValue}<br/>${name}率: ${p[0].value}%` },
-    grid: { left: 50, right: 20, top: 20, bottom: 30 },
-    xAxis: { type: 'category', data: data.map(d => d.month) },
-    yAxis: { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%' } },
-    series: [{
-      data: data.map(d => d.rate), type: 'line', smooth: true,
-      areaStyle: { color: 'rgba(64,158,255,0.15)' },
-      itemStyle: { color: '#409EFF' }
-    }]
-  })
-  return instance
-}
 
 async function fetchOverview() {
   overviewLoading.value = true
@@ -82,22 +64,25 @@ async function fetchOverview() {
     cards[1].value = o.completionRate ?? '--'
     cards[2].value = o.highRiskCount ?? '--'
     cards[3].value = o.lostFollowUpCount ?? '--'
-  } catch { /* keep default -- values */ }
-  finally { overviewLoading.value = false }
+  } catch {
+    // 保持默认值
+  } finally {
+    overviewLoading.value = false
+  }
 }
 
 async function fetchCharts() {
   chartLoading.value = true
   try {
     const [bp, glucose] = await Promise.all([getBpTrend(), getGlucoseTrend()])
-    if (bpChart.value) {
-      bpInstance = makeChart(bpChart.value, bp.data || [], '血压控制')
-    }
-    if (glucoseChart.value) {
-      glucoseInstance = makeChart(glucoseChart.value, glucose.data || [], '血糖控制')
-    }
-  } catch { /* chart stays empty */ }
-  finally { chartLoading.value = false }
+    bpData.value = bp.data || []
+    glucoseData.value = glucose.data || []
+  } catch {
+    bpData.value = []
+    glucoseData.value = []
+  } finally {
+    chartLoading.value = false
+  }
 }
 
 async function fetchDoctors() {
@@ -105,30 +90,47 @@ async function fetchDoctors() {
   try {
     const res = await getDoctorComparison()
     doctorData.value = res.data || []
-  } catch { doctorData.value = [] }
-  finally { doctorLoading.value = false }
-}
-
-function resizeCharts() {
-  bpInstance?.resize()
-  glucoseInstance?.resize()
+  } catch {
+    doctorData.value = []
+  } finally {
+    doctorLoading.value = false
+  }
 }
 
 onMounted(() => {
   fetchOverview()
   fetchCharts()
   fetchDoctors()
-  window.addEventListener('resize', resizeCharts)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', resizeCharts)
-  bpInstance?.dispose()
-  glucoseInstance?.dispose()
 })
 </script>
 
 <style scoped>
-.card-value { font-size: 28px; font-weight: 600; color: #303133; }
-.card-title { font-size: 14px; color: #909399; margin-top: 8px; }
+.dashboard {
+  padding: var(--layout-main-padding);
+  background: var(--color-bg);
+}
+.card-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.card-title {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+.chart-row {
+  margin-top: 20px;
+}
+.chart-row .el-col + .el-col {
+  margin-top: 16px;
+}
+@media (min-width: 768px) {
+  .chart-row .el-col + .el-col {
+    margin-top: 0;
+  }
+}
+.doctor-card {
+  margin-top: 20px;
+}
 </style>

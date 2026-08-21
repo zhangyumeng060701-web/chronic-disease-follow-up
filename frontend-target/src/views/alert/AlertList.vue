@@ -25,7 +25,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe v-loading="loading" empty-text="暂无预警数据">
+    <el-table :data="tableData" border stripe v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="alertType" label="预警类型" width="90">
         <template #default="{ row }">
@@ -36,8 +36,8 @@
       </el-table-column>
       <el-table-column prop="alertLevel" label="等级" width="80">
         <template #default="{ row }">
-          <el-tag :type="row.alertLevel==='RED'?'danger':'warning'" effect="dark">
-            {{ row.alertLevel }}
+          <el-tag :type="(ALERT_LEVELS[row.alertLevel]||{}).type || 'info'" effect="dark">
+            {{ (ALERT_LEVELS[row.alertLevel]||{}).label || row.alertLevel }}
           </el-tag>
         </template>
       </el-table-column>
@@ -73,6 +73,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { getAlertList, resolveAlert } from '@/api/alert'
+import { ALERT_LEVELS, EMPTY_TEXT } from '@/constants/domain'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ alertType: '', alertLevel: '', isResolved: '' })
