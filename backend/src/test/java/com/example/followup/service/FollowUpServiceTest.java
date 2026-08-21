@@ -3,6 +3,7 @@ package com.example.followup.service;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.example.followup.dto.request.FollowUpQuery;
+import com.example.followup.engine.AlertRuleEngine;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.exception.BusinessException;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -44,6 +46,8 @@ class FollowUpServiceTest {
     private AlertRuleMapper alertRuleMapper;
     @Mock
     private AlertMapper alertMapper;
+    @Spy
+    private AlertRuleEngine alertRuleEngine = new AlertRuleEngine();
     @InjectMocks
     private FollowUpServiceImpl followUpService;
 

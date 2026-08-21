@@ -23,7 +23,8 @@ public class LogController {
     private OperationLogService operationLogService;
 
     @GetMapping
-    @ApiOperation("分页查询操作日志")
+    @ApiOperation(value = "分页查询操作日志",
+            notes = "示例：GET /api/logs?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<OperationLog>> list(@Valid LogQuery query) {
         return Result.success(operationLogService.listLogs(query));
     }

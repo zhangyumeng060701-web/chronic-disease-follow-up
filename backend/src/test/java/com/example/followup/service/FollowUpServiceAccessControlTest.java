@@ -1,6 +1,7 @@
 package com.example.followup.service;
 
 import com.example.followup.entity.FollowUp;
+import com.example.followup.engine.AlertRuleEngine;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
@@ -36,6 +37,8 @@ class FollowUpServiceAccessControlTest {
     private AlertRuleMapper alertRuleMapper;
     @Mock
     private AlertMapper alertMapper;
+    @Mock
+    private AlertRuleEngine alertRuleEngine;
     @InjectMocks
     private FollowUpServiceImpl followUpService;
 

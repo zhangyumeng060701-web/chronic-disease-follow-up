@@ -15,6 +15,7 @@ import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.StatsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class StatsServiceImpl implements StatsService {
 
@@ -41,6 +43,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public StatsOverview getOverview() {
+        long start = System.currentTimeMillis();
         boolean admin = SecurityUtils.isAdmin();
         Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
 
@@ -81,7 +84,7 @@ public class StatsServiceImpl implements StatsService {
                 ? alertMapper.countLostFollowUp()
                 : countAlertsForDoctor(currentDoctorId, DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null);
 
-        return new StatsOverview(
+        StatsOverview result = new StatsOverview(
                 totalPatients != null ? totalPatients : 0,
                 monthlyCompleted != null ? monthlyCompleted.intValue() : 0,
                 monthlyExpected,
@@ -89,6 +92,8 @@ public class StatsServiceImpl implements StatsService {
                 highRiskCount != null ? highRiskCount : 0,
                 lostFollowUpCount != null ? lostFollowUpCount : 0
         );
+        log.info("getOverview admin={} cost={}ms", admin, System.currentTimeMillis() - start);
+        return result;
     }
 
     @Override
@@ -146,6 +151,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<DoctorStats> getDoctorComparison() {
+        long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> userWrapper = new LambdaQueryWrapper<>();
         userWrapper.eq(SysUser::getRole, DomainConstants.ROLE_DOCTOR).eq(SysUser::getStatus, 1);
         if (!SecurityUtils.isAdmin()) {
@@ -168,6 +174,8 @@ public class StatsServiceImpl implements StatsService {
                     .map(doc -> new DoctorStats(doc.getId(), doc.getRealName(), 0L, "-", 0L))
                     .collect(Collectors.toList());
         }
+
+        // 一次查询患者、当月随访和高危预警，再按医生分组，避免循环查询造成 N+1
         Map<Long, Long> patientCountByDoctor = patients.stream()
                 .collect(Collectors.groupingBy(Patient::getDoctorId, Collectors.counting()));
 
@@ -205,7 +213,7 @@ public class StatsServiceImpl implements StatsService {
                         Long::sum
                 ));
 
-        return doctors.stream().map(doc -> {
+        List<DoctorStats> result = doctors.stream().map(doc -> {
             long totalWithPlan = patientCountByDoctor.getOrDefault(doc.getId(), 0L);
             long completed = completedByDoctor.getOrDefault(doc.getId(), 0L);
             String rate = totalWithPlan > 0
@@ -213,6 +221,8 @@ public class StatsServiceImpl implements StatsService {
             long highRisk = highRiskByDoctor.getOrDefault(doc.getId(), 0L);
             return new DoctorStats(doc.getId(), doc.getRealName(), totalWithPlan, rate, highRisk);
         }).collect(Collectors.toList());
+        log.info("getDoctorComparison size={} cost={}ms", result.size(), System.currentTimeMillis() - start);
+        return result;
     }
 
     private Long countAlertsForDoctor(Long doctorId, String alertType, String alertLevel) {

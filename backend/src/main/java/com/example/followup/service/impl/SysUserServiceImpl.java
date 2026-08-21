@@ -13,6 +13,8 @@ import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.service.SysUserService;
+import com.example.followup.util.VoMappers;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
@@ -30,6 +33,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public PageResponse<UserVO> listUsers(UserQuery query) {
+        long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {
             wrapper.like(SysUser::getUsername, query.getUsername());
@@ -44,26 +48,15 @@ public class SysUserServiceImpl implements SysUserService {
 
         return PageResponseUtil.of(
                 page,
-                page.getRecords().stream().map(this::toVO).collect(Collectors.toList()),
+                page.getRecords().stream().map(VoMappers::toUserVO).collect(Collectors.toList()),
                 query.getPage(),
                 query.getSize()
         );
     }
 
-    private UserVO toVO(SysUser user) {
-        UserVO vo = new UserVO();
-        vo.setId(user.getId());
-        vo.setUsername(user.getUsername());
-        vo.setRealName(user.getRealName());
-        vo.setRole(user.getRole());
-        vo.setPhone(user.getPhone());
-        vo.setStatus(user.getStatus());
-        vo.setCreateTime(user.getCreateTime());
-        return vo;
-    }
-
     @Override
     public void createUser(CreateUserRequest request) {
+        long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.findByUsername(request.getUsername());
         if (existing != null) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "用户名已存在");
@@ -76,10 +69,12 @@ public class SysUserServiceImpl implements SysUserService {
         user.setPhone(request.getPhone());
         user.setStatus(1);
         sysUserMapper.insert(user);
+        log.info("createUser username={} cost={}ms", request.getUsername(), System.currentTimeMillis() - start);
     }
 
     @Override
     public void updateUser(Long id, UpdateUserRequest request) {
+        long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.selectById(id);
         if (existing == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
@@ -91,15 +86,18 @@ public class SysUserServiceImpl implements SysUserService {
             existing.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         sysUserMapper.updateById(existing);
+        log.info("updateUser id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
     @Override
     public void toggleUserStatus(Long id) {
+        long start = System.currentTimeMillis();
         SysUser user = sysUserMapper.selectById(id);
         if (user == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         user.setStatus(user.getStatus() == 1 ? 0 : 1);
         sysUserMapper.updateById(user);
+        log.info("toggleUserStatus id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 }

@@ -8,6 +8,7 @@ import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.OperationLog;
 import com.example.followup.mapper.OperationLogMapper;
 import com.example.followup.service.OperationLogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Service
 public class OperationLogServiceImpl implements OperationLogService {
 
@@ -24,6 +26,7 @@ public class OperationLogServiceImpl implements OperationLogService {
 
     @Override
     public PageResponse<OperationLog> listLogs(LogQuery query) {
+        long start = System.currentTimeMillis();
         LambdaQueryWrapper<OperationLog> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {
             wrapper.like(OperationLog::getUsername, query.getUsername());
@@ -36,19 +39,22 @@ public class OperationLogServiceImpl implements OperationLogService {
         Page<OperationLog> page = new Page<>(query.getPage(), query.getSize());
         operationLogMapper.selectPage(page, wrapper);
 
+        log.info("listLogs total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
     @Override
     public void log(Long userId, String username, String operation, String targetType, Long targetId) {
-        OperationLog log = new OperationLog();
-        log.setUserId(userId);
-        log.setUsername(username);
-        log.setOperation(operation);
-        log.setTargetType(targetType);
-        log.setTargetId(targetId);
-        log.setIpAddress(currentIp());
-        operationLogMapper.insert(log);
+        long start = System.currentTimeMillis();
+        OperationLog entity = new OperationLog();
+        entity.setUserId(userId);
+        entity.setUsername(username);
+        entity.setOperation(operation);
+        entity.setTargetType(targetType);
+        entity.setTargetId(targetId);
+        entity.setIpAddress(currentIp());
+        operationLogMapper.insert(entity);
+        log.info("operationLog userId={} operation={} cost={}ms", userId, operation, System.currentTimeMillis() - start);
     }
 
     private String currentIp() {

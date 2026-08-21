@@ -25,13 +25,15 @@ public class AlertController {
     private AlertService alertService;
 
     @GetMapping
-    @ApiOperation("分页查询预警列表")
+    @ApiOperation(value = "分页查询预警列表",
+            notes = "示例：GET /api/alerts?page=1&size=20&alertLevel=RED。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<AlertVO>> list(@Valid AlertQuery query) {
         return Result.success(alertService.listAlerts(query));
     }
 
     @PutMapping("/{id}/resolve")
-    @ApiOperation("处理预警")
+    @ApiOperation(value = "处理预警",
+            notes = "示例：PUT /api/alerts/1/resolve。错误码：401 未登录，403 无权限，404 不存在。")
     public Result<Void> resolve(@PathVariable Long id) {
         alertService.resolveAlert(id);
         return Result.success();

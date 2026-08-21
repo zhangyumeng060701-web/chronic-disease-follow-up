@@ -19,6 +19,8 @@ import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.PatientService;
 import com.example.followup.util.DesensitizationUtil;
+import com.example.followup.util.VoMappers;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PatientServiceImpl implements PatientService {
 
@@ -43,6 +46,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
+        long start = System.currentTimeMillis();
         LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Patient::getStatus, 1);
         if (StringUtils.hasText(query.getName())) {
@@ -60,7 +64,7 @@ public class PatientServiceImpl implements PatientService {
         patientMapper.selectPage(page, wrapper);
 
         List<PatientVO> vos = page.getRecords().stream()
-                .map(this::toVO)
+                .map(VoMappers::toPatientVO)
                 .collect(Collectors.toList());
         enrich(vos);
 
@@ -69,11 +73,14 @@ public class PatientServiceImpl implements PatientService {
             vos.forEach(this::desensitize);
         }
 
+        log.info("listPatients userId={} total={} cost={}ms",
+                currentUserIdSafely(), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
     @Override
     public PatientVO getPatientById(Long id) {
+        long start = System.currentTimeMillis();
         Patient patient = patientMapper.selectById(id);
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
@@ -82,16 +89,18 @@ public class PatientServiceImpl implements PatientService {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
-        PatientVO vo = toVO(patient);
+        PatientVO vo = VoMappers.toPatientVO(patient);
         enrich(List.of(vo));
         if (!SecurityUtils.isAdmin()) {
             desensitize(vo);
         }
+        log.info("getPatientById id={} cost={}ms", id, System.currentTimeMillis() - start);
         return vo;
     }
 
     @Override
     public void addPatient(PatientSaveRequest request) {
+        long start = System.currentTimeMillis();
         Patient patient = new Patient();
         BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime");
         patient.setId(null);
@@ -100,11 +109,13 @@ public class PatientServiceImpl implements PatientService {
             patient.setDoctorId(SecurityUtils.currentUser().getUserId());
         }
         patientMapper.insert(patient);
+        log.info("addPatient id={} cost={}ms", patient.getId(), System.currentTimeMillis() - start);
     }
 
     @Override
     @Transactional
     public void updatePatient(Long id, PatientUpdateRequest request) {
+        long start = System.currentTimeMillis();
         Patient patient = getExistingPatient(id);
         assertNotMasked(request);
         BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime", "doctorId");
@@ -112,14 +123,17 @@ public class PatientServiceImpl implements PatientService {
             patient.setDoctorId(request.getDoctorId());
         }
         patientMapper.updateById(patient);
+        log.info("updatePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
     @Override
     @Transactional
     public void deletePatient(Long id) {
+        long start = System.currentTimeMillis();
         Patient patient = getExistingPatient(id);
         patient.setStatus(0);
         patientMapper.updateById(patient);
+        log.info("deletePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
     private Patient getExistingPatient(Long id) {
@@ -144,10 +158,12 @@ public class PatientServiceImpl implements PatientService {
         return value != null && value.contains("*");
     }
 
-    private PatientVO toVO(Patient patient) {
-        PatientVO vo = new PatientVO();
-        BeanUtils.copyProperties(patient, vo);
-        return vo;
+    private Long currentUserIdSafely() {
+        try {
+            return SecurityUtils.currentUser().getUserId();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void enrich(List<PatientVO> vos) {

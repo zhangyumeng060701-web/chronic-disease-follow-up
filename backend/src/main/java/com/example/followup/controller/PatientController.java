@@ -31,19 +31,22 @@ public class PatientController {
     private PatientService patientService;
 
     @GetMapping
-    @ApiOperation("分页查询患者列表")
+    @ApiOperation(value = "分页查询患者列表",
+            notes = "示例：GET /api/patients?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限，404 不存在，500 服务异常。")
     public Result<PageResponse<PatientVO>> list(@Valid PatientQuery query) {
         return Result.success(patientService.listPatients(query));
     }
 
     @GetMapping("/{id}")
-    @ApiOperation("获取患者详情")
+    @ApiOperation(value = "获取患者详情",
+            notes = "示例：GET /api/patients/1。错误码：401 未登录，403 无权限，404 不存在。")
     public Result<PatientVO> getById(@PathVariable Long id) {
         return Result.success(patientService.getPatientById(id));
     }
 
     @PostMapping
-    @ApiOperation("新增患者")
+    @ApiOperation(value = "新增患者",
+            notes = "请求体包含 name/gender/age/phone/idCard/address/diseaseType 等字段。错误码：400 参数错误，401 未登录，403 无权限。")
     @OperationLog(operation = "新增患者", targetType = "Patient")
     public Result<Void> add(@Valid @RequestBody PatientSaveRequest request) {
         patientService.addPatient(request);
@@ -51,7 +54,8 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    @ApiOperation("编辑患者")
+    @ApiOperation(value = "编辑患者",
+            notes = "请求体与新增一致，路径 id 必填。错误码：400 参数错误，403 无权限，404 不存在。")
     @OperationLog(operation = "编辑患者", targetType = "Patient")
     public Result<Void> update(@PathVariable Long id, @Valid @RequestBody PatientUpdateRequest request) {
         patientService.updatePatient(id, request);
@@ -59,7 +63,8 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("删除患者（软删除）")
+    @ApiOperation(value = "删除患者（软删除）",
+            notes = "示例：DELETE /api/patients/1。错误码：401 未登录，403 无权限，404 不存在。")
     @OperationLog(operation = "删除患者", targetType = "Patient")
     public Result<Void> delete(@PathVariable Long id) {
         patientService.deletePatient(id);

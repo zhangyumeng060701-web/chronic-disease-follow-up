@@ -30,19 +30,22 @@ public class FollowUpController {
     private FollowUpService followUpService;
 
     @GetMapping
-    @ApiOperation("分页查询随访记录")
+    @ApiOperation(value = "分页查询随访记录",
+            notes = "示例：GET /api/follow-ups?page=1&size=20&startDate=2026-08-01&endDate=2026-08-31。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<FollowUpVO>> list(@Valid FollowUpQuery query) {
         return Result.success(followUpService.listFollowUps(query));
     }
 
     @GetMapping("/{id}")
-    @ApiOperation("获取随访记录详情")
+    @ApiOperation(value = "获取随访记录详情",
+            notes = "示例：GET /api/follow-ups/1。错误码：401 未登录，403 无权限，404 不存在。")
     public Result<FollowUp> getById(@PathVariable Long id) {
         return Result.success(followUpService.getFollowUpById(id));
     }
 
     @PostMapping
-    @ApiOperation("新增随访记录")
+    @ApiOperation(value = "新增随访记录",
+            notes = "请求体包含 patientId/followUpDate/followUpType 等字段。错误码：400 参数错误，401 未登录，403 无权限。")
     @OperationLog(operation = "新增随访记录", targetType = "FollowUp")
     public Result<Void> add(@Valid @RequestBody FollowUp followUp) {
         followUpService.addFollowUp(followUp);
@@ -50,7 +53,8 @@ public class FollowUpController {
     }
 
     @PutMapping("/{id}")
-    @ApiOperation("编辑随访记录")
+    @ApiOperation(value = "编辑随访记录",
+            notes = "请求体与新增一致，路径 id 必填。错误码：400 参数错误，403 无权限，404 不存在。")
     @OperationLog(operation = "编辑随访记录", targetType = "FollowUp")
     public Result<Void> update(@PathVariable Long id, @Valid @RequestBody FollowUp followUp) {
         followUp.setId(id);
@@ -59,7 +63,8 @@ public class FollowUpController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("删除随访记录")
+    @ApiOperation(value = "删除随访记录",
+            notes = "示例：DELETE /api/follow-ups/1。错误码：401 未登录，403 无权限，404 不存在。")
     @OperationLog(operation = "删除随访记录", targetType = "FollowUp")
     public Result<Void> delete(@PathVariable Long id) {
         followUpService.deleteFollowUp(id);
@@ -67,7 +72,8 @@ public class FollowUpController {
     }
 
     @GetMapping("/overdue")
-    @ApiOperation("查询逾期未随访的患者")
+    @ApiOperation(value = "查询逾期未随访的患者",
+            notes = "返回超期 7 天以上记录。错误码：401 未登录，403 无权限。")
     public Result<?> getOverdue() {
         return Result.success(followUpService.listOverdueFollowUps());
     }

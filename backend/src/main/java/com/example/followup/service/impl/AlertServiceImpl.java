@@ -13,6 +13,7 @@ import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.AlertService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AlertServiceImpl implements AlertService {
 
@@ -31,6 +33,7 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public PageResponse<AlertVO> listAlerts(AlertQuery query) {
+        long start = System.currentTimeMillis();
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
         if (query.getAlertType() != null && !query.getAlertType().isEmpty()) {
             wrapper.eq(Alert::getAlertType, query.getAlertType());
@@ -66,11 +69,13 @@ public class AlertServiceImpl implements AlertService {
             return vo;
         }).collect(Collectors.toList());
 
+        log.info("listAlerts total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
     @Override
     public void resolveAlert(Long id) {
+        long start = System.currentTimeMillis();
         Alert alert = alertMapper.selectById(id);
         if (alert == null) {
             throw new BusinessException(ErrorCode.ALERT_NOT_FOUND);
@@ -78,5 +83,6 @@ public class AlertServiceImpl implements AlertService {
         alert.setIsResolved(1);
         alert.setResolveTime(LocalDateTime.now());
         alertMapper.updateById(alert);
+        log.info("resolveAlert id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 }

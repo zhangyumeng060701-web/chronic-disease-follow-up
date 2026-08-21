@@ -30,13 +30,15 @@ public class UserController {
     private SysUserService sysUserService;
 
     @GetMapping
-    @ApiOperation("分页查询用户列表")
+    @ApiOperation(value = "分页查询用户列表",
+            notes = "示例：GET /api/users?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<UserVO>> list(@Valid UserQuery query) {
         return Result.success(sysUserService.listUsers(query));
     }
 
     @PostMapping
-    @ApiOperation("新增用户")
+    @ApiOperation(value = "新增用户",
+            notes = "请求体包含 username/password/realName/role。错误码：400 参数错误，401 未登录，403 无权限。")
     @OperationLog(operation = "新增用户", targetType = "User")
     public Result<Void> create(@Valid @RequestBody CreateUserRequest request) {
         sysUserService.createUser(request);
@@ -44,7 +46,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @ApiOperation("编辑用户")
+    @ApiOperation(value = "编辑用户",
+            notes = "密码留空表示不修改。错误码：400 参数错误，401 未登录，403 无权限，404 不存在。")
     @OperationLog(operation = "编辑用户", targetType = "User")
     public Result<Void> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
         sysUserService.updateUser(id, request);
@@ -52,7 +55,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}/toggle-status")
-    @ApiOperation("启用/禁用用户")
+    @ApiOperation(value = "启用/禁用用户",
+            notes = "示例：PUT /api/users/1/toggle-status。错误码：401 未登录，403 无权限，404 不存在。")
     @OperationLog(operation = "切换用户状态", targetType = "User")
     public Result<Void> toggleStatus(@PathVariable Long id) {
         sysUserService.toggleUserStatus(id);
