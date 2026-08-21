@@ -1,5 +1,10 @@
 import request from './request'
 
+/**
+ * 分页查询患者列表
+ * @param {Object} params
+ * @returns {Promise<import('./types').ApiResult>}
+ */
 export function getPatientList(params) {
   return request.get('/patients', { params })
 }

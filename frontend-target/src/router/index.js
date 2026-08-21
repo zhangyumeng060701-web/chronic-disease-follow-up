@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { resolveRoute } from './guard'
 
 const routes = [
   {
@@ -57,16 +58,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
-  if (to.path !== '/login' && !token) {
-    next('/login')
-  } else if (to.path === '/login' && token) {
-    next('/dashboard')
-  } else if (to.meta?.requiresAdmin && role !== 'ADMIN') {
-    next('/dashboard')
-  } else {
+  const decision = resolveRoute(to, {
+    token: localStorage.getItem('token'),
+    role: localStorage.getItem('role')
+  })
+  if (decision === true) {
     next()
+  } else {
+    next(decision)
   }
 })
 
