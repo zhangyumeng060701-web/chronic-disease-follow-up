@@ -19,7 +19,7 @@
     <el-button type="primary" @click="handleAdd">新增随访</el-button>
 
     <el-table :data="tableData" border stripe v-loading="loading"
-      empty-text="暂无随访记录" style="margin-top:16px">
+      :empty-text="EMPTY_TEXT.FOLLOW_UP" style="margin-top:16px">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="followUpDate" label="随访日期" width="110" />
       <el-table-column prop="followUpType" label="随访方式" width="80">
@@ -125,6 +125,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { EMPTY_TEXT } from '@/constants/domain'
 import { getFollowUpList, addFollowUp, updateFollowUp, deleteFollowUp } from '@/api/followUp'
 import { getPatientList } from '@/api/patient'
 import { ElMessage, ElMessageBox } from 'element-plus'

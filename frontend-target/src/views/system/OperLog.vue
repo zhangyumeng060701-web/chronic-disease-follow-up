@@ -18,7 +18,7 @@
       border
       stripe
       v-loading="loading"
-      empty-text="暂无操作日志"
+      :empty-text="EMPTY_TEXT.LOG"
       style="margin-top:16px"
     >
       <el-table-column prop="username" label="操作人" width="100" />
@@ -43,6 +43,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { EMPTY_TEXT } from '@/constants/domain'
 import { getLogList } from '@/api/log'
 import { ElMessage } from 'element-plus'
 

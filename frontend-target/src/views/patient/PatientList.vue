@@ -1,21 +1,6 @@
 <template>
   <div class="patient-list">
-    <el-form :model="searchForm" inline>
-      <el-form-item label="姓名">
-        <el-input v-model="searchForm.name" placeholder="请输入" clearable @input="debouncedSearch" />
-      </el-form-item>
-      <el-form-item label="慢病类型">
-        <el-select v-model="searchForm.diseaseType" placeholder="请选择" clearable @change="handleSearch">
-          <el-option label="高血压" value="HYPERTENSION" />
-          <el-option label="糖尿病" value="DIABETES" />
-          <el-option label="两者皆有" value="BOTH" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <PatientSearchBar v-model="searchForm" @search="handleSearch" @reset="handleReset" />
 
     <el-button type="primary" @click="handleAdd">新增患者</el-button>
 
@@ -79,56 +64,25 @@
       style="margin-top:16px;justify-content:flex-end"
     />
 
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px" @closed="resetForm">
-      <el-form :model="formData" :rules="rules" ref="formRef" label-width="100px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="formData.name" />
-        </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="formData.gender">
-            <el-option label="男" value="男" />
-            <el-option label="女" value="女" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="formData.age" :min="0" :max="150" />
-        </el-form-item>
-        <el-form-item label="慢病类型" prop="diseaseType">
-          <el-select v-model="formData.diseaseType">
-            <el-option label="高血压" value="HYPERTENSION" />
-            <el-option label="糖尿病" value="DIABETES" />
-            <el-option label="两者皆有" value="BOTH" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-model="formData.phone" />
-        </el-form-item>
-        <el-form-item label="身份证号">
-          <el-input v-model="formData.idCard" />
-        </el-form-item>
-        <el-form-item label="住址">
-          <el-input v-model="formData.address" />
-        </el-form-item>
-        <el-form-item label="病史">
-          <el-input v-model="formData.medicalHistory" type="textarea" :rows="2" />
-        </el-form-item>
-        <el-form-item label="用药信息">
-          <el-input v-model="formData.medicationInfo" type="textarea" :rows="2" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="handleSubmit">确定</el-button>
-      </template>
-    </el-dialog>
+    <PatientFormDialog
+      ref="dialogRef"
+      v-model:visible="dialogVisible"
+      :title="dialogTitle"
+      :form="formData"
+      :rules="rules"
+      :submitting="submitting"
+      @submit="handleSubmit"
+      @closed="resetForm"
+    />
   </div>
 </template>
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/patient'
+import PatientSearchBar from '@/components/PatientSearchBar.vue'
+import PatientFormDialog from '@/components/PatientFormDialog.vue'
 import { useTable } from '@/composables/useTable'
-import { useDebounce } from '@/composables/useDebounce'
 import { toPatientPayload } from '@/utils/patientPayload'
 import { DISEASE_TYPES, EMPTY_TEXT, STATUS } from '@/constants/domain'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -140,7 +94,7 @@ const { loading, error, tableData, pagination, load, search } = useTable({
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
-const formRef = ref(null)
+const dialogRef = ref(null)
 const submitting = ref(false)
 const isEdit = ref(false)
 const editId = ref(null)
@@ -171,11 +125,7 @@ function handlePageChange() {
   load()
 }
 
-const debouncedSearch = useDebounce(() => search(queryParams()), 300)
-
 function handleReset() {
-  searchForm.name = ''
-  searchForm.diseaseType = ''
   search(queryParams())
 }
 
@@ -208,7 +158,7 @@ async function handleDelete(row) {
 
 async function handleSubmit() {
   try {
-    await formRef.value.validate()
+    await dialogRef.value?.formRef?.validate()
   } catch {
     return
   }
@@ -232,7 +182,6 @@ async function handleSubmit() {
 
 function resetForm() {
   Object.assign(formData, emptyForm())
-  formRef.value?.resetFields()
 }
 
 onMounted(() => load())
