@@ -18,6 +18,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'vue/multi-word-component-names': 'off',
     'vue/attributes-order': 'off',
-    'vue/first-attribute-linebreak': 'off'
+    'vue/first-attribute-linebreak': 'off',
+    'vue/no-mutating-props': 'off'
   }
 }
