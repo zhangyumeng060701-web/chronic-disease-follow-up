@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="alert-list">
     <el-form :model="searchForm" inline>
       <el-form-item label="预警类型">
@@ -24,6 +24,15 @@
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-bottom:12px"
+    />
 
     <el-table :data="tableData" border stripe v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
@@ -64,47 +73,52 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { getAlertList, resolveAlert } from '@/api/alert'
+import { useTable } from '@/composables/useTable'
 import { ALERT_LEVELS, EMPTY_TEXT } from '@/constants/domain'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ alertType: '', alertLevel: '', isResolved: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getAlertList
+})
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const params = { page: pagination.page, size: pagination.size }
-    if (searchForm.alertType) params.alertType = searchForm.alertType
-    if (searchForm.alertLevel) params.alertLevel = searchForm.alertLevel
-    if (searchForm.isResolved !== '') params.isResolved = searchForm.isResolved
-    const res = await getAlertList(params)
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+function queryParams() {
+  const params = {}
+  if (searchForm.alertType) params.alertType = searchForm.alertType
+  if (searchForm.alertLevel) params.alertLevel = searchForm.alertLevel
+  if (searchForm.isResolved !== '') params.isResolved = searchForm.isResolved
+  return params
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
+function handlePageChange() {
+  load()
+}
+
+function handleSearch() {
+  search(queryParams())
+}
+
 function handleReset() {
-  searchForm.alertType = ''; searchForm.alertLevel = ''; searchForm.isResolved = ''
-  handleSearch()
+  searchForm.alertType = ''
+  searchForm.alertLevel = ''
+  searchForm.isResolved = ''
+  search(queryParams())
 }
 
 async function handleResolve(row) {
   await resolveAlert(row.id)
   ElMessage.success('预警已处理')
-  fetchData()
+  load()
 }
 
-onMounted(() => fetchData())
+onMounted(() => load())
 </script>

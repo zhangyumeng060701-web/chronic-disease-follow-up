@@ -13,6 +13,15 @@
       </el-form-item>
     </el-form>
 
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-bottom:12px"
+    />
+
     <el-table
       :data="tableData"
       border
@@ -35,7 +44,7 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
   </div>
@@ -45,36 +54,28 @@
 import { ref, reactive, onMounted } from 'vue'
 import { EMPTY_TEXT } from '@/constants/domain'
 import { getLogList } from '@/api/log'
-import { ElMessage } from 'element-plus'
+import { useTable } from '@/composables/useTable'
 
 const searchForm = reactive({ username: '', operation: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getLogList
+})
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const res = await getLogList({
-      page: pagination.page,
-      size: pagination.size,
-      username: searchForm.username || undefined,
-      operation: searchForm.operation || undefined
-    })
-    tableData.value = res.data.records || []
-    pagination.total = res.data.total || 0
-  } catch {
-    ElMessage.error('加载操作日志失败，请稍后重试')
-    tableData.value = []
-  } finally {
-    loading.value = false
+function queryParams() {
+  return {
+    username: searchForm.username || undefined,
+    operation: searchForm.operation || undefined
   }
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.username = ''; searchForm.operation = ''; handleSearch() }
+function handlePageChange() {
+  load()
+}
 
-onMounted(() => fetchData())
+function handleSearch() { search(queryParams()) }
+function handleReset() { searchForm.username = ''; searchForm.operation = ''; search(queryParams()) }
+
+onMounted(() => load())
 </script>
 
 <style scoped>

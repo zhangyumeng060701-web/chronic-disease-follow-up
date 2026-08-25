@@ -18,6 +18,15 @@
 
     <el-button type="primary" @click="handleAdd">新增随访</el-button>
 
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-top:12px"
+    />
+
     <el-table :data="tableData" border stripe v-loading="loading"
       :empty-text="EMPTY_TEXT.FOLLOW_UP" style="margin-top:16px">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
@@ -65,7 +74,7 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
 
@@ -128,14 +137,15 @@ import { ref, reactive, onMounted } from 'vue'
 import { EMPTY_TEXT } from '@/constants/domain'
 import { getFollowUpList, addFollowUp, updateFollowUp, deleteFollowUp } from '@/api/followUp'
 import { getPatientList } from '@/api/patient'
+import { useTable } from '@/composables/useTable'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ patientId: '' })
 const dateRange = ref([])
 const patientOptions = ref([])
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getFollowUpList
+})
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -165,28 +175,22 @@ async function fetchPatients() {
   }
 }
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const params = { page: pagination.page, size: pagination.size }
-    if (searchForm.patientId) params.patientId = searchForm.patientId
-    if (dateRange.value && dateRange.value.length === 2) {
-      params.startDate = dateRange.value[0]
-      params.endDate = dateRange.value[1]
-    }
-    const res = await getFollowUpList(params)
-    tableData.value = res.data.records || []
-    pagination.total = res.data.total || 0
-  } catch {
-    ElMessage.error('加载随访记录失败，请稍后重试')
-    tableData.value = []
-  } finally {
-    loading.value = false
+function queryParams() {
+  const params = {}
+  if (searchForm.patientId) params.patientId = searchForm.patientId
+  if (dateRange.value && dateRange.value.length === 2) {
+    params.startDate = dateRange.value[0]
+    params.endDate = dateRange.value[1]
   }
+  return params
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.patientId = ''; dateRange.value = []; handleSearch() }
+function handlePageChange() {
+  load()
+}
+
+function handleSearch() { search(queryParams()) }
+function handleReset() { searchForm.patientId = ''; dateRange.value = []; search(queryParams()) }
 
 function handleAdd() {
   dialogTitle.value = '新增随访'
@@ -215,7 +219,7 @@ async function handleDelete(row) {
     await ElMessageBox.confirm('确定删除该随访记录吗？', '提示', { type: 'warning' })
     await deleteFollowUp(row.id)
     ElMessage.success('删除成功')
-    fetchData()
+    load()
   } catch {
     // user cancels or delete fails
   }
@@ -238,7 +242,7 @@ async function handleSubmit() {
       ElMessage.success('新增成功')
     }
     dialogVisible.value = false
-    fetchData()
+    load()
   } catch {
     ElMessage.error('操作失败，请稍后重试')
   } finally {
@@ -251,7 +255,7 @@ function resetForm() {
   formRef.value?.resetFields()
 }
 
-onMounted(() => { fetchPatients(); fetchData() })
+onMounted(() => { fetchPatients(); load() })
 </script>
 
 <style scoped>

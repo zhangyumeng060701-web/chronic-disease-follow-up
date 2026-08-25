@@ -18,6 +18,15 @@
 
     <el-button type="primary" @click="handleAdd">新增用户</el-button>
 
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-top:12px"
+    />
+
     <el-table
       :data="tableData"
       border
@@ -64,7 +73,7 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
 
@@ -106,12 +115,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { getUserList, createUser, updateUser, toggleUserStatus } from '@/api/user'
 import { EMPTY_TEXT, ROLES, STATUS } from '@/constants/domain'
+import { useTable } from '@/composables/useTable'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ username: '', role: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getUserList
+})
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
@@ -129,27 +139,19 @@ const rules = {
   role: [{ required: true, message: '请选择角色', trigger: 'change' }]
 }
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const res = await getUserList({
-      page: pagination.page,
-      size: pagination.size,
-      username: searchForm.username || undefined,
-      role: searchForm.role || undefined
-    })
-    tableData.value = res.data.records || []
-    pagination.total = res.data.total || 0
-  } catch {
-    ElMessage.error('加载用户列表失败，请稍后重试')
-    tableData.value = []
-  } finally {
-    loading.value = false
+function queryParams() {
+  return {
+    username: searchForm.username || undefined,
+    role: searchForm.role || undefined
   }
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.username = ''; searchForm.role = ''; handleSearch() }
+function handlePageChange() {
+  load()
+}
+
+function handleSearch() { search(queryParams()) }
+function handleReset() { searchForm.username = ''; searchForm.role = ''; search(queryParams()) }
 
 function handleAdd() {
   dialogTitle.value = '新增用户'
@@ -177,7 +179,7 @@ async function handleToggle(row) {
   try {
     await toggleUserStatus(row.id)
     ElMessage.success(row.status === 1 ? '已禁用' : '已启用')
-    fetchData()
+    load()
   } catch {
     ElMessage.error('操作失败，请稍后重试')
   }
@@ -199,7 +201,7 @@ async function handleSubmit() {
       ElMessage.success('新增成功')
     }
     dialogVisible.value = false
-    fetchData()
+    load()
   } catch {
     ElMessage.error('保存失败，请稍后重试')
   } finally {
@@ -212,7 +214,7 @@ function resetForm() {
   formRef.value?.resetFields()
 }
 
-onMounted(() => fetchData())
+onMounted(() => load())
 </script>
 
 <style scoped>
