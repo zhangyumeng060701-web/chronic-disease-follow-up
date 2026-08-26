@@ -21,5 +21,6 @@ public class FollowUpVO {
     private String advice;
     private LocalDate nextFollowUpDate;
     private Long doctorId;
+    private String sourceType;
     private LocalDateTime createTime;
 }

@@ -6,5 +6,7 @@ import com.example.followup.dto.response.PageResponse;
 
 public interface AlertService {
     PageResponse<AlertVO> listAlerts(AlertQuery query);
+    void contactAlert(Long id);
     void resolveAlert(Long id);
+    void referAlert(Long id, String referralReason);
 }

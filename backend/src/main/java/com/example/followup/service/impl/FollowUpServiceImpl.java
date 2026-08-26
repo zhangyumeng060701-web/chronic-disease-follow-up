@@ -169,8 +169,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         if (previous == null) return;
 
         List<AlertRule> rules = alertRuleMapper.findActiveRules();
+        Patient patient = patientMapper.selectById(patientId);
         // 规则匹配统一交给 AlertRuleEngine，Service 只负责数据获取与落库
-        List<Alert> alerts = alertRuleEngine.evaluate(followUp, previous, rules);
+        List<Alert> alerts = alertRuleEngine.evaluate(followUp, previous, patient, rules);
 
         if (!alerts.isEmpty()) {
             alertMapper.batchInsert(alerts);

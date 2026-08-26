@@ -11,8 +11,10 @@ import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.CurrentUser;
 import com.example.followup.service.impl.PatientServiceImpl;
+import com.example.followup.util.SensitiveDataCipher;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class PatientServiceAccessControlTest {
@@ -42,6 +45,8 @@ class PatientServiceAccessControlTest {
     private FollowUpMapper followUpMapper;
     @Mock
     private SysUserMapper sysUserMapper;
+    @Mock
+    private SensitiveDataCipher sensitiveDataCipher;
     @InjectMocks
     private PatientServiceImpl patientService;
 
@@ -55,6 +60,12 @@ class PatientServiceAccessControlTest {
     @AfterEach
     void clearSecurityContext() {
         SecurityContextHolder.clearContext();
+    }
+
+    @BeforeEach
+    void stubCipher() {
+        lenient().when(sensitiveDataCipher.decrypt(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(sensitiveDataCipher.encrypt(any())).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     @Test

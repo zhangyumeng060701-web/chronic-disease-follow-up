@@ -2,6 +2,7 @@ package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.followup.constant.DomainConstants;
 import com.example.followup.dto.request.AlertQuery;
 import com.example.followup.dto.response.AlertVO;
 import com.example.followup.dto.response.PageResponse;
@@ -57,6 +58,9 @@ public class AlertServiceImpl implements AlertService {
         if (query.getIsResolved() != null) {
             wrapper.eq(Alert::getIsResolved, query.getIsResolved());
         }
+        if (query.getAlertStatus() != null && !query.getAlertStatus().isEmpty()) {
+            wrapper.eq(Alert::getAlertStatus, query.getAlertStatus());
+        }
         wrapper.orderByDesc(Alert::getCreateTime);
 
         Page<Alert> page = new Page<>(query.getPage(), query.getSize());
@@ -77,6 +81,14 @@ public class AlertServiceImpl implements AlertService {
             vo.setAlertLevel(a.getAlertLevel());
             vo.setAlertReason(a.getAlertReason());
             vo.setIsResolved(a.getIsResolved());
+            vo.setAlertStatus(a.getAlertStatus());
+            vo.setContactTime(a.getContactTime());
+            vo.setReferralReason(a.getReferralReason());
+            vo.setRecommendedActions(a.getRecommendedActions());
+            vo.setRecheckItems(a.getRecheckItems());
+            vo.setReferralConditions(a.getReferralConditions());
+            vo.setEvidenceSource(a.getEvidenceSource());
+            vo.setRiskLevel(a.getRiskLevel());
             vo.setResolveTime(a.getResolveTime());
             vo.setCreateTime(a.getCreateTime());
             return vo;
@@ -87,20 +99,48 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
+    public void contactAlert(Long id) {
+        Alert alert = getAlertOrThrow(id);
+        alert.setAlertStatus(DomainConstants.ALERT_STATUS_CONTACTED);
+        alert.setContactTime(LocalDateTime.now());
+        alertMapper.updateById(alert);
+        log.info("contactAlert id={}", id);
+    }
+
+    @Override
     public void resolveAlert(Long id) {
-        long start = System.currentTimeMillis();
+        Alert alert = getAlertOrThrow(id);
+        alert.setIsResolved(1);
+        alert.setAlertStatus(DomainConstants.ALERT_STATUS_RESOLVED);
+        alert.setResolveTime(LocalDateTime.now());
+        alertMapper.updateById(alert);
+        log.info("resolveAlert id={}", id);
+    }
+
+    @Override
+    public void referAlert(Long id, String referralReason) {
+        Alert alert = getAlertOrThrow(id);
+        alert.setIsResolved(1);
+        alert.setAlertStatus(DomainConstants.ALERT_STATUS_REFERRED);
+        alert.setReferralReason(referralReason);
+        alert.setResolveTime(LocalDateTime.now());
+        alertMapper.updateById(alert);
+        log.info("referAlert id={}", id);
+    }
+
+    private Alert getAlertOrThrow(Long id) {
         Alert alert = alertMapper.selectById(id);
         if (alert == null) {
             throw new BusinessException(ErrorCode.ALERT_NOT_FOUND);
         }
         assertAlertAccess(alert);
-        alert.setIsResolved(1);
-        alert.setResolveTime(LocalDateTime.now());
-        alertMapper.updateById(alert);
-        log.info("resolveAlert id={} cost={}ms", id, System.currentTimeMillis() - start);
+        return alert;
     }
+
     private void assertAlertAccess(Alert alert) {
-        if (SecurityUtils.isAdmin()) return;
+        if (SecurityUtils.isAdmin()) {
+            return;
+        }
         Patient patient = patientMapper.selectById(alert.getPatientId());
         if (patient == null || !SecurityUtils.currentUser().getUserId().equals(patient.getDoctorId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);

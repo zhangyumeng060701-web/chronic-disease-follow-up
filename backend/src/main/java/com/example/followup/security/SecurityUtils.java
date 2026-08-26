@@ -22,4 +22,16 @@ public final class SecurityUtils {
     public static boolean isAdmin() {
         return currentUser().isAdmin();
     }
+
+    public static boolean isPatient() {
+        return currentUser().isPatient();
+    }
+
+    public static Long patientId() {
+        CurrentUser currentUser = currentUser();
+        if (!currentUser.isPatient() || currentUser.getPatientId() == null) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+        return currentUser.getPatientId();
+    }
 }

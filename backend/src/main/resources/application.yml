@@ -21,9 +21,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      logic-delete-field: status
-      logic-delete-value: 0
-      logic-not-delete-value: 1
+      id-type: auto
 
 knife4j:
   enable: true
@@ -33,6 +31,15 @@ knife4j:
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
+
+data:
+  encryption:
+    key: ${DATA_ENCRYPTION_KEY:}
+
+agent:
+  arts:
+    api-key: ${AGENT_ARTS_API_KEY:}
+    session-id: ${AGENT_ARTS_SESSION_ID:}
 
 app:
   cors:

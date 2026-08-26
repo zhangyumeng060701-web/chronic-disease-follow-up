@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @Data
 public class PatientSaveRequest {
@@ -38,6 +39,15 @@ public class PatientSaveRequest {
 
     @Size(max = 1000, message = "用药信息长度不能超过1000")
     private String medicationInfo;
+
+    private BigDecimal heightCm;
+    private BigDecimal weightKg;
+    private String smoking;
+    private String drinking;
+    @Size(max = 1000, message = "过敏史长度不能超过1000")
+    private String allergyHistory;
+    @Size(max = 1000, message = "用药史长度不能超过1000")
+    private String medicationHistory;
 
     private Long doctorId;
 }

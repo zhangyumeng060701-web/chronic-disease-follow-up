@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Data
 public class PatientVO {
@@ -18,6 +19,13 @@ public class PatientVO {
     private String diseaseType;
     private String medicalHistory;
     private String medicationInfo;
+    private BigDecimal heightCm;
+    private BigDecimal weightKg;
+    private BigDecimal bmi;
+    private String smoking;
+    private String drinking;
+    private String allergyHistory;
+    private String medicationHistory;
     private Long doctorId;
     private String doctorName;
     private LocalDate lastFollowUpDate;

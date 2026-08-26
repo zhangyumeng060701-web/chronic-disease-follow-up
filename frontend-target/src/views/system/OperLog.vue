@@ -24,8 +24,6 @@
 
     <el-table
       :data="tableData"
-      border
-      stripe
       v-loading="loading"
       :empty-text="EMPTY_TEXT.LOG"
       style="margin-top:16px"
@@ -80,6 +78,6 @@ onMounted(() => load())
 
 <style scoped>
 .oper-log {
-  padding: 16px;
+  padding: var(--layout-main-padding);
 }
 </style>

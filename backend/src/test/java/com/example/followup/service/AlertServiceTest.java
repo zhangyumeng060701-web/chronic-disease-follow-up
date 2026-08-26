@@ -61,11 +61,44 @@ class AlertServiceTest {
         Alert alert = new Alert();
         alert.setId(9L);
         alert.setIsResolved(0);
+        alert.setAlertStatus("PENDING");
         when(alertMapper.selectById(9L)).thenReturn(alert);
 
         alertService.resolveAlert(9L);
 
         assertEquals(1, alert.getIsResolved());
+        assertEquals("RESOLVED", alert.getAlertStatus());
+        verify(alertMapper).updateById(alert);
+    }
+
+    @Test
+    @DisplayName("标记预警为已联系")
+    void contactMarksAlert() {
+        Alert alert = new Alert();
+        alert.setId(3L);
+        alert.setAlertStatus("PENDING");
+        when(alertMapper.selectById(3L)).thenReturn(alert);
+
+        alertService.contactAlert(3L);
+
+        assertEquals("CONTACTED", alert.getAlertStatus());
+        verify(alertMapper).updateById(alert);
+    }
+
+    @Test
+    @DisplayName("预警转门诊记录原因")
+    void referMarksAlert() {
+        Alert alert = new Alert();
+        alert.setId(4L);
+        alert.setIsResolved(0);
+        alert.setAlertStatus("CONTACTED");
+        when(alertMapper.selectById(4L)).thenReturn(alert);
+
+        alertService.referAlert(4L, "血压持续偏高，需上级医院评估");
+
+        assertEquals(1, alert.getIsResolved());
+        assertEquals("REFERRED", alert.getAlertStatus());
+        assertEquals("血压持续偏高，需上级医院评估", alert.getReferralReason());
         verify(alertMapper).updateById(alert);
     }
 }

@@ -17,4 +17,5 @@ public class AlertQuery {
     private String alertType;
     private String alertLevel;
     private Integer isResolved;
+    private String alertStatus;
 }

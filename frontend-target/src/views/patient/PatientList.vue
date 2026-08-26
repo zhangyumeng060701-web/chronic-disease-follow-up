@@ -1,8 +1,9 @@
 <template>
   <div class="patient-list">
-    <PatientSearchBar v-model="searchForm" @search="handleSearch" @reset="handleReset" />
-
-    <el-button type="primary" @click="handleAdd">新增患者</el-button>
+    <div class="list-toolbar">
+      <PatientSearchBar v-model="searchForm" @search="handleSearch" @reset="handleReset" />
+      <el-button type="primary" @click="handleAdd">新增患者</el-button>
+    </div>
 
     <el-alert
       v-if="error"
@@ -15,8 +16,6 @@
 
     <el-table
       :data="tableData"
-      border
-      stripe
       v-loading="loading"
       :empty-text="EMPTY_TEXT.PATIENT"
       style="margin-top:16px"
@@ -101,7 +100,9 @@ const editId = ref(null)
 
 const emptyForm = () => ({
   name: '', gender: '', age: null, diseaseType: '',
-  phone: '', idCard: '', address: '', medicalHistory: '', medicationInfo: ''
+  phone: '', idCard: '', address: '', medicalHistory: '', medicationInfo: '',
+  heightCm: null, weightKg: null, smoking: '', drinking: '',
+  allergyHistory: '', medicationHistory: ''
 })
 const formData = reactive(emptyForm())
 const rules = {
@@ -190,5 +191,19 @@ onMounted(() => load())
 <style scoped>
 .patient-list {
   padding: var(--layout-main-padding);
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .list-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 </style>

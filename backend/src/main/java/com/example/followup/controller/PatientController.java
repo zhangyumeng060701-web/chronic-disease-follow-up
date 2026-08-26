@@ -37,6 +37,13 @@ public class PatientController {
         return Result.success(patientService.listPatients(query));
     }
 
+    @GetMapping(value = "/export", produces = "text/csv;charset=UTF-8")
+    @ApiOperation(value = "导出患者（自动脱敏并记录审计日志）")
+    @OperationLog(operation = "导出患者", targetType = "Patient")
+    public String export() {
+        return patientService.exportPatientsCsv();
+    }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "获取患者详情",
             notes = "示例：GET /api/patients/1。错误码：401 未登录，403 无权限，404 不存在。")
