@@ -1,22 +1,23 @@
 <template>
   <div class="user-manage">
-    <el-form :model="searchForm" inline>
-      <el-form-item label="用户名">
-        <el-input v-model="searchForm.username" placeholder="请输入" clearable />
-      </el-form-item>
-      <el-form-item label="角色">
-        <el-select v-model="searchForm.role" placeholder="全部" clearable>
-          <el-option label="管理员" value="ADMIN" />
-          <el-option label="医生" value="DOCTOR" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-button type="primary" @click="handleAdd">新增用户</el-button>
+    <div class="list-toolbar">
+      <el-form :model="searchForm" inline>
+        <el-form-item label="用户名">
+          <el-input v-model="searchForm.username" placeholder="请输入" clearable />
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="searchForm.role" placeholder="全部" clearable>
+            <el-option label="管理员" value="ADMIN" />
+            <el-option label="医生" value="DOCTOR" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSearch">查询</el-button>
+          <el-button @click="handleReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="handleAdd">新增用户</el-button>
+    </div>
 
     <el-alert
       v-if="error"
@@ -29,8 +30,6 @@
 
     <el-table
       :data="tableData"
-      border
-      stripe
       v-loading="loading"
       :empty-text="EMPTY_TEXT.USER"
       style="margin-top:16px"
@@ -219,6 +218,20 @@ onMounted(() => load())
 
 <style scoped>
 .user-manage {
-  padding: 16px;
+  padding: var(--layout-main-padding);
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .list-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 </style>

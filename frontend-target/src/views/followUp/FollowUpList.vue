@@ -1,22 +1,23 @@
 <template>
   <div class="followup-list">
-    <el-form :model="searchForm" inline>
-      <el-form-item label="患者">
-        <el-select v-model="searchForm.patientId" placeholder="全部" clearable filterable>
-          <el-option v-for="p in patientOptions" :key="p.id" :label="p.name" :value="p.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="随访日期">
-        <el-date-picker v-model="dateRange" type="daterange" range-separator="至"
-          start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-button type="primary" @click="handleAdd">新增随访</el-button>
+    <div class="list-toolbar">
+      <el-form :model="searchForm" inline>
+        <el-form-item label="患者">
+          <el-select v-model="searchForm.patientId" placeholder="全部" clearable filterable>
+            <el-option v-for="p in patientOptions" :key="p.id" :label="p.name" :value="p.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="随访日期">
+          <el-date-picker v-model="dateRange" type="daterange" range-separator="至"
+            start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSearch">查询</el-button>
+          <el-button @click="handleReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="handleAdd">新增随访</el-button>
+    </div>
 
     <el-alert
       v-if="error"
@@ -27,7 +28,7 @@
       style="margin-top:12px"
     />
 
-    <el-table :data="tableData" border stripe v-loading="loading"
+    <el-table :data="tableData" v-loading="loading"
       :empty-text="EMPTY_TEXT.FOLLOW_UP" style="margin-top:16px">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="followUpDate" label="随访日期" width="110" />
@@ -260,6 +261,20 @@ onMounted(() => { fetchPatients(); load() })
 
 <style scoped>
 .followup-list {
-  padding: 16px;
+  padding: var(--layout-main-padding);
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .list-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 </style>

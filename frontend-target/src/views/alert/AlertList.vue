@@ -34,7 +34,7 @@
       style="margin-bottom:12px"
     />
 
-    <el-table :data="tableData" border stripe v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
+    <el-table :data="tableData" v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="alertType" label="预警类型" width="90">
         <template #default="{ row }">
@@ -122,3 +122,9 @@ async function handleResolve(row) {
 
 onMounted(() => load())
 </script>
+
+<style scoped>
+.alert-list {
+  padding: var(--layout-main-padding);
+}
+</style>

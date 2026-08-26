@@ -1,19 +1,49 @@
 :root {
-  --color-primary: #409EFF;
-  --color-primary-light: #ECF5FF;
-  --color-success: #67C23A;
-  --color-warning: #E6A23C;
-  --color-danger: #F56C6C;
-  --color-info: #909399;
-  --color-bg: #F5F7FA;
+  --color-primary: #0E8F9C;
+  --color-primary-dark: #0A6F79;
+  --color-primary-light: #E9F6F6;
+  --color-accent: #0E8F9C;
+  --color-success: #2F8F6B;
+  --color-warning: #C98A2D;
+  --color-danger: #C84C4C;
+  --color-info: #667B80;
+
+  --color-bg: #EEF3F4;
+  --color-bg-deep: #E6EDEF;
   --color-bg-card: #FFFFFF;
-  --color-border: #DCDFE6;
-  --color-text-primary: #303133;
-  --color-text-regular: #606266;
-  --color-text-secondary: #909399;
-  --layout-header-height: 56px;
-  --layout-sidebar-width: 220px;
-  --layout-main-padding: 20px;
+  --color-border: #D8E2E5;
+  --color-border-strong: #C3D2D6;
+  --color-text-primary: #102B2F;
+  --color-text-regular: #42595E;
+  --color-text-secondary: #71858A;
+  --color-text-placeholder: #9AABB0;
+
+  --color-ink: #0F292E;
+  --color-ink-soft: #143A41;
+  --color-sidebar-text: #AFC6CB;
+  --color-sidebar-active: #FFFFFF;
+
+  --layout-header-height: 60px;
+  --layout-sidebar-width: 232px;
+  --layout-main-padding: 24px;
+
+  --el-color-primary: #0E8F9C;
+  --el-color-primary-light-3: #4DAEB8;
+  --el-color-primary-light-5: #8ACFD4;
+  --el-color-primary-light-7: #C1E4E7;
+  --el-color-primary-light-8: #D8EEF0;
+  --el-color-primary-light-9: #EDF8F9;
+  --el-color-primary-dark-2: #0A6F79;
+  --el-color-success: #2F8F6B;
+  --el-color-warning: #C98A2D;
+  --el-color-danger: #C84C4C;
+  --el-color-info: #667B80;
+
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 999px;
+  --el-box-shadow-light: 0 1px 2px rgba(15, 41, 46, 0.05), 0 8px 24px rgba(15, 41, 46, 0.06);
+  --el-box-shadow: 0 4px 16px rgba(15, 41, 46, 0.12);
 }
 
 *,
@@ -22,15 +52,144 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: light;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-family: "SF Pro Text", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
+  line-height: 1.5;
   color: var(--color-text-regular);
   background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 #app {
   min-height: 100vh;
+}
+
+::selection {
+  color: #FFFFFF;
+  background: var(--color-primary);
+}
+
+.el-main {
+  padding: var(--layout-main-padding);
+}
+
+.el-card {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.el-card__header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.el-table {
+  --el-table-border-color: var(--color-border);
+  --el-table-header-bg-color: #F4F8F9;
+  --el-table-header-text-color: #102B2F;
+  --el-table-row-hover-bg-color: #F1F8F8;
+  font-size: 13px;
+  color: var(--color-text-regular);
+}
+
+.el-table th.el-table__cell {
+  height: 42px;
+  font-weight: 600;
+
+}
+
+.el-table .el-table__cell {
+  padding: 10px 12px;
+}
+
+.el-button {
+  font-weight: 500;
+}
+
+.el-button--primary {
+  box-shadow: 0 1px 0 rgba(15, 41, 46, 0.08);
+}
+
+.el-button--primary:not(.is-disabled):hover,
+.el-button--primary:not(.is-disabled):focus {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.el-dialog {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(15, 41, 46, 0.18);
+}
+
+.el-dialog__title {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.el-form-item__label {
+  color: var(--color-text-regular);
+}
+
+.el-input__wrapper,
+.el-select__wrapper {
+  box-shadow: 0 0 0 1px var(--color-border) inset;
+}
+
+.el-input__wrapper:hover,
+.el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--color-border-strong) inset;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--color-primary) inset;
+}
+
+.el-pagination {
+  --el-pagination-button-bg-color: transparent;
+  --el-pagination-hover-color: var(--color-primary);
+}
+
+.el-tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.el-alert {
+  border-radius: 6px;
+}
+
+.el-loading-mask {
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.el-empty__description p {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --layout-main-padding: 16px;
+    --layout-header-height: 54px;
+  }
 }
