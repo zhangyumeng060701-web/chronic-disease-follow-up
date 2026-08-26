@@ -10,6 +10,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRONTEND_DIR="/var/www/follow-up"
 
 mkdir -p "$FRONTEND_DIR"
+rm -rf "$FRONTEND_DIR"/*
 cp -R "$SOURCE_DIR/dist/." "$FRONTEND_DIR/"
 
 if ! command -v nginx >/dev/null 2>&1; then
