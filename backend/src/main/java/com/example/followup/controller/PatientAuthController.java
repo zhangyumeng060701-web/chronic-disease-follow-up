@@ -7,6 +7,7 @@ import com.example.followup.entity.Patient;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.util.JwtUtil;
+import com.example.followup.util.SensitiveDataCipher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,15 +30,18 @@ public class PatientAuthController {
     private PatientMapper patientMapper;
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private SensitiveDataCipher sensitiveDataCipher;
 
     @PostMapping("/login")
     @ApiOperation(value = "患者端登录")
     public Result<Map<String, String>> login(@Valid @RequestBody PatientLoginRequest request) {
-        Patient patient = patientMapper.selectOne(
-                new LambdaQueryWrapper<Patient>()
-                        .eq(Patient::getPhone, request.getPhone())
-                        .eq(Patient::getIdCard, request.getIdCard())
-                        .last("LIMIT 1"));
+        List<Patient> patients = patientMapper.selectList(new LambdaQueryWrapper<Patient>()
+                .eq(Patient::getStatus, 1));
+        Patient patient = patients.stream()
+                .filter(item -> request.getPhone().equals(sensitiveDataCipher.decrypt(item.getPhone()))
+                        && request.getIdCard().equals(sensitiveDataCipher.decrypt(item.getIdCard())))
+                .findFirst().orElse(null);
         if (patient == null || (patient.getStatus() != null && patient.getStatus() == 0)) {
             return Result.error(ErrorCode.UNAUTHORIZED.getHttpStatus(), "患者不存在或账号已停用");
         }

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.constant.DomainConstants;
+import com.example.followup.dto.request.AISuggestionRequest;
+import com.example.followup.dto.request.FollowUpInput;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.Alert;
@@ -33,6 +35,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -126,8 +129,55 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         suggestion.setContent(content);
         suggestion.setSource("AI");
         suggestion.setStatus(DomainConstants.SUGGESTION_STATUS_PENDING);
+        suggestion.setConfidence(new BigDecimal("0.85"));
+        suggestion.setEvidence("综合最近随访日期与风险分层");
+        suggestion.setRiskLevel(riskText);
         suggestionMapper.insert(suggestion);
         log.info("generateSuggestion patientId={} id={}", patientId, suggestion.getId());
+        return suggestion;
+    }
+
+    @Override
+    @Transactional
+    public FollowUpSuggestion generateAISuggestion(AISuggestionRequest request) {
+        List<FollowUpInput> inputs = request.getRecentFollowUps();
+        if (inputs == null || inputs.isEmpty()) {
+            inputs = loadRecentFollowUps(request.getPatientId());
+        }
+
+        List<String> evidence = new ArrayList<>();
+        String riskLevel = resolveRiskFromInputs(inputs, request.getRiskLevel(), evidence);
+        BigDecimal confidence = inputs.isEmpty()
+                ? new BigDecimal("0.60")
+                : new BigDecimal("0.80")
+                        .add(BigDecimal.valueOf(Math.min(inputs.size(), 3) * 0.05))
+                        .min(new BigDecimal("0.95"));
+
+        String advice;
+        switch (riskLevel) {
+            case DomainConstants.RISK_HIGH:
+                advice = "建议3天内复诊，复核用药方案并评估靶器官风险。";
+                break;
+            case DomainConstants.RISK_MEDIUM:
+                advice = "建议1-2周内随访，加强指标监测与生活方式管理。";
+                break;
+            default:
+                advice = "建议按原计划随访，维持当前生活方式与用药方案。";
+        }
+        String content = "患者当前风险分层为" + riskLevel + "，" + advice
+                + "置信度" + confidence.toPlainString() + "。";
+
+        FollowUpSuggestion suggestion = new FollowUpSuggestion();
+        suggestion.setPatientId(request.getPatientId());
+        suggestion.setContent(content);
+        suggestion.setConfidence(confidence);
+        suggestion.setEvidence(String.join("；", evidence));
+        suggestion.setRiskLevel(riskLevel);
+        suggestion.setSource("AI");
+        suggestion.setStatus(DomainConstants.SUGGESTION_STATUS_PENDING);
+        suggestionMapper.insert(suggestion);
+        log.info("generateAISuggestion patientId={} id={} confidence={} risk={}",
+                request.getPatientId(), suggestion.getId(), confidence, riskLevel);
         return suggestion;
     }
 
@@ -138,9 +188,16 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             wrapper.eq(FollowUpSuggestion::getStatus, status);
         }
         wrapper.orderByDesc(FollowUpSuggestion::getCreateTime);
-        Page<FollowUpSuggestion> p = new Page<>(page, size);
-        suggestionMapper.selectPage(p, wrapper);
-        return PageResponseUtil.of(p, p.getRecords(), page, size);
+        List<FollowUpSuggestion> all = suggestionMapper.selectList(wrapper);
+        int from = Math.min((page - 1) * size, all.size());
+        int to = Math.min(page * size, all.size());
+        List<FollowUpSuggestion> records = all.subList(from, to);
+        PageResponse<FollowUpSuggestion> response = new PageResponse<>();
+        response.setRecords(records);
+        response.setTotal(all.size());
+        response.setPage(page);
+        response.setSize(size);
+        return response;
     }
 
     @Override
@@ -186,6 +243,61 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             throw new BusinessException(ErrorCode.NOT_FOUND, "随访建议不存在");
         }
         return suggestion;
+    }
+
+    private List<FollowUpInput> loadRecentFollowUps(Long patientId) {
+        List<FollowUp> records = followUpMapper.selectList(new LambdaQueryWrapper<FollowUp>()
+                .eq(FollowUp::getPatientId, patientId)
+                .orderByDesc(FollowUp::getFollowUpDate)
+                .last("LIMIT 5"));
+        List<FollowUpInput> inputs = new ArrayList<>();
+        for (FollowUp record : records) {
+            FollowUpInput input = new FollowUpInput();
+            input.setFollowUpDate(record.getFollowUpDate());
+            input.setSystolicBp(record.getSystolicBp());
+            input.setDiastolicBp(record.getDiastolicBp());
+            input.setFastingGlucose(record.getFastingGlucose());
+            input.setPostprandialGlucose(record.getPostprandialGlucose());
+            input.setMedicationAdherence(record.getMedicationAdherence());
+            input.setSymptoms(record.getSymptoms());
+            inputs.add(input);
+        }
+        return inputs;
+    }
+
+    private String resolveRiskFromInputs(List<FollowUpInput> inputs, String fallback, List<String> evidence) {
+        if (inputs == null || inputs.isEmpty()) {
+            evidence.add("无近期随访数据，采用系统默认分层");
+            return StringUtils.hasText(fallback) ? fallback : DomainConstants.RISK_STABLE;
+        }
+        boolean severe = false;
+        boolean moderate = false;
+        for (FollowUpInput input : inputs) {
+            if (input.getSystolicBp() != null) {
+                if (input.getSystolicBp() >= 180) { severe = true; evidence.add("收缩压≥180"); }
+                else if (input.getSystolicBp() >= 140) { moderate = true; evidence.add("收缩压≥140"); }
+            }
+            if (input.getDiastolicBp() != null) {
+                if (input.getDiastolicBp() >= 110) { severe = true; evidence.add("舒张压≥110"); }
+                else if (input.getDiastolicBp() >= 90) { moderate = true; evidence.add("舒张压≥90"); }
+            }
+            if (input.getFastingGlucose() != null) {
+                if (input.getFastingGlucose().compareTo(new BigDecimal("11.1")) >= 0) { severe = true; evidence.add("空腹血糖≥11.1"); }
+                else if (input.getFastingGlucose().compareTo(new BigDecimal("7.0")) >= 0) { moderate = true; evidence.add("空腹血糖≥7.0"); }
+            }
+            if (input.getPostprandialGlucose() != null) {
+                if (input.getPostprandialGlucose().compareTo(new BigDecimal("16.7")) >= 0) { severe = true; evidence.add("餐后血糖≥16.7"); }
+                else if (input.getPostprandialGlucose().compareTo(new BigDecimal("11.1")) >= 0) { moderate = true; evidence.add("餐后血糖≥11.1"); }
+            }
+            if ("间断".equals(input.getMedicationAdherence()) || "不服药".equals(input.getMedicationAdherence())) {
+                moderate = true;
+                evidence.add("用药依从性异常");
+            }
+        }
+        if (severe) return DomainConstants.RISK_HIGH;
+        if (moderate) return DomainConstants.RISK_MEDIUM;
+        evidence.add("近期随访指标处于目标范围");
+        return StringUtils.hasText(fallback) ? fallback : DomainConstants.RISK_STABLE;
     }
 
     private boolean isSevereVital(PatientVital vital) {

@@ -19,7 +19,10 @@
     <el-table :data="tableData" v-loading="loading" empty-text="暂无AI随访建议">
       <el-table-column prop="id" label="ID" width="70" />
       <el-table-column prop="patientId" label="患者ID" width="90" />
+      <el-table-column prop="riskLevel" label="风险" width="90" />
+      <el-table-column prop="confidence" label="置信度" width="80" />
       <el-table-column prop="content" label="建议内容" min-width="260" show-overflow-tooltip />
+      <el-table-column prop="evidence" label="判定依据" min-width="180" show-overflow-tooltip />
       <el-table-column label="状态" width="90">
         <template #default="{ row }">
           <el-tag :type="statusType(row.status)" size="small">{{ statusLabel(row.status) }}</el-tag>

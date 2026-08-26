@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -46,6 +47,14 @@ public class Patient {
 
     @Size(max = 1000, message = "用药信息长度不能超过1000")
     private String medicationInfo;
+
+    private BigDecimal heightCm;
+    private BigDecimal weightKg;
+    private BigDecimal bmi;
+    private String smoking;
+    private String drinking;
+    private String allergyHistory;
+    private String medicationHistory;
 
     private Long doctorId;
     private Integer status;
