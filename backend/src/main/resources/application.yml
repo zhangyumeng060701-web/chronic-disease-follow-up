@@ -31,7 +31,7 @@ knife4j:
     language: zh-CN
 
 jwt:
-  secret: ${JWT_SECRET:chronic-disease-follow-up-secret-key-2026-challenge-cup}
+  secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
 
 app:
