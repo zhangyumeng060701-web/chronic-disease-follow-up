@@ -5,6 +5,13 @@ import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.impl.AlertServiceImpl;
+import com.example.followup.security.CurrentUser;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +33,18 @@ class AlertServiceTest {
     private PatientMapper patientMapper;
     @InjectMocks
     private AlertServiceImpl alertService;
+
+    @BeforeEach
+    void authenticateAdmin() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                new CurrentUser(1L, "admin", "ADMIN"), null,
+                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))));
+    }
+
+    @AfterEach
+    void clearAuthentication() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     @DisplayName("不存在的预警返回 404")

@@ -6,6 +6,7 @@ import com.example.followup.dto.request.FollowUpQuery;
 import com.example.followup.engine.AlertRuleEngine;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
+import com.example.followup.entity.Patient;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
@@ -14,6 +15,12 @@ import com.example.followup.mapper.PatientMapper;
 import com.example.followup.service.impl.FollowUpServiceImpl;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.junit.jupiter.api.BeforeAll;
+import com.example.followup.security.CurrentUser;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,6 +63,23 @@ class FollowUpServiceTest {
     static void initTableMetadata() {
         MybatisConfiguration configuration = new MybatisConfiguration();
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), FollowUp.class);
+    }
+
+    @BeforeEach
+    void authenticateAdminAndPatient() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                new CurrentUser(1L, "admin", "ADMIN"), null,
+                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))));
+        Patient patient = new Patient();
+        patient.setId(1L);
+        patient.setDoctorId(1L);
+        patient.setStatus(1);
+        lenient().when(patientMapper.selectById(any())).thenReturn(patient);
+    }
+
+    @AfterEach
+    void clearAuthentication() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
