@@ -17,7 +17,6 @@ import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
-import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.FollowUpService;
 import com.example.followup.util.DesensitizationUtil;

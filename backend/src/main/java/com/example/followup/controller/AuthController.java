@@ -3,7 +3,6 @@ package com.example.followup.controller;
 import com.example.followup.dto.request.LoginRequest;
 import com.example.followup.dto.response.Result;
 import com.example.followup.entity.SysUser;
-import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.util.JwtUtil;

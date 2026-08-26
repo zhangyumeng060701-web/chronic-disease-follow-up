@@ -26,7 +26,8 @@ async function getJson(request, path, token) {
   const response = await request.get(`${apiBase}${path}`, {
     headers: { Authorization: `Bearer ${token}` }
   })
-  return { response, body: await response.json() }
+  const text = await response.text()
+  return { response, body: text ? JSON.parse(text) : null }
 }
 
 test.beforeAll(requireEnvironment)
