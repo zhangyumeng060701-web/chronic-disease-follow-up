@@ -13,6 +13,7 @@ import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.PatientMapper;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.AlertService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,18 @@ public class AlertServiceImpl implements AlertService {
     public PageResponse<AlertVO> listAlerts(AlertQuery query) {
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
+        if (!SecurityUtils.isAdmin()) {
+            List<Long> ownedPatientIds = patientMapper.selectList(new LambdaQueryWrapper<Patient>()
+                            .eq(Patient::getDoctorId, SecurityUtils.currentUser().getUserId())
+                            .eq(Patient::getStatus, 1)
+                            .select(Patient::getId))
+                    .stream().map(Patient::getId).collect(Collectors.toList());
+            if (ownedPatientIds.isEmpty()) {
+                return PageResponseUtil.of(new Page<>(query.getPage(), query.getSize()),
+                        List.of(), query.getPage(), query.getSize());
+            }
+            wrapper.in(Alert::getPatientId, ownedPatientIds);
+        }
         if (query.getAlertType() != null && !query.getAlertType().isEmpty()) {
             wrapper.eq(Alert::getAlertType, query.getAlertType());
         }
@@ -120,6 +133,17 @@ public class AlertServiceImpl implements AlertService {
         if (alert == null) {
             throw new BusinessException(ErrorCode.ALERT_NOT_FOUND);
         }
+        assertAlertAccess(alert);
         return alert;
+    }
+
+    private void assertAlertAccess(Alert alert) {
+        if (SecurityUtils.isAdmin()) {
+            return;
+        }
+        Patient patient = patientMapper.selectById(alert.getPatientId());
+        if (patient == null || !SecurityUtils.currentUser().getUserId().equals(patient.getDoctorId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
     }
 }

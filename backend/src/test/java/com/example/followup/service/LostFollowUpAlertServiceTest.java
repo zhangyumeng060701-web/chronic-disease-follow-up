@@ -1,156 +1,144 @@
 package com.example.followup.service;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
-import com.example.followup.mapper.AlertMapper;
-import com.example.followup.mapper.FollowUpMapper;
+import com.example.followup.entity.LostFollowUpAlertRecord;
+import com.example.followup.mapper.LostFollowUpQueryMapper;
 import com.example.followup.service.impl.LostFollowUpAlertServiceImpl;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LostFollowUpAlertServiceTest {
+    private static final LocalDate TODAY = LocalDate.of(2026, 8, 26);
 
     @Mock
-    private FollowUpMapper followUpMapper;
-    @Mock
-    private AlertMapper alertMapper;
-    @InjectMocks
-    private LostFollowUpAlertServiceImpl lostFollowUpAlertService;
+    private LostFollowUpQueryMapper mapper;
+    private LostFollowUpAlertServiceImpl service;
 
     @BeforeAll
-    static void initTableMetadata() {
-        MybatisConfiguration configuration = new MybatisConfiguration();
-        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), FollowUp.class);
-        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), Alert.class);
+    static void initMetadata() {
+        TableInfoHelper.initTableInfo(
+                new MapperBuilderAssistant(new MybatisConfiguration(), "lost-alert-test"),
+                LostFollowUpAlertRecord.class);
+    }
+
+    @BeforeEach
+    void setUp() {
+        Clock clock = Clock.fixed(
+                Instant.parse("2026-08-26T00:00:00Z"), ZoneId.of("UTC"));
+        service = new LostFollowUpAlertServiceImpl(mapper, clock);
     }
 
     @Test
-    @DisplayName("没有逾期患者时不生成任何预警")
-    void noOverduePatientsDoesNotGenerateAlerts() {
-        when(followUpMapper.findOverduePatientIds()).thenReturn(Collections.emptyList());
+    @DisplayName("扫描只查询至少逾期7天的最新随访")
+    void scansFromSevenDayBoundary() {
+        when(mapper.findLatestDueFollowUps(TODAY.minusDays(7))).thenReturn(Collections.emptyList());
 
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
+        LostFollowUpScanResult result = service.scanAndGenerateAlerts();
 
-        verify(followUpMapper, never()).selectList(any());
-        verify(alertMapper, never()).selectList(any());
-        verify(alertMapper, never()).batchInsert(anyList());
+        assertEquals(0, result.getScannedCount());
+        verify(mapper).findLatestDueFollowUps(TODAY.minusDays(7));
     }
 
     @Test
-    @DisplayName("超过下次随访日期 7 天生成黄色失访预警")
-    void sevenDaysOverdueGeneratesYellowAlert() {
-        FollowUp followUp = followUp(1L, 1L, LocalDate.now().minusDays(7));
-        when(followUpMapper.findOverduePatientIds()).thenReturn(List.of(1L));
-        when(followUpMapper.selectList(any())).thenReturn(List.of(followUp));
-        when(alertMapper.selectList(any())).thenReturn(Collections.emptyList());
+    @DisplayName("恰好逾期7天生成黄色预警")
+    void createsYellowAtSevenDays() {
+        when(mapper.findLatestDueFollowUps(any())).thenReturn(List.of(followUp(7)));
+        when(mapper.selectCount(any(Wrapper.class))).thenReturn(0L);
+        when(mapper.insert(any(LostFollowUpAlertRecord.class))).thenAnswer(invocation -> {
+            LostFollowUpAlertRecord alert = invocation.getArgument(0);
+            assertEquals("YELLOW", alert.getAlertLevel());
+            assertEquals(TODAY.minusDays(7), alert.getSourceDueDate());
+            return 1;
+        });
 
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
+        LostFollowUpScanResult result = service.scanAndGenerateAlerts();
 
-        ArgumentCaptor<List<Alert>> captor = ArgumentCaptor.forClass(List.class);
-        verify(alertMapper).batchInsert(captor.capture());
-        Alert alert = captor.getValue().get(0);
-        assertEquals(1L, alert.getPatientId());
-        assertEquals("LOST_FOLLOW_UP", alert.getAlertType());
-        assertEquals("YELLOW", alert.getAlertLevel());
-        assertEquals(0, alert.getIsResolved());
+        assertEquals(1, result.getYellowCreated());
+        assertEquals(0, result.getRedCreated());
     }
 
     @Test
-    @DisplayName("超过下次随访日期 30 天生成红色失访预警")
-    void thirtyDaysOverdueGeneratesRedAlert() {
-        FollowUp followUp = followUp(1L, 1L, LocalDate.now().minusDays(30));
-        when(followUpMapper.findOverduePatientIds()).thenReturn(List.of(1L));
-        when(followUpMapper.selectList(any())).thenReturn(List.of(followUp));
-        when(alertMapper.selectList(any())).thenReturn(Collections.emptyList());
+    @DisplayName("逾期29天仍为黄色预警")
+    void keepsYellowAtTwentyNineDays() {
+        when(mapper.findLatestDueFollowUps(any())).thenReturn(List.of(followUp(29)));
+        when(mapper.selectCount(any(Wrapper.class))).thenReturn(0L);
+        when(mapper.insert(any(LostFollowUpAlertRecord.class))).thenAnswer(invocation -> {
+            assertEquals("YELLOW", invocation.<LostFollowUpAlertRecord>getArgument(0).getAlertLevel());
+            return 1;
+        });
 
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
-
-        ArgumentCaptor<List<Alert>> captor = ArgumentCaptor.forClass(List.class);
-        verify(alertMapper).batchInsert(captor.capture());
-        Alert alert = captor.getValue().get(0);
-        assertEquals(1L, alert.getPatientId());
-        assertEquals("RED", alert.getAlertLevel());
+        assertEquals(1, service.scanAndGenerateAlerts().getYellowCreated());
     }
 
     @Test
-    @DisplayName("未满 7 天不生成失访预警")
-    void sixDaysOverdueDoesNotGenerateAlert() {
-        FollowUp followUp = followUp(1L, 1L, LocalDate.now().minusDays(6));
-        when(followUpMapper.findOverduePatientIds()).thenReturn(List.of(1L));
-        when(followUpMapper.selectList(any())).thenReturn(List.of(followUp));
-        when(alertMapper.selectList(any())).thenReturn(Collections.emptyList());
+    @DisplayName("恰好逾期30天关闭黄色并生成红色预警")
+    void upgradesToRedAtThirtyDays() {
+        LostFollowUpAlertRecord yellow = existingYellow();
+        when(mapper.findLatestDueFollowUps(any())).thenReturn(List.of(followUp(30)));
+        when(mapper.selectList(any(Wrapper.class))).thenReturn(List.of(yellow));
+        when(mapper.selectCount(any(Wrapper.class))).thenReturn(0L);
+        when(mapper.insert(any(LostFollowUpAlertRecord.class))).thenAnswer(invocation -> {
+            assertEquals("RED", invocation.<LostFollowUpAlertRecord>getArgument(0).getAlertLevel());
+            return 1;
+        });
 
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
+        LostFollowUpScanResult result = service.scanAndGenerateAlerts();
 
-        verify(alertMapper, never()).batchInsert(anyList());
-        verify(alertMapper, never()).updateById(any());
+        assertEquals(1, result.getYellowResolved());
+        assertEquals(1, result.getRedCreated());
+        assertEquals(1, yellow.getIsResolved());
+        verify(mapper).updateById(yellow);
     }
 
     @Test
-    @DisplayName("已有黄色未处理预警时超过 30 天升级为红色")
-    void existingYellowAlertUpgradedToRed() {
-        FollowUp followUp = followUp(1L, 1L, LocalDate.now().minusDays(31));
-        Alert existing = lostFollowUpAlert(1L, "YELLOW");
-        when(followUpMapper.findOverduePatientIds()).thenReturn(List.of(1L));
-        when(followUpMapper.selectList(any())).thenReturn(List.of(followUp));
-        when(alertMapper.selectList(any())).thenReturn(List.of(existing));
+    @DisplayName("同周期同级别预警已存在时保持幂等")
+    void skipsExistingCycleAlert() {
+        when(mapper.findLatestDueFollowUps(any())).thenReturn(List.of(followUp(8)));
+        when(mapper.selectCount(any(Wrapper.class))).thenReturn(1L);
 
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
+        LostFollowUpScanResult result = service.scanAndGenerateAlerts();
 
-        assertEquals("RED", existing.getAlertLevel());
-        verify(alertMapper).updateById(existing);
-        verify(alertMapper, never()).batchInsert(anyList());
+        assertEquals(1, result.getSkippedCount());
+        verify(mapper, never()).insert(any());
     }
 
-    @Test
-    @DisplayName("已有相同等级未处理预警时不重复生成")
-    void sameLevelUnresolvedAlertNotDuplicated() {
-        FollowUp followUp = followUp(1L, 1L, LocalDate.now().minusDays(10));
-        Alert existing = lostFollowUpAlert(1L, "YELLOW");
-        when(followUpMapper.findOverduePatientIds()).thenReturn(List.of(1L));
-        when(followUpMapper.selectList(any())).thenReturn(List.of(followUp));
-        when(alertMapper.selectList(any())).thenReturn(List.of(existing));
-
-        lostFollowUpAlertService.generateLostFollowUpAlerts();
-
-        verify(alertMapper, never()).batchInsert(anyList());
-        verify(alertMapper, never()).updateById(any());
-    }
-
-    private FollowUp followUp(Long id, Long patientId, LocalDate nextFollowUpDate) {
+    private FollowUp followUp(int overdueDays) {
         FollowUp followUp = new FollowUp();
-        followUp.setId(id);
-        followUp.setPatientId(patientId);
-        followUp.setNextFollowUpDate(nextFollowUpDate);
+        followUp.setPatientId(9L);
+        followUp.setNextFollowUpDate(TODAY.minusDays(overdueDays));
         return followUp;
     }
 
-    private Alert lostFollowUpAlert(Long patientId, String level) {
-        Alert alert = new Alert();
-        alert.setPatientId(patientId);
+    private LostFollowUpAlertRecord existingYellow() {
+        LostFollowUpAlertRecord alert = new LostFollowUpAlertRecord();
+        alert.setId(1L);
+        alert.setPatientId(9L);
         alert.setAlertType("LOST_FOLLOW_UP");
-        alert.setAlertLevel(level);
+        alert.setAlertLevel("YELLOW");
+        alert.setSourceDueDate(TODAY.minusDays(30));
         alert.setIsResolved(0);
         return alert;
     }

@@ -13,7 +13,7 @@ def call_agent_arts(requirement):
     # 安全红线检查：若服务器未注入环境变量，则直接返回错误并退出
     if not api_key:
         print(json.dumps({
-            "code": 401, 
+            "code": 401,
             "message": "Security Error: AGENT_API_KEY is not configured on the server."
         }, ensure_ascii=False))
         sys.exit(1)
@@ -27,14 +27,14 @@ def call_agent_arts(requirement):
     # 构造请求，强制关闭流式输出以减少数据解析碎片（由 Agent 端处理）
     payload = {
         "query": requirement,
-        "stream": False 
+        "stream": False
     }
 
     try:
         # 2. 发送请求（保留流式兼容逻辑，防止服务端配置变更）
         response = requests.post(url, headers=headers, json=payload, timeout=35, stream=True)
         full_answer = ""
-        
+
         for line in response.iter_lines():
             if line:
                 line_data = line.decode('utf-8')
@@ -194,4 +194,3 @@ def call_agent_arts(requirement):
 if __name__ == "__main__":
     requirement = sys.argv[1] if len(sys.argv) > 1 else "测试需求"
     print(json.dumps(call_agent_arts(requirement), ensure_ascii=False))
-

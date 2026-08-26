@@ -12,6 +12,7 @@ import com.example.followup.entity.SysUser;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.SysUserMapper;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.SysUserService;
 import com.example.followup.util.VoMappers;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public PageResponse<UserVO> listUsers(UserQuery query) {
+        assertAdmin();
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {
@@ -56,6 +58,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void createUser(CreateUserRequest request) {
+        assertAdmin();
         long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.findByUsername(request.getUsername());
         if (existing != null) {
@@ -74,6 +77,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void updateUser(Long id, UpdateUserRequest request) {
+        assertAdmin();
         long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.selectById(id);
         if (existing == null) {
@@ -91,6 +95,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void toggleUserStatus(Long id) {
+        assertAdmin();
         long start = System.currentTimeMillis();
         SysUser user = sysUserMapper.selectById(id);
         if (user == null) {
@@ -99,5 +104,11 @@ public class SysUserServiceImpl implements SysUserService {
         user.setStatus(user.getStatus() == 1 ? 0 : 1);
         sysUserMapper.updateById(user);
         log.info("toggleUserStatus id={} cost={}ms", id, System.currentTimeMillis() - start);
+    }
+
+    private void assertAdmin() {
+        if (!SecurityUtils.isAdmin()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
     }
 }

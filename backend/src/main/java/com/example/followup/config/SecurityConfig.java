@@ -41,7 +41,12 @@ public class SecurityConfig {
             .authorizeRequests()
             .antMatchers("/api/auth/login", "/api/patient/login", "/api/health",
                          "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
+            .antMatchers("/api/users/**", "/api/logs/**").hasRole("ADMIN")
             .anyRequest().authenticated()
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint((request, response, exception) ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
             .and()
             .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();

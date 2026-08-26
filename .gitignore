@@ -31,3 +31,8 @@ ai-agent/.env
 Thumbs.db
 *.log
 *.tmp
+
+# 本地工具链与测试产物
+.tools/
+frontend-target/playwright-report/
+frontend-target/test-results/

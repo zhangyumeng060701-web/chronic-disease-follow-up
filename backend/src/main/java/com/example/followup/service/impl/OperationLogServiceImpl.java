@@ -6,7 +6,10 @@ import com.example.followup.dto.request.LogQuery;
 import com.example.followup.dto.response.PageResponse;
 import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.OperationLog;
+import com.example.followup.exception.BusinessException;
+import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.OperationLogMapper;
+import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.OperationLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class OperationLogServiceImpl implements OperationLogService {
 
     @Override
     public PageResponse<OperationLog> listLogs(LogQuery query) {
+        if (!SecurityUtils.isAdmin()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<OperationLog> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {

@@ -17,7 +17,6 @@ import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
-import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.FollowUpService;
 import com.example.followup.util.DesensitizationUtil;
@@ -114,6 +113,13 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Transactional
     public void addFollowUp(FollowUp followUp) {
         long start = System.currentTimeMillis();
+        Patient patient = patientMapper.selectById(followUp.getPatientId());
+        if (patient == null || patient.getStatus() == 0) throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
+        if (!SecurityUtils.isAdmin()) {
+            Long currentDoctorId = SecurityUtils.currentUser().getUserId();
+            if (!Objects.equals(patient.getDoctorId(), currentDoctorId)) throw new BusinessException(ErrorCode.FORBIDDEN);
+            followUp.setDoctorId(currentDoctorId);
+        }
         followUp.setId(null);
         followUpMapper.insert(followUp);
         checkAndGenerateAlerts(followUp);

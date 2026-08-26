@@ -1,6 +1,7 @@
 package com.example.followup.service;
 
 public interface LostFollowUpAlertService {
+    LostFollowUpScanResult scanAndGenerateAlerts();
 
-    void generateLostFollowUpAlerts();
+    int resolveOutstandingAlerts(Long patientId);
 }
