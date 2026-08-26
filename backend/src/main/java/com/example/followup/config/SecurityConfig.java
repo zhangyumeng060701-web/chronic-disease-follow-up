@@ -39,7 +39,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/auth/login", "/api/health",
+            .antMatchers("/api/auth/login", "/api/patient/login", "/api/health",
                          "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
             .anyRequest().authenticated()
             .and()
@@ -64,8 +64,10 @@ public class SecurityConfig {
                     String role = roleValue == null ? "" : String.valueOf(roleValue);
                     Object userIdValue = claims.get("userId");
                     Long userId = userIdValue == null ? null : Long.valueOf(String.valueOf(userIdValue));
+                    Object patientIdValue = claims.get("patientId");
+                    Long patientId = patientIdValue == null ? null : Long.valueOf(String.valueOf(patientIdValue));
                     var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
-                    CurrentUser currentUser = new CurrentUser(userId, username, role);
+                    CurrentUser currentUser = new CurrentUser(userId, username, role, patientId);
                     var authentication = new UsernamePasswordAuthenticationToken(currentUser, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     request.setAttribute("username", username);

@@ -26,10 +26,15 @@ public class JwtUtil {
     }
 
     public String generateToken(String username, String role, Long userId) {
+        return generateToken(username, role, userId, null);
+    }
+
+    public String generateToken(String username, String role, Long userId, Long patientId) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .claim("userId", userId)
+                .claim("patientId", patientId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)

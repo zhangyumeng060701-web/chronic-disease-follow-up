@@ -35,6 +35,9 @@
         <el-menu-item index="/alerts">
           <el-icon><Bell /></el-icon><span>预警中心</span>
         </el-menu-item>
+        <el-menu-item index="/messages">
+          <el-icon><Message /></el-icon><span>消息中心</span>
+        </el-menu-item>
         <el-sub-menu index="system" v-if="userStore.isAdmin">
           <template #title>
             <el-icon><Setting /></el-icon><span>系统管理</span>
@@ -83,7 +86,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
-import { DataAnalysis, UserFilled, Document, Calendar, List, Tickets, Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
+import { DataAnalysis, UserFilled, Document, Calendar, List, Tickets, Bell, Message, Setting, SwitchButton } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

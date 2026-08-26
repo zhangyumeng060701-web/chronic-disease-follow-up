@@ -55,6 +55,12 @@ const routes = [
         meta: { title: '预警中心' }
       },
       {
+        path: 'messages',
+        name: 'Messages',
+        component: () => import('@/views/message/MessageList.vue'),
+        meta: { title: '消息中心' }
+      },
+      {
         path: 'system/users',
         name: 'Users',
         component: () => import('@/views/system/UserManage.vue'),

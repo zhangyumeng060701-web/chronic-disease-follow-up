@@ -1,17 +1,16 @@
-package com.example.followup.dto.response;
+package com.example.followup.dto.request;
 
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
-public class FollowUpVO {
-    private Long id;
-    private Long patientId;
-    private String patientName;
+public class PatientFollowUpRequest {
+    @NotNull(message = "随访日期不能为空")
     private LocalDate followUpDate;
-    private String followUpType;
+
     private Integer systolicBp;
     private Integer diastolicBp;
     private BigDecimal fastingGlucose;
@@ -20,7 +19,4 @@ public class FollowUpVO {
     private String symptoms;
     private String advice;
     private LocalDate nextFollowUpDate;
-    private Long doctorId;
-    private String sourceType;
-    private LocalDateTime createTime;
 }
