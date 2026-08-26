@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,6 +16,9 @@ public class FollowUpSuggestion {
     private Long patientId;
     private Long followUpId;
     private String content;
+    private BigDecimal confidence;
+    private String evidence;
+    private String riskLevel;
     private String source;
     private String status;
     private Long doctorId;
