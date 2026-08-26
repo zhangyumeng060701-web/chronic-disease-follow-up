@@ -1,5 +1,6 @@
 package com.example.followup.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMin;
@@ -18,6 +19,7 @@ public class VitalReportRequest {
     private BigDecimal metricValue;
 
     @NotNull(message = "测量时间不能为空")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime measuredAt;
 
     private String remark;
