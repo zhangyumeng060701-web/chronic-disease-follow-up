@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import storage from '@/utils/storage'
+import { buildAuthHeader, resolveResponseError } from './requestHelpers'
 
 const request = axios.create({
   baseURL: '/api',
@@ -8,8 +10,8 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(config => {
-  const token = localStorage.getItem('token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  const token = storage.get('token')
+  Object.assign(config.headers, buildAuthHeader(token))
   return config
 })
 
@@ -22,13 +24,12 @@ request.interceptors.response.use(
     return res.data
   },
   err => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem('token')
+    const { code, message } = resolveResponseError(err)
+    if (code === 401) {
+      storage.remove('token')
       router.push('/login')
-      ElMessage.error('登录已过期，请重新登录')
-    } else {
-      ElMessage.error('网络错误，请稍后重试')
     }
+    ElMessage.error(message)
     return Promise.reject(err)
   }
 )

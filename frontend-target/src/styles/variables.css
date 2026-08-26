@@ -1,0 +1,191 @@
+:root {
+  --color-primary: #0FA47F;
+  --color-primary-dark: #0B8264;
+  --color-primary-light: #E7F7F2;
+  --color-accent: #0FA47F;
+  --color-success: #0FA47F;
+  --color-warning: #D97706;
+  --color-danger: #E5484D;
+  --color-info: #6B7280;
+
+  --color-bg: #F7F8FA;
+  --color-bg-deep: #EFF1F4;
+  --color-bg-card: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-border-strong: #D1D5DB;
+  --color-text-primary: #1A1D21;
+  --color-text-regular: #4B5563;
+  --color-text-secondary: #6B7280;
+  --color-text-placeholder: #9CA3AF;
+
+  --layout-header-height: 60px;
+  --layout-sidebar-width: 232px;
+  --layout-main-padding: 24px;
+
+  --font-mono: "IBM Plex Mono", "SF Mono", "Roboto Mono", monospace;
+
+  --el-color-primary: #0FA47F;
+  --el-color-primary-light-3: #4FBE9F;
+  --el-color-primary-light-5: #86D3BF;
+  --el-color-primary-light-7: #BDE7DC;
+  --el-color-primary-light-8: #D6F0E9;
+  --el-color-primary-light-9: #EDF9F5;
+  --el-color-primary-dark-2: #0B8264;
+  --el-color-success: #0FA47F;
+  --el-color-warning: #D97706;
+  --el-color-danger: #E5484D;
+  --el-color-info: #6B7280;
+
+  --el-border-radius-base: 4px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 999px;
+  --el-box-shadow-light: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --el-box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: "SF Pro Text", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-regular);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+::selection {
+  color: #FFFFFF;
+  background: var(--color-primary);
+}
+
+.el-main {
+  padding: var(--layout-main-padding);
+}
+
+.el-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+}
+
+.el-card__header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.el-table {
+  --el-table-border-color: var(--color-border);
+  --el-table-header-bg-color: #FAFBFC;
+  --el-table-header-text-color: #1A1D21;
+  --el-table-row-hover-bg-color: #F3FBF8;
+  font-size: 13px;
+  color: var(--color-text-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+.el-table th.el-table__cell {
+  height: 42px;
+  font-weight: 600;
+  background: #FAFBFC;
+}
+
+.el-table .el-table__cell {
+  padding: 10px 12px;
+}
+
+.el-button {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.el-button--primary:not(.is-disabled):hover,
+.el-button--primary:not(.is-disabled):focus {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.el-dialog {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(16, 24, 40, 0.12);
+}
+
+.el-dialog__title {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.el-form-item__label {
+  color: var(--color-text-regular);
+}
+
+.el-input__wrapper,
+.el-select__wrapper {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--color-border) inset;
+}
+
+.el-input__wrapper:hover,
+.el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--color-border-strong) inset;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--color-primary) inset;
+}
+
+.el-pagination {
+  --el-pagination-button-bg-color: transparent;
+  --el-pagination-hover-color: var(--color-primary);
+}
+
+.el-tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.el-alert {
+  border-radius: 4px;
+}
+
+.el-loading-mask {
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.el-empty__description p {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --layout-main-padding: 16px;
+    --layout-header-height: 54px;
+  }
+}

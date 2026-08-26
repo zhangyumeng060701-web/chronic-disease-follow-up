@@ -1,34 +1,48 @@
 <template>
   <div class="patient-list">
-    <el-form :model="searchForm" inline>
-      <el-form-item label="姓名">
-        <el-input v-model="searchForm.name" placeholder="请输入" clearable />
-      </el-form-item>
-      <el-form-item label="慢病类型">
-        <el-select v-model="searchForm.diseaseType" placeholder="请选择" clearable>
-          <el-option label="高血压" value="HYPERTENSION" />
-          <el-option label="糖尿病" value="DIABETES" />
-          <el-option label="两者皆有" value="BOTH" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSearch">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="list-toolbar">
+      <PatientSearchBar v-model="searchForm" @search="handleSearch" @reset="handleReset" />
+      <el-button type="primary" @click="handleAdd">新增患者</el-button>
+    </div>
 
-    <el-button type="primary" @click="handleAdd">新增患者</el-button>
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-top:12px"
+    />
 
-    <el-table :data="tableData" border stripe v-loading="loading" style="margin-top:16px">
+    <el-table
+      :data="tableData"
+      v-loading="loading"
+      :empty-text="EMPTY_TEXT.PATIENT"
+      style="margin-top:16px"
+    >
       <el-table-column prop="name" label="姓名" width="100" />
       <el-table-column prop="gender" label="性别" width="60" />
       <el-table-column prop="age" label="年龄" width="60" />
       <el-table-column prop="phone" label="手机号" width="130" />
       <el-table-column prop="diseaseType" label="慢病类型" width="100">
         <template #default="{ row }">
-          <el-tag v-if="row.diseaseType==='HYPERTENSION'" type="primary">高血压</el-tag>
-          <el-tag v-else-if="row.diseaseType==='DIABETES'" type="success">糖尿病</el-tag>
-          <el-tag v-else type="warning">两者皆有</el-tag>
+          <el-tag v-if="row.diseaseType==='HYPERTENSION'" type="primary">{{ DISEASE_TYPES.HYPERTENSION }}</el-tag>
+          <el-tag v-else-if="row.diseaseType==='DIABETES'" type="success">{{ DISEASE_TYPES.DIABETES }}</el-tag>
+          <el-tag v-else-if="row.diseaseType==='BOTH'" type="warning">{{ DISEASE_TYPES.BOTH }}</el-tag>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="最近随访" width="110">
+        <template #default="{ row }">{{ row.lastFollowUpDate || '-' }}</template>
+      </el-table-column>
+      <el-table-column label="责任医生" width="100">
+        <template #default="{ row }">{{ row.doctorName || row.doctorId || '-' }}</template>
+      </el-table-column>
+      <el-table-column label="状态" width="80">
+        <template #default="{ row }">
+          <el-tag :type="row.status===STATUS.ACTIVE ? 'success' : 'info'" size="small">
+            {{ row.status === STATUS.ACTIVE ? '正常' : '已删除' }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180" fixed="right">
@@ -40,72 +54,46 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
 
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px" @closed="resetForm">
-      <el-form :model="formData" :rules="rules" ref="formRef" label-width="100px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="formData.name" />
-        </el-form-item>
-        <el-form-item label="性别" prop="gender">
-          <el-select v-model="formData.gender">
-            <el-option label="男" value="男" />
-            <el-option label="女" value="女" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="formData.age" :min="0" :max="150" />
-        </el-form-item>
-        <el-form-item label="慢病类型" prop="diseaseType">
-          <el-select v-model="formData.diseaseType">
-            <el-option label="高血压" value="HYPERTENSION" />
-            <el-option label="糖尿病" value="DIABETES" />
-            <el-option label="两者皆有" value="BOTH" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-model="formData.phone" />
-        </el-form-item>
-        <el-form-item label="身份证号">
-          <el-input v-model="formData.idCard" />
-        </el-form-item>
-        <el-form-item label="住址">
-          <el-input v-model="formData.address" />
-        </el-form-item>
-        <el-form-item label="病史">
-          <el-input v-model="formData.medicalHistory" type="textarea" :rows="2" />
-        </el-form-item>
-        <el-form-item label="用药信息">
-          <el-input v-model="formData.medicationInfo" type="textarea" :rows="2" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="handleSubmit">确定</el-button>
-      </template>
-    </el-dialog>
+    <PatientFormDialog
+      ref="dialogRef"
+      v-model:visible="dialogVisible"
+      :title="dialogTitle"
+      :form="formData"
+      :rules="rules"
+      :submitting="submitting"
+      @submit="handleSubmit"
+      @closed="resetForm"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/patient'
+import PatientSearchBar from '@/components/PatientSearchBar.vue'
+import PatientFormDialog from '@/components/PatientFormDialog.vue'
+import { useTable } from '@/composables/useTable'
+import { toPatientPayload } from '@/utils/patientPayload'
+import { DISEASE_TYPES, EMPTY_TEXT, STATUS } from '@/constants/domain'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ name: '', diseaseType: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getPatientList
+})
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
-const formRef = ref(null)
+const dialogRef = ref(null)
 const submitting = ref(false)
 const isEdit = ref(false)
 const editId = ref(null)
@@ -121,25 +109,29 @@ const rules = {
   diseaseType: [{ required: true, message: '请选择慢病类型', trigger: 'change' }]
 }
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const res = await getPatientList({
-      page: pagination.page, size: pagination.size,
-      name: searchForm.name || undefined,
-      diseaseType: searchForm.diseaseType || undefined
-    })
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+function queryParams() {
+  return {
+    name: searchForm.name || undefined,
+    diseaseType: searchForm.diseaseType || undefined
+  }
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.name = ''; searchForm.diseaseType = ''; handleSearch() }
+function handleSearch() {
+  search(queryParams())
+}
+
+function handlePageChange() {
+  load()
+}
+
+function handleReset() {
+  search(queryParams())
+}
 
 function handleAdd() {
   dialogTitle.value = '新增患者'
   isEdit.value = false
+  editId.value = null
   resetForm()
   dialogVisible.value = true
 }
@@ -148,33 +140,68 @@ function handleEdit(row) {
   dialogTitle.value = '编辑患者'
   isEdit.value = true
   editId.value = row.id
-  Object.assign(formData, row)
+  Object.assign(formData, emptyForm(), row)
   dialogVisible.value = true
 }
 
 async function handleDelete(row) {
-  await ElMessageBox.confirm('确定删除该患者吗？', '提示', { type: 'warning' })
-  await deletePatient(row.id)
-  ElMessage.success('删除成功')
-  fetchData()
+  try {
+    await ElMessageBox.confirm('确定删除该患者吗？', '提示', { type: 'warning' })
+    await deletePatient(row.id)
+    ElMessage.success('删除成功')
+    load()
+  } catch {
+    // 用户取消或删除失败，错误提示由请求层统一处理
+  }
 }
 
 async function handleSubmit() {
-  await formRef.value.validate()
+  try {
+    await dialogRef.value?.formRef?.validate()
+  } catch {
+    return
+  }
+  if (submitting.value) return
   submitting.value = true
   try {
+    const payload = toPatientPayload({ ...formData })
     if (isEdit.value) {
-      await updatePatient(editId.value, formData)
+      await updatePatient(editId.value, payload)
+      ElMessage.success('编辑成功')
     } else {
-      await addPatient(formData)
+      await addPatient(payload)
+      ElMessage.success('新增成功')
     }
-    ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
     dialogVisible.value = false
-    fetchData()
-  } finally { submitting.value = false }
+    load()
+  } finally {
+    submitting.value = false
+  }
 }
 
-function resetForm() { Object.assign(formData, emptyForm()); formRef.value?.resetFields() }
+function resetForm() {
+  Object.assign(formData, emptyForm())
+}
 
-onMounted(() => fetchData())
+onMounted(() => load())
 </script>
+
+<style scoped>
+.patient-list {
+  padding: var(--layout-main-padding);
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .list-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+</style>

@@ -1,4 +1,4 @@
-﻿package com.example.followup.dto.response;
+package com.example.followup.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,4 +14,7 @@ public class StatsOverview {
     private String completionRate;
     private Long highRiskCount;
     private Long lostFollowUpCount;
+    private String planCompletionRate;
+    private String followUpTaskCompletionRate;
+    private String avgAlertResponseHours;
 }

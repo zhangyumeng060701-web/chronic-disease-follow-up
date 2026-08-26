@@ -1,16 +1,49 @@
-﻿version: '3.8'
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
     container_name: follow-up-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-follow_up_2026}
       MYSQL_DATABASE: follow_up
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
     volumes:
-      - ./backend/src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - mysql-data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: follow-up-backend
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:${DB_PORT:-3306}/follow_up?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-follow_up_2026}
+      JWT_SECRET: ${JWT_SECRET:-chronic-disease-follow-up-secret-key-2026-challenge-cup}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+
+  frontend:
+    build:
+      context: ./frontend-target
+      dockerfile: Dockerfile
+    container_name: follow-up-frontend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      - backend
+
 volumes:
   mysql-data:

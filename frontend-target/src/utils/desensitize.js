@@ -1,6 +1,7 @@
 export function maskName(value = '') {
   if (!value) return ''
-  return value[0] + '*'.repeat(Math.max(value.length - 1, 0))
+  if (value.length === 1) return '*'
+  return value[0] + '*'.repeat(value.length - 1)
 }
 
 export function maskPhone(value = '') {
@@ -26,4 +27,3 @@ export function maskSensitiveText(value = '', type = '') {
   }
   return (rules[type] || (() => value))(value)
 }
-

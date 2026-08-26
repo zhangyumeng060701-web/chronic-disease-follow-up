@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="oper-log">
     <el-form :model="searchForm" inline>
       <el-form-item label="操作人">
@@ -13,7 +13,21 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe v-loading="loading">
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-bottom:12px"
+    />
+
+    <el-table
+      :data="tableData"
+      v-loading="loading"
+      :empty-text="EMPTY_TEXT.LOG"
+      style="margin-top:16px"
+    >
       <el-table-column prop="username" label="操作人" width="100" />
       <el-table-column prop="operation" label="操作类型" width="140" />
       <el-table-column prop="targetType" label="对象类型" width="100" />
@@ -23,11 +37,12 @@
     </el-table>
 
     <el-pagination
+      v-if="pagination.total > 0"
       v-model:current-page="pagination.page"
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
   </div>
@@ -35,28 +50,34 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { EMPTY_TEXT } from '@/constants/domain'
 import { getLogList } from '@/api/log'
+import { useTable } from '@/composables/useTable'
 
 const searchForm = reactive({ username: '', operation: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getLogList
+})
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const res = await getLogList({
-      page: pagination.page, size: pagination.size,
-      username: searchForm.username || undefined,
-      operation: searchForm.operation || undefined
-    })
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+function queryParams() {
+  return {
+    username: searchForm.username || undefined,
+    operation: searchForm.operation || undefined
+  }
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
-function handleReset() { searchForm.username = ''; searchForm.operation = ''; handleSearch() }
+function handlePageChange() {
+  load()
+}
 
-onMounted(() => fetchData())
+function handleSearch() { search(queryParams()) }
+function handleReset() { searchForm.username = ''; searchForm.operation = ''; search(queryParams()) }
+
+onMounted(() => load())
 </script>
+
+<style scoped>
+.oper-log {
+  padding: var(--layout-main-padding);
+}
+</style>

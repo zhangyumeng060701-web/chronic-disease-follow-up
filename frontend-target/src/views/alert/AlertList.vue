@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="alert-list">
     <el-form :model="searchForm" inline>
       <el-form-item label="预警类型">
@@ -19,13 +19,41 @@
           <el-option label="已处理" :value="1" />
         </el-select>
       </el-form-item>
+      <el-form-item label="处理进度">
+        <el-select v-model="searchForm.alertStatus" placeholder="全部" clearable>
+          <el-option label="未处理" value="PENDING" />
+          <el-option label="已联系" value="CONTACTED" />
+          <el-option label="已处理" value="RESOLVED" />
+          <el-option label="转门诊" value="REFERRED" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSearch">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe v-loading="loading">
+    <el-alert
+      v-if="error"
+      :title="error"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-bottom:12px"
+    />
+
+    <el-table :data="tableData" v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
+      <el-table-column type="expand">
+        <template #default="{ row }">
+          <div class="alert-detail">
+            <div><span>建议措施</span><p>{{ row.recommendedActions || '-' }}</p></div>
+            <div><span>复查项目</span><p>{{ row.recheckItems || '-' }}</p></div>
+            <div><span>转诊条件</span><p>{{ row.referralConditions || '-' }}</p></div>
+            <div><span>指南来源</span><p>{{ row.evidenceSource || '-' }}</p></div>
+            <div><span>风险分层</span><p>{{ row.riskLevel || '-' }}</p></div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="alertType" label="预警类型" width="90">
         <template #default="{ row }">
@@ -36,8 +64,8 @@
       </el-table-column>
       <el-table-column prop="alertLevel" label="等级" width="80">
         <template #default="{ row }">
-          <el-tag :type="row.alertLevel==='RED'?'danger':'warning'" effect="dark">
-            {{ row.alertLevel }}
+          <el-tag :type="(ALERT_LEVELS[row.alertLevel]||{}).type || 'info'" effect="dark">
+            {{ (ALERT_LEVELS[row.alertLevel]||{}).label || row.alertLevel }}
           </el-tag>
         </template>
       </el-table-column>
@@ -45,15 +73,21 @@
       <el-table-column prop="createTime" label="创建时间" width="160" />
       <el-table-column label="状态" width="90">
         <template #default="{ row }">
-          <el-tag :type="row.isResolved ? 'success' : 'info'" size="small">
-            {{ row.isResolved ? '已处理' : '未处理' }}
+          <el-tag :type="statusType(row.alertStatus)" size="small">
+            {{ statusLabel(row.alertStatus) }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="80" fixed="right">
+      <el-table-column label="操作" width="180" fixed="right">
         <template #default="{ row }">
-          <el-button v-if="!row.isResolved" size="small" type="primary" @click="handleResolve(row)">
+          <el-button v-if="row.alertStatus === 'PENDING'" size="small" type="primary" @click="handleContact(row)">
+            联系
+          </el-button>
+          <el-button v-if="!['RESOLVED', 'REFERRED'].includes(row.alertStatus)" size="small" @click="handleResolve(row)">
             处理
+          </el-button>
+          <el-button v-if="!['RESOLVED', 'REFERRED'].includes(row.alertStatus)" size="small" type="danger" @click="handleRefer(row)">
+            转门诊
           </el-button>
         </template>
       </el-table-column>
@@ -64,46 +98,117 @@
       v-model:page-size="pagination.size"
       :total="pagination.total"
       layout="total, prev, pager, next"
-      @current-change="fetchData"
+      @current-change="handlePageChange"
       style="margin-top:16px;justify-content:flex-end"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { getAlertList, resolveAlert } from '@/api/alert'
-import { ElMessage } from 'element-plus'
+import { reactive, onMounted } from 'vue'
+import { getAlertList, contactAlert, resolveAlert, referAlert } from '@/api/alert'
+import { useTable } from '@/composables/useTable'
+import { ALERT_LEVELS, EMPTY_TEXT } from '@/constants/domain'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
-const searchForm = reactive({ alertType: '', alertLevel: '', isResolved: '' })
-const tableData = ref([])
-const loading = ref(false)
-const pagination = reactive({ page: 1, size: 20, total: 0 })
+const searchForm = reactive({ alertType: '', alertLevel: '', isResolved: '', alertStatus: '' })
+const { loading, error, tableData, pagination, load, search } = useTable({
+  fetcher: getAlertList
+})
 
-async function fetchData() {
-  loading.value = true
-  try {
-    const params = { page: pagination.page, size: pagination.size }
-    if (searchForm.alertType) params.alertType = searchForm.alertType
-    if (searchForm.alertLevel) params.alertLevel = searchForm.alertLevel
-    if (searchForm.isResolved !== '') params.isResolved = searchForm.isResolved
-    const res = await getAlertList(params)
-    tableData.value = res.data.records
-    pagination.total = res.data.total
-  } finally { loading.value = false }
+function queryParams() {
+  const params = {}
+  if (searchForm.alertType) params.alertType = searchForm.alertType
+  if (searchForm.alertLevel) params.alertLevel = searchForm.alertLevel
+  if (searchForm.isResolved !== '') params.isResolved = searchForm.isResolved
+  if (searchForm.alertStatus) params.alertStatus = searchForm.alertStatus
+  return params
 }
 
-function handleSearch() { pagination.page = 1; fetchData() }
+function handlePageChange() {
+  load()
+}
+
+function handleSearch() {
+  search(queryParams())
+}
+
 function handleReset() {
-  searchForm.alertType = ''; searchForm.alertLevel = ''; searchForm.isResolved = ''
-  handleSearch()
+  searchForm.alertType = ''
+  searchForm.alertLevel = ''
+  searchForm.isResolved = ''
+  searchForm.alertStatus = ''
+  search(queryParams())
+}
+
+async function handleContact(row) {
+  await contactAlert(row.id)
+  ElMessage.success('预警已标记为已联系')
+  load()
 }
 
 async function handleResolve(row) {
   await resolveAlert(row.id)
   ElMessage.success('预警已处理')
-  fetchData()
+  load()
 }
 
-onMounted(() => fetchData())
+async function handleRefer(row) {
+  try {
+    const { value } = await ElMessageBox.prompt('请输入转门诊原因', '转门诊', {
+      confirmButtonText: '确认转诊',
+      cancelButtonText: '取消',
+      inputValidator: value => (value && value.trim() ? true : '转诊原因不能为空')
+    })
+    await referAlert(row.id, { referralReason: value.trim() })
+    ElMessage.success('已转门诊')
+    load()
+  } catch {
+    // user cancels or request layer shows error
+  }
+}
+
+function statusLabel(status) {
+  return {
+    PENDING: '未处理', CONTACTED: '已联系', RESOLVED: '已处理', REFERRED: '转门诊'
+  }[status] || '未处理'
+}
+
+function statusType(status) {
+  return {
+    PENDING: 'info', CONTACTED: 'primary', RESOLVED: 'success', REFERRED: 'danger'
+  }[status] || 'info'
+}
+
+onMounted(() => load())
 </script>
+
+<style scoped>
+.alert-list {
+  padding: var(--layout-main-padding);
+}
+
+.alert-detail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  padding: 12px 18px;
+}
+
+.alert-detail span {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.alert-detail p {
+  margin: 4px 0 0;
+  color: var(--color-text-regular);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .alert-detail {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

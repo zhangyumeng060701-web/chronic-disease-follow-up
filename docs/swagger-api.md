@@ -703,3 +703,39 @@ Content-Type: application/json
 4. **删除全部软删除**——不准用 DELETE 语句
 5. **新增随访必须自动触发预警检查**——这是核心业务逻辑
 6. **接口有任何改动必须同步更新本文档**——并在群里通知全组
+
+---
+
+## 实际返回字段对齐
+
+当前代码已统一以下字段，前后端必须一致：
+
+### PatientVO
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | Long | 患者 ID |
+| name | String | 姓名，医生角色返回脱敏值 |
+| doctorId | Long | 责任医生 ID |
+| doctorName | String | 责任医生姓名 |
+| lastFollowUpDate | LocalDate | 最近随访日期 |
+| status | Integer | 1 正常，0 已删除 |
+
+### FollowUpVO
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | Long | 随访 ID |
+| patientId | Long | 患者 ID |
+| patientName | String | 患者姓名，医生角色返回脱敏值 |
+| followUpDate | LocalDate | 随访日期 |
+| nextFollowUpDate | LocalDate | 下次随访日期 |
+
+### UserVO
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id | Long | 用户 ID |
+| username | String | 用户名 |
+| role | String | ADMIN / DOCTOR |
+| status | Integer | 1 正常，0 禁用 |

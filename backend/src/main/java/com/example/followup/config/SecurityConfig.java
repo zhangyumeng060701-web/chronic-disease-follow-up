@@ -1,11 +1,15 @@
 package com.example.followup.config;
 
+import com.example.followup.security.CurrentUser;
 import com.example.followup.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +39,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/auth/login", "/api/health",
+            .antMatchers("/api/auth/login", "/api/patient/login", "/api/health",
                          "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
             .anyRequest().authenticated()
             .and()
@@ -54,8 +59,23 @@ public class SecurityConfig {
                 String token = header.substring(7);
                 if (jwtUtil.validateToken(token)) {
                     var claims = jwtUtil.parseToken(token);
-                    request.setAttribute("username", claims.getSubject());
-                    request.setAttribute("role", claims.get("role"));
+                    String username = claims.getSubject();
+                    Object roleValue = claims.get("role");
+                    String role = roleValue == null ? "" : String.valueOf(roleValue);
+                    Object userIdValue = claims.get("userId");
+                    Long userId = userIdValue == null ? null : Long.valueOf(String.valueOf(userIdValue));
+                    Object patientIdValue = claims.get("patientId");
+                    Long patientId = patientIdValue == null ? null : Long.valueOf(String.valueOf(patientIdValue));
+                    var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+                    CurrentUser currentUser = new CurrentUser(userId, username, role, patientId);
+                    var authentication = new UsernamePasswordAuthenticationToken(currentUser, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    request.setAttribute("username", username);
+                    request.setAttribute("role", role);
+                    request.setAttribute("userId", userId);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
                 }
             }
             chain.doFilter(request, response);

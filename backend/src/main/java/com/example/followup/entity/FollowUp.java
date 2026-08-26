@@ -1,4 +1,4 @@
-﻿package com.example.followup.entity;
+package com.example.followup.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -25,5 +25,6 @@ public class FollowUp {
     private String advice;
     private LocalDate nextFollowUpDate;
     private Long doctorId;
+    private String sourceType;
     private LocalDateTime createTime;
 }
