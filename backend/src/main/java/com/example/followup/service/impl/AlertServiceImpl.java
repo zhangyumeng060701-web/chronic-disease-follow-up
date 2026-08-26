@@ -71,6 +71,11 @@ public class AlertServiceImpl implements AlertService {
             vo.setAlertStatus(a.getAlertStatus());
             vo.setContactTime(a.getContactTime());
             vo.setReferralReason(a.getReferralReason());
+            vo.setRecommendedActions(a.getRecommendedActions());
+            vo.setRecheckItems(a.getRecheckItems());
+            vo.setReferralConditions(a.getReferralConditions());
+            vo.setEvidenceSource(a.getEvidenceSource());
+            vo.setRiskLevel(a.getRiskLevel());
             vo.setResolveTime(a.getResolveTime());
             vo.setCreateTime(a.getCreateTime());
             return vo;

@@ -17,6 +17,13 @@ public class AlertRule {
     private String operator;
     private BigDecimal threshold;
     private String alertLevel;
+    private String ruleType;
+    private String conditionJson;
+    private String recommendedActions;
+    private String recheckItems;
+    private String referralConditions;
+    private String evidenceSource;
+    private String riskLevel;
     private Integer isActive;
     private LocalDateTime createTime;
 }

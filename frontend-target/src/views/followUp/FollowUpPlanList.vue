@@ -43,9 +43,11 @@
       </el-table-column>
       <el-table-column prop="doctorName" label="责任人" width="100" />
       <el-table-column prop="remark" label="备注" min-width="120" show-overflow-tooltip />
-      <el-table-column label="操作" width="140" fixed="right">
+      <el-table-column label="操作" width="220" fixed="right">
         <template #default="{ row }">
           <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+          <el-button size="small" type="primary" plain @click="handleAssess(row)">评估</el-button>
+          <el-button size="small" type="success" plain @click="handleSuggest(row)">AI建议</el-button>
           <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -112,6 +114,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { getPlanList, createPlan, updatePlan, deletePlan } from '@/api/plan'
+import { assessPatientRisk, generateSuggestion } from '@/api/clinical'
 import { getPatientList } from '@/api/patient'
 import { useTable } from '@/composables/useTable'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -189,6 +192,17 @@ async function handleDelete(row) {
   } catch {
     // user cancels or request layer shows error
   }
+}
+
+async function handleAssess(row) {
+  await assessPatientRisk(row.patientId)
+  ElMessage.success('风险分层已完成')
+  load()
+}
+
+async function handleSuggest(row) {
+  await generateSuggestion(row.patientId)
+  ElMessage.success('AI建议已生成，请在AI随访建议中确认')
 }
 
 async function handleSubmit() {

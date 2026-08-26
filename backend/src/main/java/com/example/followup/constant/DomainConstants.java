@@ -22,6 +22,7 @@ public final class DomainConstants {
     public static final String RISK_LOW = "LOW";
     public static final String RISK_MEDIUM = "MEDIUM";
     public static final String RISK_HIGH = "HIGH";
+    public static final String RISK_STABLE = "STABLE";
 
     public static final String PLAN_STATUS_ACTIVE = "ACTIVE";
     public static final String PLAN_STATUS_PAUSED = "PAUSED";
@@ -57,4 +58,13 @@ public final class DomainConstants {
     public static final String FOLLOW_UP_SOURCE_DOCTOR = "DOCTOR";
     public static final String FOLLOW_UP_SOURCE_PATIENT = "PATIENT";
     public static final String FOLLOW_UP_TYPE_PATIENT = "患者端";
+
+    public static final String ALERT_RULE_TYPE_THRESHOLD = "THRESHOLD";
+    public static final String ALERT_RULE_TYPE_TREND = "TREND";
+    public static final String ALERT_RULE_TYPE_COMORBIDITY = "COMORBIDITY";
+    public static final String ALERT_RULE_TYPE_MEDICATION = "MEDICATION";
+
+    public static final String SUGGESTION_STATUS_PENDING = "PENDING";
+    public static final String SUGGESTION_STATUS_CONFIRMED = "CONFIRMED";
+    public static final String SUGGESTION_STATUS_REJECTED = "REJECTED";
 }

@@ -43,6 +43,17 @@
     />
 
     <el-table :data="tableData" v-loading="loading" :empty-text="EMPTY_TEXT.ALERT">
+      <el-table-column type="expand">
+        <template #default="{ row }">
+          <div class="alert-detail">
+            <div><span>建议措施</span><p>{{ row.recommendedActions || '-' }}</p></div>
+            <div><span>复查项目</span><p>{{ row.recheckItems || '-' }}</p></div>
+            <div><span>转诊条件</span><p>{{ row.referralConditions || '-' }}</p></div>
+            <div><span>指南来源</span><p>{{ row.evidenceSource || '-' }}</p></div>
+            <div><span>风险分层</span><p>{{ row.riskLevel || '-' }}</p></div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="patientName" label="患者姓名" width="100" />
       <el-table-column prop="alertType" label="预警类型" width="90">
         <template #default="{ row }">
@@ -175,5 +186,29 @@ onMounted(() => load())
 <style scoped>
 .alert-list {
   padding: var(--layout-main-padding);
+}
+
+.alert-detail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  padding: 12px 18px;
+}
+
+.alert-detail span {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.alert-detail p {
+  margin: 4px 0 0;
+  color: var(--color-text-regular);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .alert-detail {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

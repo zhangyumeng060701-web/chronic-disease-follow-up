@@ -61,6 +61,12 @@ const routes = [
         meta: { title: '消息中心' }
       },
       {
+        path: 'clinical-suggestions',
+        name: 'ClinicalSuggestions',
+        component: () => import('@/views/clinical/ClinicalSuggestionList.vue'),
+        meta: { title: 'AI随访建议' }
+      },
+      {
         path: 'system/users',
         name: 'Users',
         component: () => import('@/views/system/UserManage.vue'),
