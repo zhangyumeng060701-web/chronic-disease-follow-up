@@ -32,6 +32,15 @@ jwt:
   secret: ${JWT_SECRET:chronic-disease-follow-up-secret-key-2026-challenge-cup}
   expiration: ${JWT_EXPIRATION:86400000}
 
+data:
+  encryption:
+    key: ${DATA_ENCRYPTION_KEY:}
+
+agent:
+  arts:
+    api-key: ${AGENT_ARTS_API_KEY:}
+    session-id: ${AGENT_ARTS_SESSION_ID:}
+
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}

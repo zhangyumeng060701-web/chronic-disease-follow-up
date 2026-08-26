@@ -33,6 +33,32 @@
       <el-form-item label="用药信息">
         <el-input v-model="form.medicationInfo" type="textarea" :rows="2" />
       </el-form-item>
+      <el-form-item label="身高(cm)">
+        <el-input-number v-model="form.heightCm" :min="0" :max="250" :precision="1" />
+      </el-form-item>
+      <el-form-item label="体重(kg)">
+        <el-input-number v-model="form.weightKg" :min="0" :max="300" :precision="1" />
+      </el-form-item>
+      <el-form-item label="吸烟情况">
+        <el-select v-model="form.smoking" clearable>
+          <el-option label="不吸烟" value="NONE" />
+          <el-option label="已戒烟" value="FORMER" />
+          <el-option label="吸烟" value="CURRENT" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="饮酒情况">
+        <el-select v-model="form.drinking" clearable>
+          <el-option label="不饮酒" value="NONE" />
+          <el-option label="偶尔饮酒" value="OCCASIONAL" />
+          <el-option label="频繁饮酒" value="FREQUENT" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="过敏史">
+        <el-input v-model="form.allergyHistory" type="textarea" :rows="2" />
+      </el-form-item>
+      <el-form-item label="用药史">
+        <el-input v-model="form.medicationHistory" type="textarea" :rows="2" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="close">取消</el-button>

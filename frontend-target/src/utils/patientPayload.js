@@ -9,6 +9,12 @@ export function toPatientPayload(data = {}) {
     diseaseType: data.diseaseType,
     medicalHistory: data.medicalHistory,
     medicationInfo: data.medicationInfo,
+    heightCm: data.heightCm,
+    weightKg: data.weightKg,
+    smoking: data.smoking,
+    drinking: data.drinking,
+    allergyHistory: data.allergyHistory,
+    medicationHistory: data.medicationHistory,
     doctorId: data.doctorId
   }
 }

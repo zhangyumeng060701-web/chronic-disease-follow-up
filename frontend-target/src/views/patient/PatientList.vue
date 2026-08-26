@@ -100,7 +100,9 @@ const editId = ref(null)
 
 const emptyForm = () => ({
   name: '', gender: '', age: null, diseaseType: '',
-  phone: '', idCard: '', address: '', medicalHistory: '', medicationInfo: ''
+  phone: '', idCard: '', address: '', medicalHistory: '', medicationInfo: '',
+  heightCm: null, weightKg: null, smoking: '', drinking: '',
+  allergyHistory: '', medicationHistory: ''
 })
 const formData = reactive(emptyForm())
 const rules = {

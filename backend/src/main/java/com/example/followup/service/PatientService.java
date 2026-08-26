@@ -12,4 +12,5 @@ public interface PatientService {
     void addPatient(PatientSaveRequest request);
     void updatePatient(Long id, PatientUpdateRequest request);
     void deletePatient(Long id);
+    String exportPatientsCsv();
 }
