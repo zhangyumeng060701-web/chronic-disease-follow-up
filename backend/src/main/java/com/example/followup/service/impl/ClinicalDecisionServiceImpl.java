@@ -138,9 +138,16 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             wrapper.eq(FollowUpSuggestion::getStatus, status);
         }
         wrapper.orderByDesc(FollowUpSuggestion::getCreateTime);
-        Page<FollowUpSuggestion> p = new Page<>(page, size);
-        suggestionMapper.selectPage(p, wrapper);
-        return PageResponseUtil.of(p, p.getRecords(), page, size);
+        List<FollowUpSuggestion> all = suggestionMapper.selectList(wrapper);
+        int from = Math.min((page - 1) * size, all.size());
+        int to = Math.min(page * size, all.size());
+        List<FollowUpSuggestion> records = all.subList(from, to);
+        PageResponse<FollowUpSuggestion> response = new PageResponse<>();
+        response.setRecords(records);
+        response.setTotal(all.size());
+        response.setPage(page);
+        response.setSize(size);
+        return response;
     }
 
     @Override
