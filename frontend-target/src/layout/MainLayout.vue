@@ -101,8 +101,8 @@ function handleLogout() {
 .aside {
   display: flex;
   flex-direction: column;
-  background: var(--color-ink);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: #FFFFFF;
+  border-right: 1px solid var(--color-border);
   overflow-y: auto;
 }
 
@@ -112,7 +112,7 @@ function handleLogout() {
   gap: 12px;
   min-height: 68px;
   padding: 0 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .brand-mark {
@@ -120,7 +120,7 @@ function handleLogout() {
   width: 30px;
   height: 30px;
   flex-shrink: 0;
-  border: 1px solid rgba(14, 143, 156, 0.7);
+  background: var(--color-primary);
   border-radius: 4px;
 }
 
@@ -128,7 +128,7 @@ function handleLogout() {
 .brand-mark::after {
   content: "";
   position: absolute;
-  background: rgba(14, 143, 156, 0.45);
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .brand-mark::before {
@@ -136,7 +136,7 @@ function handleLogout() {
   right: 7px;
   top: 6px;
   height: 1px;
-  box-shadow: 0 7px 0 rgba(14, 143, 156, 0.45);
+  box-shadow: 0 7px 0 rgba(255, 255, 255, 0.88);
 }
 
 .brand-mark::after {
@@ -144,7 +144,7 @@ function handleLogout() {
   top: 7px;
   bottom: 7px;
   width: 1px;
-  box-shadow: 7px 0 0 rgba(14, 143, 156, 0.45);
+  box-shadow: 7px 0 0 rgba(255, 255, 255, 0.88);
 }
 
 .brand-mark span {
@@ -154,8 +154,8 @@ function handleLogout() {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 8px rgba(14, 143, 156, 0.8);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
 }
 
 .brand-copy {
@@ -165,19 +165,18 @@ function handleLogout() {
 
 .brand-copy strong {
   display: block;
-  color: #FFFFFF;
+  color: var(--color-text-primary);
   font-size: 15px;
   font-weight: 600;
-
 }
 
 .brand-copy small {
   display: block;
   margin-top: 4px;
-  color: rgba(175, 198, 203, 0.72);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
-
 }
 
 .side-menu {
@@ -186,9 +185,9 @@ function handleLogout() {
   border-right: none;
   background: transparent;
   --el-menu-bg-color: transparent;
-  --el-menu-text-color: var(--color-sidebar-text);
-  --el-menu-active-color: var(--color-sidebar-active);
-  --el-menu-hover-bg-color: rgba(255, 255, 255, 0.06);
+  --el-menu-text-color: #4B5563;
+  --el-menu-active-color: #0FA47F;
+  --el-menu-hover-bg-color: #F3FBF8;
   --el-menu-item-height: 44px;
   --el-menu-sub-item-height: 40px;
 }
@@ -198,22 +197,23 @@ function handleLogout() {
   margin-bottom: 2px;
   border-radius: 4px;
   font-weight: 500;
+  transition: background-color 0.16s ease, color 0.16s ease;
 }
 
 :deep(.el-menu-item.is-active) {
-  color: #FFFFFF;
-  background: linear-gradient(90deg, rgba(14, 143, 156, 0.36), rgba(14, 143, 156, 0.08));
-  box-shadow: inset 3px 0 0 var(--color-accent);
+  color: #0FA47F;
+  background: #EDF9F5;
+  box-shadow: inset 3px 0 0 var(--color-primary);
 }
 
 :deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.07);
+  color: #0B8264;
+  background: #F3FBF8;
 }
 
 :deep(.el-sub-menu .el-menu) {
-  background: rgba(0, 0, 0, 0.12);
+  background: #FBFCFC;
 }
 
 .aside-footer {
@@ -222,9 +222,9 @@ function handleLogout() {
   gap: 8px;
   min-height: 48px;
   padding: 0 18px;
-  color: rgba(175, 198, 203, 0.72);
+  color: var(--color-text-secondary);
   font-size: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
 }
 
 .pulse-dot {
@@ -232,8 +232,19 @@ function handleLogout() {
   height: 7px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #35C79A;
-  box-shadow: 0 0 0 3px rgba(53, 199, 154, 0.12);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 164, 127, 0.12);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .main-shell {
@@ -260,7 +271,6 @@ function handleLogout() {
 .context-label {
   color: var(--color-text-secondary);
   font-size: 12px;
-
 }
 
 .context-sep {
@@ -286,7 +296,7 @@ function handleLogout() {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-success);
+  color: var(--color-primary);
   font-size: 12px;
   font-weight: 500;
 }
@@ -303,11 +313,11 @@ function handleLogout() {
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #FFFFFF;
+  color: var(--color-primary);
   font-size: 13px;
   font-weight: 600;
-  background: var(--color-ink-soft);
-  border: 1px solid rgba(14, 143, 156, 0.4);
+  background: var(--color-primary-light);
+  border: 1px solid rgba(15, 164, 127, 0.22);
   border-radius: 4px;
 }
 
@@ -352,10 +362,6 @@ function handleLogout() {
 
   :deep(.el-menu-item span),
   :deep(.el-sub-menu__title span) {
-    display: none;
-  }
-
-  :deep(.el-menu--collapse .el-sub-menu__title .el-sub-menu__icon-arrow) {
     display: none;
   }
 

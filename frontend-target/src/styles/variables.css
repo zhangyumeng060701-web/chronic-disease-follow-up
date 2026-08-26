@@ -1,49 +1,46 @@
 :root {
-  --color-primary: #0E8F9C;
-  --color-primary-dark: #0A6F79;
-  --color-primary-light: #E9F6F6;
-  --color-accent: #0E8F9C;
-  --color-success: #2F8F6B;
-  --color-warning: #C98A2D;
-  --color-danger: #C84C4C;
-  --color-info: #667B80;
+  --color-primary: #0FA47F;
+  --color-primary-dark: #0B8264;
+  --color-primary-light: #E7F7F2;
+  --color-accent: #0FA47F;
+  --color-success: #0FA47F;
+  --color-warning: #D97706;
+  --color-danger: #E5484D;
+  --color-info: #6B7280;
 
-  --color-bg: #EEF3F4;
-  --color-bg-deep: #E6EDEF;
+  --color-bg: #F7F8FA;
+  --color-bg-deep: #EFF1F4;
   --color-bg-card: #FFFFFF;
-  --color-border: #D8E2E5;
-  --color-border-strong: #C3D2D6;
-  --color-text-primary: #102B2F;
-  --color-text-regular: #42595E;
-  --color-text-secondary: #71858A;
-  --color-text-placeholder: #9AABB0;
-
-  --color-ink: #0F292E;
-  --color-ink-soft: #143A41;
-  --color-sidebar-text: #AFC6CB;
-  --color-sidebar-active: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-border-strong: #D1D5DB;
+  --color-text-primary: #1A1D21;
+  --color-text-regular: #4B5563;
+  --color-text-secondary: #6B7280;
+  --color-text-placeholder: #9CA3AF;
 
   --layout-header-height: 60px;
   --layout-sidebar-width: 232px;
   --layout-main-padding: 24px;
 
-  --el-color-primary: #0E8F9C;
-  --el-color-primary-light-3: #4DAEB8;
-  --el-color-primary-light-5: #8ACFD4;
-  --el-color-primary-light-7: #C1E4E7;
-  --el-color-primary-light-8: #D8EEF0;
-  --el-color-primary-light-9: #EDF8F9;
-  --el-color-primary-dark-2: #0A6F79;
-  --el-color-success: #2F8F6B;
-  --el-color-warning: #C98A2D;
-  --el-color-danger: #C84C4C;
-  --el-color-info: #667B80;
+  --font-mono: "IBM Plex Mono", "SF Mono", "Roboto Mono", monospace;
 
-  --el-border-radius-base: 6px;
+  --el-color-primary: #0FA47F;
+  --el-color-primary-light-3: #4FBE9F;
+  --el-color-primary-light-5: #86D3BF;
+  --el-color-primary-light-7: #BDE7DC;
+  --el-color-primary-light-8: #D6F0E9;
+  --el-color-primary-light-9: #EDF9F5;
+  --el-color-primary-dark-2: #0B8264;
+  --el-color-success: #0FA47F;
+  --el-color-warning: #D97706;
+  --el-color-danger: #E5484D;
+  --el-color-info: #6B7280;
+
+  --el-border-radius-base: 4px;
   --el-border-radius-small: 4px;
   --el-border-radius-round: 999px;
-  --el-box-shadow-light: 0 1px 2px rgba(15, 41, 46, 0.05), 0 8px 24px rgba(15, 41, 46, 0.06);
-  --el-box-shadow: 0 4px 16px rgba(15, 41, 46, 0.12);
+  --el-box-shadow-light: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --el-box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.08);
 }
 
 *,
@@ -90,8 +87,8 @@ select {
 
 .el-card {
   border: 1px solid var(--color-border);
-  border-radius: 6px;
-  box-shadow: none;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 
 .el-card__header {
@@ -103,17 +100,18 @@ select {
 
 .el-table {
   --el-table-border-color: var(--color-border);
-  --el-table-header-bg-color: #F4F8F9;
-  --el-table-header-text-color: #102B2F;
-  --el-table-row-hover-bg-color: #F1F8F8;
+  --el-table-header-bg-color: #FAFBFC;
+  --el-table-header-text-color: #1A1D21;
+  --el-table-row-hover-bg-color: #F3FBF8;
   font-size: 13px;
   color: var(--color-text-regular);
+  font-variant-numeric: tabular-nums;
 }
 
 .el-table th.el-table__cell {
   height: 42px;
   font-weight: 600;
-
+  background: #FAFBFC;
 }
 
 .el-table .el-table__cell {
@@ -121,11 +119,8 @@ select {
 }
 
 .el-button {
+  border-radius: 4px;
   font-weight: 500;
-}
-
-.el-button--primary {
-  box-shadow: 0 1px 0 rgba(15, 41, 46, 0.08);
 }
 
 .el-button--primary:not(.is-disabled):hover,
@@ -137,7 +132,7 @@ select {
 .el-dialog {
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  box-shadow: 0 16px 48px rgba(15, 41, 46, 0.18);
+  box-shadow: 0 12px 40px rgba(16, 24, 40, 0.12);
 }
 
 .el-dialog__title {
@@ -151,6 +146,7 @@ select {
 
 .el-input__wrapper,
 .el-select__wrapper {
+  border-radius: 4px;
   box-shadow: 0 0 0 1px var(--color-border) inset;
 }
 
@@ -175,7 +171,7 @@ select {
 }
 
 .el-alert {
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .el-loading-mask {

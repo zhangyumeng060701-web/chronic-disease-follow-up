@@ -158,12 +158,12 @@ onMounted(() => {
 .head-badge {
   padding: 5px 10px;
   color: var(--color-primary);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-
-  border: 1px solid rgba(14, 143, 156, 0.3);
+  border: 1px solid rgba(15, 164, 127, 0.3);
   border-radius: 4px;
-  background: rgba(14, 143, 156, 0.06);
+  background: rgba(15, 164, 127, 0.06);
 }
 
 .metric-grid {
@@ -179,7 +179,14 @@ onMounted(() => {
   overflow: hidden;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+
+.metric:hover {
+  border-color: rgba(15, 164, 127, 0.42);
+  transform: translateY(-1px);
 }
 
 .metric::before {
@@ -202,10 +209,12 @@ onMounted(() => {
 
 .tone-danger {
   --metric-accent: var(--color-danger);
+  --metric-value-color: var(--color-danger);
 }
 
 .tone-warning {
-  --metric-accent: var(--color-warning);
+  --metric-accent: var(--color-danger);
+  --metric-value-color: var(--color-danger);
 }
 
 .metric-top {
@@ -237,11 +246,11 @@ onMounted(() => {
   align-items: baseline;
   gap: 6px;
   margin-top: 14px;
-  color: var(--color-text-primary);
+  color: var(--metric-value-color, var(--color-text-primary));
+  font-family: var(--font-mono);
   font-size: 32px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-
   white-space: nowrap;
 }
 
@@ -263,7 +272,8 @@ onMounted(() => {
   overflow: hidden;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 
 .panel header {

@@ -1,14 +1,13 @@
 <template>
   <div class="login-page">
     <section class="login-visual">
-      <div class="visual-grid"></div>
       <div class="visual-content">
         <div class="visual-brand">
           <span class="brand-box"></span>
           <span>慢性病随访管理系统</span>
         </div>
         <div class="visual-copy">
-          <span class="kicker">基层临床数据工作站</span>
+          <span class="kicker">CLINICAL FOLLOW-UP</span>
           <h1>随访闭环<br />风险可控</h1>
         </div>
         <div class="module-list">
@@ -98,7 +97,7 @@ async function handleLogin() {
 <style scoped>
 .login-page {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(380px, 0.9fr);
   min-height: 100vh;
   background: var(--color-bg);
 }
@@ -110,19 +109,9 @@ async function handleLogin() {
   min-height: 100vh;
   padding: 48px 56px;
   overflow: hidden;
-  color: #FFFFFF;
-  background: linear-gradient(135deg, #0F292E 0%, #123B42 58%, #0E2B31 100%);
-}
-
-.visual-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 88%);
+  color: var(--color-text-primary);
+  background: #FAFBFC;
+  border-right: 1px solid var(--color-border);
 }
 
 .visual-content {
@@ -135,21 +124,44 @@ async function handleLogin() {
   max-width: 560px;
 }
 
+.visual-content::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  left: -24px;
+  height: 1px;
+  background: rgba(15, 164, 127, 0.42);
+  animation: scan-line 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes scan-line {
+  0%,
+  100% {
+    top: 18%;
+    opacity: 0.35;
+  }
+  50% {
+    top: 82%;
+    opacity: 0.9;
+  }
+}
+
 .visual-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 72px;
+  margin-bottom: 84px;
   font-size: 14px;
   font-weight: 600;
-
 }
 
 .brand-box {
   position: relative;
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(14, 143, 156, 0.8);
+  flex-shrink: 0;
+  background: var(--color-primary);
   border-radius: 4px;
 }
 
@@ -157,7 +169,7 @@ async function handleLogin() {
 .brand-box::after {
   content: "";
   position: absolute;
-  background: rgba(14, 143, 156, 0.6);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .brand-box::before {
@@ -165,7 +177,7 @@ async function handleLogin() {
   right: 7px;
   top: 6px;
   height: 1px;
-  box-shadow: 0 7px 0 rgba(14, 143, 156, 0.6);
+  box-shadow: 0 7px 0 rgba(255, 255, 255, 0.9);
 }
 
 .brand-box::after {
@@ -173,41 +185,40 @@ async function handleLogin() {
   top: 7px;
   bottom: 7px;
   width: 1px;
-  box-shadow: 7px 0 0 rgba(14, 143, 156, 0.6);
+  box-shadow: 7px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 .visual-copy .kicker {
   display: inline-block;
   margin-bottom: 18px;
-  color: rgba(138, 207, 212, 0.9);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-
 }
 
 .visual-copy h1 {
   margin: 0;
-  color: #FFFFFF;
-  font-size: clamp(34px, 4vw, 54px);
+  color: var(--color-text-primary);
+  font-size: clamp(34px, 4vw, 52px);
   font-weight: 600;
   line-height: 1.16;
-
 }
 
 .module-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 40px;
+  margin-top: 42px;
 }
 
 .module-list span {
   padding: 7px 12px;
-  color: rgba(220, 238, 240, 0.88);
+  color: var(--color-text-regular);
   font-size: 12px;
-  border: 1px solid rgba(138, 207, 212, 0.24);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.04);
+  background: #FFFFFF;
 }
 
 .visual-footer {
@@ -216,10 +227,10 @@ async function handleLogin() {
   display: flex;
   justify-content: space-between;
   padding-top: 18px;
-  color: rgba(175, 198, 203, 0.64);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
   font-size: 11px;
-
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-border);
 }
 
 .login-panel {
@@ -237,7 +248,7 @@ async function handleLogin() {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  box-shadow: 0 12px 36px rgba(15, 41, 46, 0.08);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 
 .login-heading {
@@ -248,9 +259,9 @@ async function handleLogin() {
   display: block;
   margin-bottom: 10px;
   color: var(--color-primary);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-
 }
 
 .login-heading h2 {
@@ -258,7 +269,6 @@ async function handleLogin() {
   color: var(--color-text-primary);
   font-size: 24px;
   font-weight: 600;
-
 }
 
 .login-btn {
@@ -279,9 +289,9 @@ async function handleLogin() {
 .login-meta code {
   padding: 4px 8px;
   color: var(--color-text-regular);
-  font-family: "SF Mono", "Roboto Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
-  background: var(--color-bg-deep);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 4px;
 }
