@@ -7,10 +7,12 @@ import com.example.followup.dto.response.StatsOverview;
 import com.example.followup.dto.response.TrendItem;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
+import com.example.followup.entity.FollowUpTask;
 import com.example.followup.entity.Patient;
 import com.example.followup.entity.SysUser;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.FollowUpMapper;
+import com.example.followup.mapper.FollowUpTaskMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,8 @@ public class StatsServiceImpl implements StatsService {
     private AlertMapper alertMapper;
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private FollowUpTaskMapper followUpTaskMapper;
 
     @Override
     public StatsOverview getOverview() {
@@ -84,16 +90,81 @@ public class StatsServiceImpl implements StatsService {
                 ? alertMapper.countLostFollowUp()
                 : countAlertsForDoctor(currentDoctorId, DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null);
 
+        String planCompletionRate = formatRate(countCompletedTasks(), countTotalTasks());
+        String followUpTaskCompletionRate = formatRate(countMonthCompletedTasks(), countMonthTasks());
+        String avgAlertResponseHours = calculateAvgAlertResponseHours();
+
         StatsOverview result = new StatsOverview(
                 totalPatients != null ? totalPatients : 0,
                 monthlyCompleted != null ? monthlyCompleted.intValue() : 0,
                 monthlyExpected,
                 completionRate,
                 highRiskCount != null ? highRiskCount : 0,
-                lostFollowUpCount != null ? lostFollowUpCount : 0
+                lostFollowUpCount != null ? lostFollowUpCount : 0,
+                planCompletionRate,
+                followUpTaskCompletionRate,
+                avgAlertResponseHours
         );
         log.info("getOverview admin={} cost={}ms", admin, System.currentTimeMillis() - start);
         return result;
+    }
+
+    private Long countTotalTasks() {
+        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<>());
+    }
+
+    private Long countCompletedTasks() {
+        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
+                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED));
+    }
+
+    private Long countMonthTasks() {
+        LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
+                .between(FollowUpTask::getDueDate, monthStart, monthEnd));
+    }
+
+    private Long countMonthCompletedTasks() {
+        LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
+                .between(FollowUpTask::getDueDate, monthStart, monthEnd)
+                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED));
+    }
+
+    private String formatRate(long completed, long total) {
+        if (total <= 0) {
+            return "-";
+        }
+        BigDecimal rate = BigDecimal.valueOf(completed)
+                .multiply(BigDecimal.valueOf(100))
+                .divide(BigDecimal.valueOf(total), 1, RoundingMode.HALF_UP);
+        return rate + "%";
+    }
+
+    private String calculateAvgAlertResponseHours() {
+        List<Alert> resolvedAlerts = alertMapper.selectList(new LambdaQueryWrapper<Alert>()
+                .in(Alert::getAlertStatus,
+                        DomainConstants.ALERT_STATUS_RESOLVED,
+                        DomainConstants.ALERT_STATUS_REFERRED)
+                .isNotNull(Alert::getResolveTime));
+        if (resolvedAlerts.isEmpty()) {
+            return "-";
+        }
+        long totalMinutes = resolvedAlerts.stream()
+                .filter(a -> a.getCreateTime() != null)
+                .mapToLong(a -> ChronoUnit.MINUTES.between(a.getCreateTime(), a.getResolveTime()))
+                .filter(minutes -> minutes >= 0)
+                .sum();
+        long count = resolvedAlerts.stream()
+                .filter(a -> a.getCreateTime() != null)
+                .filter(a -> ChronoUnit.MINUTES.between(a.getCreateTime(), a.getResolveTime()) >= 0)
+                .count();
+        if (count == 0) {
+            return "-";
+        }
+        return String.format("%.1f小时", totalMinutes / 60.0 / count);
     }
 
     @Override

@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.example.followup.dto.response.StatsOverview;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
+import com.example.followup.entity.FollowUpTask;
 import com.example.followup.entity.Patient;
 import com.example.followup.entity.SysUser;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.FollowUpMapper;
+import com.example.followup.mapper.FollowUpTaskMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.CurrentUser;
@@ -49,6 +51,8 @@ class StatsServiceTest {
     private AlertMapper alertMapper;
     @Mock
     private SysUserMapper sysUserMapper;
+    @Mock
+    private FollowUpTaskMapper followUpTaskMapper;
     @InjectMocks
     private StatsServiceImpl statsService;
 
@@ -57,6 +61,7 @@ class StatsServiceTest {
         MybatisConfiguration configuration = new MybatisConfiguration();
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), Patient.class);
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), FollowUp.class);
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), FollowUpTask.class);
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), Alert.class);
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(configuration, "test"), SysUser.class);
     }
@@ -82,6 +87,7 @@ class StatsServiceTest {
     void overviewCalculatesCompletionRate() {
         when(patientMapper.selectCount(any())).thenReturn(4L);
         when(followUpMapper.selectCount(any())).thenReturn(3L);
+        when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
         when(alertMapper.countHighRisk()).thenReturn(2L);
         when(alertMapper.countLostFollowUp()).thenReturn(1L);
 
@@ -105,6 +111,7 @@ class StatsServiceTest {
 
         when(patientMapper.selectCount(any())).thenReturn(2L);
         when(followUpMapper.selectCount(any())).thenReturn(1L);
+        when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
         when(patientMapper.selectList(any())).thenReturn(java.util.List.of(patient));
         when(alertMapper.selectCount(any())).thenReturn(1L);
 

@@ -12,6 +12,9 @@ public class AlertVO {
     private String alertLevel;
     private String alertReason;
     private Integer isResolved;
+    private String alertStatus;
+    private LocalDateTime contactTime;
+    private String referralReason;
     private LocalDateTime resolveTime;
     private LocalDateTime createTime;
 }

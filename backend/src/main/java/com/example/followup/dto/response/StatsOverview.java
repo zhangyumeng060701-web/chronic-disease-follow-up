@@ -14,4 +14,7 @@ public class StatsOverview {
     private String completionRate;
     private Long highRiskCount;
     private Long lostFollowUpCount;
+    private String planCompletionRate;
+    private String followUpTaskCompletionRate;
+    private String avgAlertResponseHours;
 }

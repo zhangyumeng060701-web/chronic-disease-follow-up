@@ -31,6 +31,24 @@ const routes = [
         meta: { title: '随访记录' }
       },
       {
+        path: 'plans',
+        name: 'FollowUpPlans',
+        component: () => import('@/views/followUp/FollowUpPlanList.vue'),
+        meta: { title: '随访计划' }
+      },
+      {
+        path: 'follow-up-tasks',
+        name: 'FollowUpTasks',
+        component: () => import('@/views/followUp/FollowUpTaskList.vue'),
+        meta: { title: '随访任务' }
+      },
+      {
+        path: 'follow-up-templates',
+        name: 'FollowUpTemplates',
+        component: () => import('@/views/followUp/FollowUpTemplateList.vue'),
+        meta: { title: '随访模板', requiresAdmin: true }
+      },
+      {
         path: 'alerts',
         name: 'Alerts',
         component: () => import('@/views/alert/AlertList.vue'),

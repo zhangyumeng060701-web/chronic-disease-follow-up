@@ -68,7 +68,10 @@ const cards = reactive([
   { title: '管理患者总数', value: '--', unit: '人', tone: 'accent' },
   { title: '本月随访完成率', value: '--', unit: '%', tone: 'success' },
   { title: '当前高危患者', value: '--', unit: '人', tone: 'danger' },
-  { title: '当前失访患者', value: '--', unit: '人', tone: 'warning' }
+  { title: '当前失访患者', value: '--', unit: '人', tone: 'warning' },
+  { title: '随访计划完成率', value: '--', unit: '', tone: 'accent' },
+  { title: '本月随访任务完成率', value: '--', unit: '', tone: 'success' },
+  { title: '预警平均响应', value: '--', unit: '', tone: 'info' }
 ])
 
 const doctorData = ref([])
@@ -87,6 +90,9 @@ async function fetchOverview() {
     cards[1].value = o.completionRate ?? '--'
     cards[2].value = o.highRiskCount ?? '--'
     cards[3].value = o.lostFollowUpCount ?? '--'
+    cards[4].value = o.planCompletionRate ?? '--'
+    cards[5].value = o.followUpTaskCompletionRate ?? '--'
+    cards[6].value = o.avgAlertResponseHours ?? '--'
   } catch {
     // 保持默认值
   } finally {
@@ -168,7 +174,7 @@ onMounted(() => {
 
 .metric-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
 }
 
@@ -215,6 +221,10 @@ onMounted(() => {
 .tone-warning {
   --metric-accent: var(--color-danger);
   --metric-value-color: var(--color-danger);
+}
+
+.tone-info {
+  --metric-accent: var(--color-info);
 }
 
 .metric-top {

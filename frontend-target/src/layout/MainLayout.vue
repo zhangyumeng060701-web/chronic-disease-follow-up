@@ -23,6 +23,15 @@
         <el-menu-item index="/follow-ups">
           <el-icon><Document /></el-icon><span>随访记录</span>
         </el-menu-item>
+        <el-menu-item index="/plans">
+          <el-icon><Calendar /></el-icon><span>随访计划</span>
+        </el-menu-item>
+        <el-menu-item index="/follow-up-tasks">
+          <el-icon><List /></el-icon><span>随访任务</span>
+        </el-menu-item>
+        <el-menu-item index="/follow-up-templates" v-if="userStore.isAdmin">
+          <el-icon><Tickets /></el-icon><span>随访模板</span>
+        </el-menu-item>
         <el-menu-item index="/alerts">
           <el-icon><Bell /></el-icon><span>预警中心</span>
         </el-menu-item>
@@ -74,7 +83,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
-import { DataAnalysis, UserFilled, Document, Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
+import { DataAnalysis, UserFilled, Document, Calendar, List, Tickets, Bell, Setting, SwitchButton } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

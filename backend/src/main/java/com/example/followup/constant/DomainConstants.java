@@ -17,4 +17,23 @@ public final class DomainConstants {
 
     public static final String ALERT_LEVEL_RED = "RED";
     public static final String ALERT_LEVEL_YELLOW = "YELLOW";
+
+    public static final String RISK_LOW = "LOW";
+    public static final String RISK_MEDIUM = "MEDIUM";
+    public static final String RISK_HIGH = "HIGH";
+
+    public static final String PLAN_STATUS_ACTIVE = "ACTIVE";
+    public static final String PLAN_STATUS_PAUSED = "PAUSED";
+    public static final String PLAN_STATUS_COMPLETED = "COMPLETED";
+
+    public static final String TASK_STATUS_PENDING = "PENDING";
+    public static final String TASK_STATUS_IN_PROGRESS = "IN_PROGRESS";
+    public static final String TASK_STATUS_CONTACTED = "CONTACTED";
+    public static final String TASK_STATUS_COMPLETED = "COMPLETED";
+    public static final String TASK_STATUS_CANCELED = "CANCELED";
+
+    public static final String ALERT_STATUS_PENDING = "PENDING";
+    public static final String ALERT_STATUS_CONTACTED = "CONTACTED";
+    public static final String ALERT_STATUS_RESOLVED = "RESOLVED";
+    public static final String ALERT_STATUS_REFERRED = "REFERRED";
 }

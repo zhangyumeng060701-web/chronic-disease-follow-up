@@ -6,7 +6,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Data
-public class AlertQuery {
+public class FollowUpTemplateQuery {
     @Min(value = 1, message = "页码不能小于1")
     private Integer page = 1;
 
@@ -14,8 +14,6 @@ public class AlertQuery {
     @Max(value = 100, message = "每页条数不能超过100")
     private Integer size = 20;
 
-    private String alertType;
-    private String alertLevel;
-    private Integer isResolved;
-    private String alertStatus;
+    private String templateCode;
+    private Integer isActive;
 }
