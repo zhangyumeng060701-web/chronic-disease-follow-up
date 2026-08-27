@@ -15,3 +15,7 @@ export function getGlucoseTrend() {
 export function getDoctorComparison() {
   return request.get('/stats/doctor-comparison')
 }
+
+export function getWorkbench() {
+  return request.get('/dashboard/workbench')
+}

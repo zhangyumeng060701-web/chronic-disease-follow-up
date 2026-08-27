@@ -5,8 +5,10 @@ export function useTable({ fetcher, initialPage = 1, initialSize = 20 }) {
   const error = ref('')
   const tableData = ref([])
   const pagination = reactive({ page: initialPage, size: initialSize, total: 0 })
+  const lastParams = ref({})
 
   async function load(params = {}) {
+    lastParams.value = params
     loading.value = true
     error.value = ''
     try {
@@ -31,5 +33,9 @@ export function useTable({ fetcher, initialPage = 1, initialSize = 20 }) {
     return search(params)
   }
 
-  return { loading, error, tableData, pagination, load, search, reset }
+  function retry() {
+    return load(lastParams.value)
+  }
+
+  return { loading, error, tableData, pagination, load, search, reset, retry }
 }

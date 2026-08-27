@@ -24,6 +24,8 @@
       <el-button type="primary" @click="dialogVisible = true">发送消息</el-button>
     </div>
 
+    <TableError :error="error" @retry="retry" />
+
     <el-table :data="tableData" v-loading="loading" empty-text="暂无消息">
       <el-table-column prop="recipientType" label="接收方" width="90" />
       <el-table-column prop="recipientId" label="接收方ID" width="90" />
@@ -85,10 +87,11 @@
 import { ref, reactive, onMounted } from 'vue'
 import { getMessageList, createMessage } from '@/api/message'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ channel: '', status: '' })
-const { loading, tableData, pagination, load, search } = useTable({ fetcher: getMessageList })
+const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getMessageList })
 
 const dialogVisible = ref(false)
 const formRef = ref(null)

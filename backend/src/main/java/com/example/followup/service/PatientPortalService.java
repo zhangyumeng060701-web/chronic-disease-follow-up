@@ -10,6 +10,7 @@ import com.example.followup.entity.PatientVital;
 import com.example.followup.entity.Questionnaire;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PatientPortalService {
     List<FollowUpPlanVO> myPlans();
@@ -22,4 +23,5 @@ public interface PatientPortalService {
     void markMessageRead(Long id);
     List<FollowUpVO> myFollowUps();
     FollowUpVO createPatientFollowUp(PatientFollowUpRequest request);
+    Map<String, Object> myRiskLevel();
 }

@@ -13,14 +13,7 @@
       </el-form-item>
     </el-form>
 
-    <el-alert
-      v-if="error"
-      :title="error"
-      type="error"
-      :closable="false"
-      show-icon
-      style="margin-bottom:12px"
-    />
+    <TableError :error="error" @retry="retry" />
 
     <el-table
       :data="tableData"
@@ -53,9 +46,10 @@ import { ref, reactive, onMounted } from 'vue'
 import { EMPTY_TEXT } from '@/constants/domain'
 import { getLogList } from '@/api/log'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 
 const searchForm = reactive({ username: '', operation: '' })
-const { loading, error, tableData, pagination, load, search } = useTable({
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
   fetcher: getLogList
 })
 

@@ -24,7 +24,7 @@
       <el-button type="primary" @click="handleAdd">新增计划</el-button>
     </div>
 
-    <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:12px" />
+    <TableError :error="error" @retry="retry" />
 
     <el-table :data="tableData" v-loading="loading" empty-text="暂无随访计划">
       <el-table-column prop="patientName" label="患者" min-width="100" />
@@ -117,11 +117,12 @@ import { getPlanList, createPlan, updatePlan, deletePlan } from '@/api/plan'
 import { assessPatientRisk, generateSuggestion } from '@/api/clinical'
 import { getPatientList } from '@/api/patient'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ riskLevel: '', status: '' })
 const patientOptions = ref([])
-const { loading, error, tableData, pagination, load, search } = useTable({ fetcher: getPlanList })
+const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getPlanList })
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')

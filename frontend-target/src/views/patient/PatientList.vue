@@ -5,14 +5,7 @@
       <el-button type="primary" @click="handleAdd">新增患者</el-button>
     </div>
 
-    <el-alert
-      v-if="error"
-      :title="error"
-      type="error"
-      :closable="false"
-      show-icon
-      style="margin-top:12px"
-    />
+    <TableError :error="error" @retry="retry" style="margin-top:12px" />
 
     <el-table
       :data="tableData"
@@ -81,13 +74,14 @@ import { reactive, ref, onMounted } from 'vue'
 import { getPatientList, addPatient, updatePatient, deletePatient } from '@/api/patient'
 import PatientSearchBar from '@/components/PatientSearchBar.vue'
 import PatientFormDialog from '@/components/PatientFormDialog.vue'
+import TableError from '@/components/TableError.vue'
 import { useTable } from '@/composables/useTable'
 import { toPatientPayload } from '@/utils/patientPayload'
 import { DISEASE_TYPES, EMPTY_TEXT, STATUS } from '@/constants/domain'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ name: '', diseaseType: '' })
-const { loading, error, tableData, pagination, load, search } = useTable({
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
   fetcher: getPatientList
 })
 

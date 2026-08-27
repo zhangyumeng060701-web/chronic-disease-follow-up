@@ -13,7 +13,7 @@
       <el-button type="primary" @click="handleAdd">新增模板</el-button>
     </div>
 
-    <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:12px" />
+    <TableError :error="error" @retry="retry" />
 
     <el-table :data="tableData" v-loading="loading" empty-text="暂无随访模板">
       <el-table-column prop="templateCode" label="模板编码" width="130" />
@@ -95,10 +95,11 @@
 import { ref, reactive, onMounted } from 'vue'
 import { getTemplateList, createTemplate, updateTemplate, toggleTemplate } from '@/api/template'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ templateCode: '' })
-const { loading, error, tableData, pagination, load, search } = useTable({ fetcher: getTemplateList })
+const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getTemplateList })
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('')

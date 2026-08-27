@@ -18,7 +18,7 @@
       </el-form>
     </div>
 
-    <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:12px" />
+    <TableError :error="error" @retry="retry" />
 
     <el-table :data="tableData" v-loading="loading" empty-text="暂无随访任务">
       <el-table-column prop="patientName" label="患者" min-width="100" />
@@ -68,10 +68,11 @@
 import { reactive } from 'vue'
 import { getTaskList, completeTask, cancelTask } from '@/api/followUpTask'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ status: '' })
-const { loading, error, tableData, pagination, load, search } = useTable({ fetcher: getTaskList })
+const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getTaskList })
 
 function queryParams() {
   return { status: searchForm.status || undefined }

@@ -39,6 +39,12 @@ public class PatientPortalController {
         return Result.success(patientPortalService.myPlans());
     }
 
+    @GetMapping("/risk-level")
+    @ApiOperation(value = "查看我的风险等级")
+    public Result<Map<String, Object>> riskLevel() {
+        return Result.success(patientPortalService.myRiskLevel());
+    }
+
     @GetMapping("/vitals")
     @ApiOperation(value = "查看我的指标记录")
     public Result<List<PatientVital>> vitals() {

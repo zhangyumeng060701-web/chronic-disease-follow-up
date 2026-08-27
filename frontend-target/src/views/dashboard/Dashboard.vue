@@ -8,6 +8,50 @@
       <span class="head-badge">实时数据</span>
     </div>
 
+    <div class="workbench-grid" v-loading="workbenchLoading">
+      <section class="panel workbench-panel">
+        <header>
+          <h3>今日随访任务</h3>
+          <span>{{ workbench.todayTasks.length }} 项</span>
+        </header>
+        <el-empty v-if="!workbench.todayTasks.length" description="暂无今日任务" :image-size="50" />
+        <ul v-else class="workbench-list">
+          <li v-for="item in workbench.todayTasks" :key="item.id">
+            <span>{{ item.patientName }}</span>
+            <span>{{ item.channel }}</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel workbench-panel">
+        <header>
+          <h3>待处理预警</h3>
+          <span>{{ workbench.pendingAlerts.length }} 项</span>
+        </header>
+        <el-empty v-if="!workbench.pendingAlerts.length" description="暂无待处理预警" :image-size="50" />
+        <ul v-else class="workbench-list">
+          <li v-for="item in workbench.pendingAlerts" :key="item.id">
+            <span>{{ item.patientName }}</span>
+            <span>{{ item.alertLevel }}</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel workbench-panel">
+        <header>
+          <h3>待确认 AI 建议</h3>
+          <span>{{ workbench.pendingSuggestions.length }} 项</span>
+        </header>
+        <el-empty v-if="!workbench.pendingSuggestions.length" description="暂无待确认建议" :image-size="50" />
+        <ul v-else class="workbench-list">
+          <li v-for="item in workbench.pendingSuggestions" :key="item.id">
+            <span>{{ item.patientName }}</span>
+            <span>{{ item.riskLevel }}</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
     <div class="metric-grid">
       <article
         v-for="card in cards"
@@ -62,7 +106,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import LineChart from '@/components/LineChart.vue'
-import { getStatsOverview, getBpTrend, getGlucoseTrend, getDoctorComparison } from '@/api/dashboard'
+import { getStatsOverview, getBpTrend, getGlucoseTrend, getDoctorComparison, getWorkbench } from '@/api/dashboard'
 
 const cards = reactive([
   { title: '管理患者总数', value: '--', unit: '人', tone: 'accent' },
@@ -80,6 +124,12 @@ const glucoseData = ref([])
 const overviewLoading = ref(false)
 const chartLoading = ref(false)
 const doctorLoading = ref(false)
+const workbenchLoading = ref(false)
+const workbench = reactive({
+  todayTasks: [],
+  pendingAlerts: [],
+  pendingSuggestions: []
+})
 
 async function fetchOverview() {
   overviewLoading.value = true
@@ -126,10 +176,27 @@ async function fetchDoctors() {
   }
 }
 
+async function fetchWorkbench() {
+  workbenchLoading.value = true
+  try {
+    const res = await getWorkbench()
+    workbench.todayTasks = res.data?.todayTasks || []
+    workbench.pendingAlerts = res.data?.pendingAlerts || []
+    workbench.pendingSuggestions = res.data?.pendingSuggestions || []
+  } catch {
+    workbench.todayTasks = []
+    workbench.pendingAlerts = []
+    workbench.pendingSuggestions = []
+  } finally {
+    workbenchLoading.value = false
+  }
+}
+
 onMounted(() => {
   fetchOverview()
   fetchCharts()
   fetchDoctors()
+  fetchWorkbench()
 })
 </script>
 
@@ -170,6 +237,33 @@ onMounted(() => {
   border: 1px solid rgba(15, 164, 127, 0.3);
   border-radius: 4px;
   background: rgba(15, 164, 127, 0.06);
+}
+
+.workbench-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.workbench-list {
+  margin: 0;
+  padding: 10px 16px 14px;
+  list-style: none;
+}
+
+.workbench-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.workbench-list li:last-child {
+  border-bottom: 0;
 }
 
 .metric-grid {
@@ -312,6 +406,10 @@ onMounted(() => {
 }
 
 @media (max-width: 900px) {
+  .workbench-grid {
+    grid-template-columns: 1fr;
+  }
+
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

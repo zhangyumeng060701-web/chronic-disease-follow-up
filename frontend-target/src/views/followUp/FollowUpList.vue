@@ -19,14 +19,7 @@
       <el-button type="primary" @click="handleAdd">新增随访</el-button>
     </div>
 
-    <el-alert
-      v-if="error"
-      :title="error"
-      type="error"
-      :closable="false"
-      show-icon
-      style="margin-top:12px"
-    />
+    <TableError :error="error" @retry="retry" style="margin-top:12px" />
 
     <el-table :data="tableData" v-loading="loading"
       :empty-text="EMPTY_TEXT.FOLLOW_UP" style="margin-top:16px">
@@ -139,12 +132,13 @@ import { EMPTY_TEXT } from '@/constants/domain'
 import { getFollowUpList, addFollowUp, updateFollowUp, deleteFollowUp } from '@/api/followUp'
 import { getPatientList } from '@/api/patient'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ patientId: '' })
 const dateRange = ref([])
 const patientOptions = ref([])
-const { loading, error, tableData, pagination, load, search } = useTable({
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
   fetcher: getFollowUpList
 })
 

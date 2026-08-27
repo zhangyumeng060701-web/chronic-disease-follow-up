@@ -19,14 +19,7 @@
       <el-button type="primary" @click="handleAdd">新增用户</el-button>
     </div>
 
-    <el-alert
-      v-if="error"
-      :title="error"
-      type="error"
-      :closable="false"
-      show-icon
-      style="margin-top:12px"
-    />
+    <TableError :error="error" @retry="retry" style="margin-top:12px" />
 
     <el-table
       :data="tableData"
@@ -115,10 +108,11 @@ import { ref, reactive, onMounted } from 'vue'
 import { getUserList, createUser, updateUser, toggleUserStatus } from '@/api/user'
 import { EMPTY_TEXT, ROLES, STATUS } from '@/constants/domain'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage } from 'element-plus'
 
 const searchForm = reactive({ username: '', role: '' })
-const { loading, error, tableData, pagination, load, search } = useTable({
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
   fetcher: getUserList
 })
 

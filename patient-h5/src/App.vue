@@ -31,6 +31,13 @@
 
       <main class="app-main">
         <section v-if="activeTab === 'home'">
+          <div class="risk-banner">
+            <div>
+              <span>我的风险等级</span>
+              <strong>{{ riskLabel(riskLevel) }}</strong>
+            </div>
+            <p>{{ riskEvidence }}</p>
+          </div>
           <div class="summary-grid">
             <div class="summary-item">
               <span>随访计划</span>
@@ -197,6 +204,8 @@ const questionnaires = ref([])
 const messages = ref([])
 const followUps = ref([])
 const unreadCount = ref(0)
+const riskLevel = ref('')
+const riskEvidence = ref('')
 const answers = reactive({})
 
 const tabs = [
@@ -234,7 +243,13 @@ function handleLogout() {
 }
 
 async function loadAll() {
-  await Promise.all([loadPlans(), loadVitals(), loadQuestionnaires(), loadMessages(), loadFollowUps()])
+  await Promise.all([loadPlans(), loadVitals(), loadQuestionnaires(), loadMessages(), loadFollowUps(), loadRiskLevel()])
+}
+
+async function loadRiskLevel() {
+  const res = await request.get('/patient/risk-level')
+  riskLevel.value = res.data?.riskLevel || 'STABLE'
+  riskEvidence.value = res.data?.evidence || '暂无评估'
 }
 
 async function loadPlans() {
@@ -318,7 +333,7 @@ function parseQuestions(content) {
 }
 
 function riskLabel(level) {
-  return { LOW: '低风险', MEDIUM: '中风险', HIGH: '高风险' }[level] || level
+  return { LOW: '低风险', MEDIUM: '中风险', HIGH: '高风险', STABLE: '稳定' }[level] || level
 }
 
 onMounted(() => {
@@ -395,6 +410,22 @@ body {
 .app-main { padding: 14px 12px 76px; }
 .section-card { margin-bottom: 12px; border-radius: 8px; }
 .muted { color: var(--muted); font-size: 12px; }
+
+.risk-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  color: #FFFFFF;
+  background: var(--brand);
+  border-radius: 8px;
+}
+
+.risk-banner span { display: block; color: rgba(255, 255, 255, 0.8); font-size: 12px; }
+.risk-banner strong { display: block; margin-top: 4px; font-size: 20px; }
+.risk-banner p { margin: 0; color: rgba(255, 255, 255, 0.85); font-size: 12px; text-align: right; }
 
 .summary-grid {
   display: grid;

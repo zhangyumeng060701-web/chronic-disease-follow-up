@@ -15,6 +15,7 @@ import com.example.followup.entity.Patient;
 import com.example.followup.entity.PatientVital;
 import com.example.followup.entity.Questionnaire;
 import com.example.followup.entity.QuestionnaireSubmission;
+import com.example.followup.entity.PatientRiskAssessment;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.AlertMapper;
@@ -33,10 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,6 +65,8 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     private MessageMapper messageMapper;
     @Autowired
     private AlertMapper alertMapper;
+    @Autowired
+    private com.example.followup.mapper.PatientRiskAssessmentMapper riskAssessmentMapper;
 
     @Override
     public List<FollowUpPlanVO> myPlans() {
@@ -203,6 +209,31 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         followUpMapper.insert(followUp);
         log.info("createPatientFollowUp patientId={} id={}", patientId, followUp.getId());
         return VoMappers.toFollowUpVO(followUp);
+    }
+
+    @Override
+    public Map<String, Object> myRiskLevel() {
+        Long patientId = SecurityUtils.patientId();
+        PatientRiskAssessment latest = riskAssessmentMapper.selectOne(new LambdaQueryWrapper<PatientRiskAssessment>()
+                .eq(PatientRiskAssessment::getPatientId, patientId)
+                .orderByDesc(PatientRiskAssessment::getAssessedAt)
+                .last("LIMIT 1"));
+        String riskLevel = latest == null ? DomainConstants.RISK_STABLE : latest.getRiskLevel();
+        if (latest == null) {
+            FollowUpPlan plan = planMapper.selectOne(new LambdaQueryWrapper<FollowUpPlan>()
+                    .eq(FollowUpPlan::getPatientId, patientId)
+                    .eq(FollowUpPlan::getStatus, DomainConstants.PLAN_STATUS_ACTIVE)
+                    .orderByDesc(FollowUpPlan::getUpdateTime)
+                    .last("LIMIT 1"));
+            if (plan != null && StringUtils.hasText(plan.getRiskLevel())) {
+                riskLevel = plan.getRiskLevel();
+            }
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("riskLevel", riskLevel);
+        result.put("score", latest == null ? 0 : latest.getScore());
+        result.put("evidence", latest == null ? "暂无正式评估，使用计划风险等级" : latest.getEvidence());
+        return result;
     }
 
     private void generateAlertFromVital(Long patientId, PatientVital vital) {

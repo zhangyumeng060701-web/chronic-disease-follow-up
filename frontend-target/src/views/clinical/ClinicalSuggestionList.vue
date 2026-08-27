@@ -16,6 +16,8 @@
       </el-form>
     </div>
 
+    <TableError :error="error" @retry="retry" />
+
     <el-table :data="tableData" v-loading="loading" empty-text="暂无AI随访建议">
       <el-table-column prop="id" label="ID" width="70" />
       <el-table-column prop="patientId" label="患者ID" width="90" />
@@ -57,10 +59,11 @@
 import { reactive, onMounted } from 'vue'
 import { getSuggestionList, confirmSuggestion, rejectSuggestion } from '@/api/clinical'
 import { useTable } from '@/composables/useTable'
+import TableError from '@/components/TableError.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const searchForm = reactive({ status: 'PENDING' })
-const { loading, tableData, pagination, load, search } = useTable({ fetcher: getSuggestionList })
+const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getSuggestionList })
 
 function queryParams() {
   return { status: searchForm.status || undefined }
