@@ -52,7 +52,10 @@ public class AiController {
 
         try {
             log.info("开始拉起真实 AI 链路，需求内容: {}", requirement);
-            File scriptFile = new File("../ai-agent/scripts/decompose.py");
+            File scriptFile = new File("/root/ai-decompose.py");
+            if (!scriptFile.exists()) {
+                scriptFile = new File("../ai-agent/scripts/decompose.py");
+            }
             if (!scriptFile.exists()) {
                 scriptFile = new File("/root/chronic-disease-follow-up/ai-agent/scripts/decompose.py");
             }
@@ -61,6 +64,7 @@ public class AiController {
             Map<String, String> env = pb.environment();
             env.put("AGENT_ARTS_API_KEY", agentArtsApiKey);
             env.put("AGENT_API_KEY", agentArtsApiKey);
+            env.put("AGENT_ARTS_PROMPT_PATH", "/root/ai-prompt.txt");
             if (StringUtils.hasText(agentArtsSessionId)) {
                 env.put("AGENT_ARTS_SESSION_ID", agentArtsSessionId);
                 env.put("AGENT_SESSION_ID", agentArtsSessionId);

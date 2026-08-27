@@ -10,7 +10,7 @@ except ImportError:
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROMPT_PATH = os.path.join(BASE_DIR, "..", "prompts", "task-decompose.txt")
+PROMPT_PATH = os.environ.get("AGENT_ARTS_PROMPT_PATH", os.path.join(BASE_DIR, "..", "prompts", "task-decompose.txt"))
 AGENT_ARTS_URL = os.environ.get("AGENT_ARTS_URL", "")
 AGENT_ARTS_API_KEY = os.environ.get("AGENT_ARTS_API_KEY", "")
 AGENT_ARTS_SESSION_ID = os.environ.get("AGENT_ARTS_SESSION_ID", "")
