@@ -14,6 +14,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -25,6 +28,11 @@ import java.util.stream.Collectors;
 public class AiController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Map<String, String> FIELD_RENAMES = Map.of(
+            "files_to_modify", "filesToModify",
+            "api_endpoint", "apiEndpoint",
+            "acceptance_criteria", "acceptanceCriteria"
+    );
 
     @Value("${agent.arts.api-key:}")
     private String agentArtsApiKey;
@@ -72,10 +80,29 @@ public class AiController {
             }
 
             Object jsonData = objectMapper.readValue(pythonOutput, Object.class);
+            jsonData = normalizeKeys(jsonData);
             return Map.of("code", 200, "message", "success", "data", jsonData);
         } catch (Exception e) {
             log.error("后端处理 AI 请求失败", e);
             return Map.of("code", 500, "message", "后端解析异常: " + e.getMessage());
         }
+    }
+
+    private Object normalizeKeys(Object value) {
+        if (value instanceof Map) {
+            Map<?, ?> source = (Map<?, ?>) value;
+            Map<String, Object> result = new LinkedHashMap<>();
+            source.forEach((key, item) -> {
+                String normalizedKey = FIELD_RENAMES.getOrDefault(String.valueOf(key), String.valueOf(key));
+                result.put(normalizedKey, normalizeKeys(item));
+            });
+            return result;
+        }
+        if (value instanceof List) {
+            List<Object> result = new ArrayList<>();
+            ((List<?>) value).forEach(item -> result.add(normalizeKeys(item)));
+            return result;
+        }
+        return value;
     }
 }

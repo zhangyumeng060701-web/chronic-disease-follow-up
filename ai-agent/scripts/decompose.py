@@ -82,26 +82,41 @@ def call_agent_arts(requirement):
     if AGENT_ARTS_SESSION_ID:
         headers["x-hw-agentarts-session-id"] = AGENT_ARTS_SESSION_ID
 
-    last_error = None
-    for attempt in range(2):
-        try:
-            response = requests.post(AGENT_ARTS_URL, headers=headers, json=payload, timeout=12)
-            if response.status_code == 200:
-                result = response.json()
-                answer = result.get("answer") or result.get("result")
-                if answer:
-                    parsed = json.loads(answer) if isinstance(answer, str) else answer
-                    return {"code": 200, "data": parsed, "message": "success"}
-            last_error = f"Agent Arts 返回状态码 {response.status_code}"
-        except Exception as exc:
-            last_error = str(exc)
-        time.sleep(1)
+    try:
+        response = requests.post(AGENT_ARTS_URL, headers=headers, json=payload, timeout=35, stream=True)
+        full_answer = ""
 
-    return {
-        "code": 500,
-        "message": f"Agent Arts 调用失败：{last_error}",
-        "data": None
-    }
+        for line in response.iter_lines():
+            if not line:
+                continue
+            line_data = line.decode("utf-8")
+            if line_data.startswith("data: "):
+                try:
+                    data = json.loads(line_data[6:])
+                    if data.get("event") == "message":
+                        chunk = data.get("content") or data.get("reasoning_content") or ""
+                        full_answer += chunk
+                except json.JSONDecodeError:
+                    continue
+
+        if not full_answer and response.status_code == 200:
+            try:
+                result = response.json()
+                full_answer = result.get("answer") or result.get("result") or response.text
+            except json.JSONDecodeError:
+                full_answer = response.text
+
+        if not full_answer:
+            return {"code": 500, "message": f"Agent Arts 未返回有效内容，HTTP {response.status_code}", "data": None}
+
+        start = full_answer.find("{")
+        end = full_answer.rfind("}")
+        if start == -1 or end == -1:
+            return {"code": 500, "message": "Agent Arts 输出不是有效 JSON", "data": None}
+        parsed = json.loads(full_answer[start:end + 1])
+        return {"code": 200, "data": parsed, "message": "success"}
+    except Exception as exc:
+        return {"code": 500, "message": f"Agent Arts 调用失败：{exc}", "data": None}
 
 
 if __name__ == "__main__":

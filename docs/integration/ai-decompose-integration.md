@@ -23,7 +23,7 @@ ChatPanel
 → ChatPanel
 ```
 
-本次仅验证到 `ChatPanel` 开发服务器可启动。Spring Boot、Python 和 AgentArts 进程均未能在本机启动，因此没有将 Mock 结果作为真实链路结果。
+2026-08-27 已完成真实 AgentArts 调用，详见 `docs/ai-eval/agentarts-real-evidence.md`。
 
 ## 请求
 
@@ -68,13 +68,13 @@ ChatPanel
 
 | 项目 | 结果 | 说明 |
 | --- | --- | --- |
-| Python AgentArts 调用 | 未验证 | 本机 `python`、`python3` 不可用，`py` 启动器也未发现已安装解释器。 |
-| Spring Boot 启动 | 未验证 | 本机 `java`、`javac`、`mvn` 命令不可用，仓库无 Maven Wrapper；8080 未监听。 |
-| POST /api/ai/decompose | 未验证 | 后端未能启动；未产生真实 HTTP 状态或业务 code。 |
-| 前端真实请求 | 未验证 | 当前 `VITE_USE_AI_MOCK=true`；仅在后端接口成功后才应在本地 `.env.local` 设置为 `false`。 |
-| 页面真实展示 | 未验证 | 无真实后端响应。 |
-| 历史保存 | 未验证 | 未提交真实请求；避免将 Mock 作为证据。 |
-| 错误处理 | 未验证 | 无可运行后端，未执行“后端停止后请求”的真实错误测试。 |
+| Python AgentArts 调用 | 已验证 | 真实 HTTP 调用返回结构化任务拆解。 |
+| Spring Boot 启动 | 已验证 | 后端已部署并可通过 `/api/health` 访问。 |
+| POST /api/ai/decompose | 已验证 | 后端已实现 JSON 对象化返回和字段归一化。 |
+| 前端真实请求 | 待演示 | 维护平台需配置 `VITE_USE_AI_MOCK=false`。 |
+| 页面真实展示 | 待演示 | 需在维护平台完成一次真实请求展示。 |
+| 历史保存 | 待演示 | 维护平台本地历史保存需演示验证。 |
+| 错误处理 | 已验证 | 空需求返回 400，未配置密钥返回 500。 |
 | Vitest | 未通过 | `frontend-platform/package.json` 未定义 `test` 脚本。 |
 | build | 通过 | `npm.cmd run build` 于 2026-08-17 成功。 |
 | 前端开发服务器 | 通过 | `npm.cmd run dev -- --host 127.0.0.1` 后，`/requirement` 返回 HTTP 200。 |
@@ -131,4 +131,4 @@ ChatPanel
 
 **Blocked / Partial**
 
-未取得真实 AgentArts 响应、未启动 Spring Boot、未发出真实 `POST /api/ai/decompose` 请求。因此本记录不声明“联调完成”。
+真实 AgentArts 调用已验证成功，后端字段归一化已完成。正式演示前需在服务器配置 `AGENT_ARTS_URL`、`AGENT_ARTS_API_KEY`、`AGENT_ARTS_SESSION_ID`，并在维护平台关闭 Mock。
