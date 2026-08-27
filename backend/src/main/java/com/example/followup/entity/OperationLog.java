@@ -16,6 +16,7 @@ public class OperationLog {
     private String operation;
     private String targetType;
     private Long targetId;
+    private String detail;
     private String ipAddress;
     private LocalDateTime createTime;
 }

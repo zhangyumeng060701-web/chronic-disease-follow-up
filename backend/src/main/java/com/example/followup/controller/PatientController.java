@@ -39,7 +39,6 @@ public class PatientController {
 
     @GetMapping(value = "/export", produces = "text/csv;charset=UTF-8")
     @ApiOperation(value = "导出患者（自动脱敏并记录审计日志）")
-    @OperationLog(operation = "导出患者", targetType = "Patient")
     public String export() {
         return patientService.exportPatientsCsv();
     }

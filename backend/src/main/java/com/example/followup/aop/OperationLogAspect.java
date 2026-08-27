@@ -33,7 +33,8 @@ public class OperationLogAspect {
                     currentUser.getUsername(),
                     operationLog.operation(),
                     operationLog.targetType(),
-                    targetId
+                    targetId,
+                    operationLog.detail()
             );
         } catch (Exception e) {
             log.warn("记录操作日志失败: {}", e.getMessage());

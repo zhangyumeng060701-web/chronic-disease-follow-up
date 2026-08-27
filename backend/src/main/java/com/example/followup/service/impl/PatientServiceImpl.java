@@ -17,6 +17,7 @@ import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
+import com.example.followup.service.OperationLogService;
 import com.example.followup.service.PatientService;
 import com.example.followup.util.DesensitizationUtil;
 import com.example.followup.util.SensitiveDataCipher;
@@ -48,6 +49,8 @@ public class PatientServiceImpl implements PatientService {
     private SysUserMapper sysUserMapper;
     @Autowired
     private SensitiveDataCipher sensitiveDataCipher;
+    @Autowired
+    private OperationLogService operationLogService;
 
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
@@ -216,6 +219,14 @@ public class PatientServiceImpl implements PatientService {
                     .append(csvCell(vo.getDiseaseType())).append(',')
                     .append(csvCell(doctorNames.getOrDefault(vo.getDoctorId(), ""))).append('\n');
         }
+        operationLogService.log(
+                SecurityUtils.currentUser().getUserId(),
+                SecurityUtils.currentUser().getUsername(),
+                "导出患者",
+                "Patient",
+                null,
+                "导出患者脱敏CSV，行数" + vos.size()
+        );
         log.info("exportPatientsCsv rows={}", vos.size());
         return csv.toString();
     }

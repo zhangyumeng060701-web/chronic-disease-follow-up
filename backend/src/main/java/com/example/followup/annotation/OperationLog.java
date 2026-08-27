@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface OperationLog {
     String operation();
     String targetType();
+    String detail() default "";
 }

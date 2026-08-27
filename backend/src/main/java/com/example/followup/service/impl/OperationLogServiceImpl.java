@@ -44,7 +44,7 @@ public class OperationLogServiceImpl implements OperationLogService {
     }
 
     @Override
-    public void log(Long userId, String username, String operation, String targetType, Long targetId) {
+    public void log(Long userId, String username, String operation, String targetType, Long targetId, String detail) {
         long start = System.currentTimeMillis();
         OperationLog entity = new OperationLog();
         entity.setUserId(userId);
@@ -52,6 +52,7 @@ public class OperationLogServiceImpl implements OperationLogService {
         entity.setOperation(operation);
         entity.setTargetType(targetType);
         entity.setTargetId(targetId);
+        entity.setDetail(detail);
         entity.setIpAddress(currentIp());
         operationLogMapper.insert(entity);
         log.info("operationLog userId={} operation={} cost={}ms", userId, operation, System.currentTimeMillis() - start);

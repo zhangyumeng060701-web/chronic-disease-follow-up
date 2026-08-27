@@ -23,6 +23,10 @@ public class SensitiveDataCipher {
     @Value("${data.encryption.key:}")
     private String encryptionKey;
 
+    public boolean isConfigured() {
+        return StringUtils.hasText(encryptionKey);
+    }
+
     public String encrypt(String plainText) {
         if (!StringUtils.hasText(plainText) || !StringUtils.hasText(encryptionKey)) {
             return plainText;
