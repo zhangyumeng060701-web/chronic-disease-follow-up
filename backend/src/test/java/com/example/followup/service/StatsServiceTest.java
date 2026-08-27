@@ -88,15 +88,22 @@ class StatsServiceTest {
         when(patientMapper.selectCount(any())).thenReturn(4L);
         when(followUpMapper.selectCount(any())).thenReturn(3L);
         when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
-        when(alertMapper.countHighRisk()).thenReturn(2L);
-        when(alertMapper.countLostFollowUp()).thenReturn(1L);
+        Alert redAlert = new Alert();
+        redAlert.setPatientId(1L);
+        redAlert.setAlertLevel("RED");
+        redAlert.setIsResolved(0);
+        Alert lostAlert = new Alert();
+        lostAlert.setPatientId(2L);
+        lostAlert.setAlertType("LOST_FOLLOW_UP");
+        lostAlert.setIsResolved(0);
+        when(alertMapper.selectList(any())).thenReturn(List.of(redAlert, redAlert), List.of(lostAlert));
 
         StatsOverview result = statsService.getOverview();
 
         assertEquals(4L, result.getTotalPatients());
         assertEquals(3, result.getMonthlyCompleted());
         assertEquals("75.0%", result.getCompletionRate());
-        assertEquals(2L, result.getHighRiskCount());
+        assertEquals(1L, result.getHighRiskCount());
         assertEquals(1L, result.getLostFollowUpCount());
     }
 
@@ -113,7 +120,11 @@ class StatsServiceTest {
         when(followUpMapper.selectCount(any())).thenReturn(1L);
         when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
         when(patientMapper.selectList(any())).thenReturn(java.util.List.of(patient));
-        when(alertMapper.selectCount(any())).thenReturn(1L);
+        Alert alert = new Alert();
+        alert.setPatientId(1L);
+        alert.setAlertLevel("RED");
+        alert.setIsResolved(0);
+        when(alertMapper.selectList(any())).thenReturn(List.of(alert));
 
         StatsOverview result = statsService.getOverview();
 

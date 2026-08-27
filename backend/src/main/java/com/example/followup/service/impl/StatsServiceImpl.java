@@ -84,10 +84,10 @@ public class StatsServiceImpl implements StatsService {
         }
 
         Long highRiskCount = admin
-                ? alertMapper.countHighRisk()
+                ? countDistinctAlerts(null, DomainConstants.ALERT_LEVEL_RED)
                 : countAlertsForDoctor(currentDoctorId, null, DomainConstants.ALERT_LEVEL_RED);
         Long lostFollowUpCount = admin
-                ? alertMapper.countLostFollowUp()
+                ? countDistinctAlerts(DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null)
                 : countAlertsForDoctor(currentDoctorId, DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null);
 
         String planCompletionRate = formatRate(countCompletedTasks(), countTotalTasks());
@@ -315,6 +315,26 @@ public class StatsServiceImpl implements StatsService {
         if (alertLevel != null) {
             wrapper.eq(Alert::getAlertLevel, alertLevel);
         }
-        return alertMapper.selectCount(wrapper);
+        return alertMapper.selectList(wrapper).stream()
+                .map(Alert::getPatientId)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .count();
+    }
+
+    private Long countDistinctAlerts(String alertType, String alertLevel) {
+        LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Alert::getIsResolved, 0);
+        if (alertType != null) {
+            wrapper.eq(Alert::getAlertType, alertType);
+        }
+        if (alertLevel != null) {
+            wrapper.eq(Alert::getAlertLevel, alertLevel);
+        }
+        return alertMapper.selectList(wrapper).stream()
+                .map(Alert::getPatientId)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .count();
     }
 }
