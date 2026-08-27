@@ -15,6 +15,8 @@ DATA_ENCRYPTION_KEY="$(cat /root/.data_encryption_key)"
 
 exec java -Xmx256m -XX:MaxMetaspaceSize=128m \
   -DDATA_ENCRYPTION_KEY="$DATA_ENCRYPTION_KEY" \
+  -Dagent.arts.api-key="${AGENT_ARTS_API_KEY:-}" \
+  -Dagent.arts.session-id="${AGENT_ARTS_SESSION_ID:-}" \
   -Dspring.datasource.url="${SPRING_DATASOURCE_URL:-jdbc:mysql://localhost:3306/follow_up?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8}" \
   -Dspring.datasource.username="${DB_USERNAME:-root}" \
   -Dspring.datasource.password="${DB_PASSWORD:-root123}" \
