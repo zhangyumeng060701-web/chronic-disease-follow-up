@@ -130,6 +130,7 @@ mysql -uroot -p -e "select version, description, success from follow_up.flyway_s
 - `V5__data_governance.sql`
 - `V6__ai_suggestion_quality.sql`
 - `V7__operation_log_detail.sql`
+- `V8__enlarge_sensitive_columns.sql`
 
 验证敏感字段加密：
 
