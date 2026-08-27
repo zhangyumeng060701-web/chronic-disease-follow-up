@@ -71,6 +71,19 @@ AgentArts 返回流式 SSE，最终 Python 脚本提取并解析为 JSON：
 - 后端已做字段归一化
 - 未提交任何真实密钥
 
+## 线上验证
+
+2026-08-27 已通过线上接口 `POST /api/ai/decompose` 完成真实调用，返回结构已归一化为标准 camelCase：
+
+- `summary`
+- `tasks[].type`
+- `tasks[].title`
+- `tasks[].description`
+- `tasks[].filesToModify`
+- `tasks[].apiEndpoint`
+- `tasks[].acceptanceCriteria`
+- `risk`
+
 后续正式演示时，需要在服务器配置：
 
 ```text
