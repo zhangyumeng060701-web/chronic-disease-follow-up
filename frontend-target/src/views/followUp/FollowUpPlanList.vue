@@ -145,7 +145,7 @@ const rules = {
 
 async function fetchPatients() {
   try {
-    const res = await getPatientList({ page: 1, size: 999 })
+    const res = await getPatientList({ page: 1, size: 100 })
     patientOptions.value = res.data.records || []
   } catch {
     ElMessage.error('加载患者列表失败')
