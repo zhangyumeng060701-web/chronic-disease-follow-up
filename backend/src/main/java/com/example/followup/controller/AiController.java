@@ -52,7 +52,11 @@ public class AiController {
 
         try {
             log.info("开始拉起真实 AI 链路，需求内容: {}", requirement);
-            String scriptPath = new File("../ai-agent/scripts/decompose.py").getAbsolutePath();
+            File scriptFile = new File("../ai-agent/scripts/decompose.py");
+            if (!scriptFile.exists()) {
+                scriptFile = new File("/root/chronic-disease-follow-up/ai-agent/scripts/decompose.py");
+            }
+            String scriptPath = scriptFile.getAbsolutePath();
             ProcessBuilder pb = new ProcessBuilder("python3", scriptPath, requirement);
             Map<String, String> env = pb.environment();
             env.put("AGENT_ARTS_API_KEY", agentArtsApiKey);
