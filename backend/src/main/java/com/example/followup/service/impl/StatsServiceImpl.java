@@ -278,6 +278,7 @@ public class StatsServiceImpl implements StatsService {
         Map<Long, Long> highRiskByDoctor = highRiskAlerts.stream()
                 .map(Alert::getPatientId)
                 .filter(patientDoctorMap::containsKey)
+                .distinct()
                 .collect(Collectors.toMap(
                         patientDoctorMap::get,
                         patientId -> 1L,
