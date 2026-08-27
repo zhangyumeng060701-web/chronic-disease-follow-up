@@ -100,7 +100,7 @@ function statusType(status) {
   return { PENDING: 'warning', CONFIRMED: 'success', REJECTED: 'info' }[status] || 'info'
 }
 
-onMounted(() => load())
+onMounted(() => load(queryParams()))
 </script>
 
 <style scoped>

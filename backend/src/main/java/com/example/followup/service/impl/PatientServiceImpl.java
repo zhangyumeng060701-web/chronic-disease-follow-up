@@ -202,7 +202,9 @@ public class PatientServiceImpl implements PatientService {
                 .map(VoMappers::toPatientVO)
                 .collect(Collectors.toList());
         vos.forEach(this::decryptSensitive);
-        vos.forEach(this::desensitize);
+        if (!SecurityUtils.isAdmin()) {
+            vos.forEach(this::desensitize);
+        }
         StringBuilder csv = new StringBuilder("姓名,性别,年龄,手机号,慢病类型,责任医生\n");
         List<Long> doctorIds = vos.stream().map(PatientVO::getDoctorId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
         Map<Long, String> doctorNames = doctorIds.isEmpty() ? Map.of() :

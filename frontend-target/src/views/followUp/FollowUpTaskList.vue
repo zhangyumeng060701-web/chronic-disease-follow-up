@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { getTaskList, completeTask, cancelTask } from '@/api/followUpTask'
 import { useTable } from '@/composables/useTable'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -102,6 +102,8 @@ async function handleCancel(row) {
     // user cancels or request layer shows error
   }
 }
+
+onMounted(() => load())
 
 function statusLabel(status) {
   return {

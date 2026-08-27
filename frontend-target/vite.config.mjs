@@ -9,7 +9,9 @@ export default defineConfig({
   },
   test: {
     include: ['src/__tests__/**/*.test.js'],
-    exclude: ['e2e/**', 'node_modules/**', 'dist/**']
+    exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
+    pool: 'threads',
+    maxWorkers: 1
   },
   server: {
     port: 5173,
