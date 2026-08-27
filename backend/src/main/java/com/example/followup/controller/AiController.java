@@ -60,8 +60,10 @@ public class AiController {
             ProcessBuilder pb = new ProcessBuilder("python3", scriptPath, requirement);
             Map<String, String> env = pb.environment();
             env.put("AGENT_ARTS_API_KEY", agentArtsApiKey);
+            env.put("AGENT_API_KEY", agentArtsApiKey);
             if (StringUtils.hasText(agentArtsSessionId)) {
                 env.put("AGENT_ARTS_SESSION_ID", agentArtsSessionId);
+                env.put("AGENT_SESSION_ID", agentArtsSessionId);
             }
             pb.redirectErrorStream(true);
             Process process = pb.start();
