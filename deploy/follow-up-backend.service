@@ -1,0 +1,15 @@
+[Unit]
+Description=Chronic Disease Follow-Up Backend
+After=network-online.target mysql.service
+Wants=network-online.target mysql.service
+
+[Service]
+Type=simple
+ExecStart=/root/chronic-disease-follow-up/deploy/start-backend.sh
+Restart=always
+RestartSec=10
+StandardOutput=append:/root/follow-up-backend.log
+StandardError=append:/root/follow-up-backend.log
+
+[Install]
+WantedBy=multi-user.target
