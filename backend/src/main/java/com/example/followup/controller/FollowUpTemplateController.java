@@ -43,6 +43,12 @@ public class FollowUpTemplateController {
 
     @GetMapping
     @ApiOperation(value = "分页查询随访模板")
+    /**
+     * 分页查询随访模板
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     public Result<PageResponse<FollowUpTemplateVO>> list(@Valid FollowUpTemplateQuery query) {
         return Result.success(templateService.listTemplates(query));
     }

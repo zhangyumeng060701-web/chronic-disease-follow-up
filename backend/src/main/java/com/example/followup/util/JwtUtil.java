@@ -36,9 +36,9 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-/**
- * 执行 generateToken 操作。
- */
+    /**
+    * 执行 generateToken 操作。
+    */
     public String generateToken(String username, String role, Long userId) {
         return generateToken(username, role, userId, null);
     }
@@ -55,9 +55,9 @@ public class JwtUtil {
                 .compact();
     }
 
-/**
- * 执行 parseToken 操作。
- */
+    /**
+    * 执行 parseToken 操作。
+    */
     public Claims parseToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())

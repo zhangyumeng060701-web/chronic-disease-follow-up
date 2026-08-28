@@ -41,9 +41,9 @@ public class OperationLogAspect {
             pointcut = "@annotation(operationLog)",
             returning = "result"
     )
-/**
- * 执行 afterReturning 操作。
- */
+    /**
+    * 执行 afterReturning 操作。
+    */
     public void afterReturning(JoinPoint joinPoint, OperationLog operationLog, Object result) {
         try {
             CurrentUser currentUser = SecurityUtils.currentUser();

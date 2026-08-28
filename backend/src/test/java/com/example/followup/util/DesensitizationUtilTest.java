@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * DesensitizationUtilTest 测试。
+ *
+ * @since 2026-08-28
+ */
 class DesensitizationUtilTest {
     @Test
     @DisplayName("姓名脱敏保留首字")

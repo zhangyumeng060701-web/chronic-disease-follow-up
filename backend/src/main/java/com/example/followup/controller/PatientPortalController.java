@@ -47,6 +47,11 @@ public class PatientPortalController {
 
     @GetMapping("/plans")
     @ApiOperation(value = "查看我的随访计划")
+    /**
+     * 查看我的随访计划
+     *
+     * @return 返回值
+     */
     public Result<List<FollowUpPlanVO>> plans() {
         return Result.success(patientPortalService.myPlans());
     }

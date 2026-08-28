@@ -23,13 +23,20 @@ public class CurrentUser {
     private String role;
     private Long patientId;
 
+    /**
+     * 执行CurrentUser操作。
+     *
+     * @param userId 参数说明
+     * @param username 参数说明
+     * @param role 参数说明
+     */
     public CurrentUser(Long userId, String username, String role) {
         this(userId, username, role, null);
     }
 
-/**
- * 执行 isAdmin 操作。
- */
+    /**
+    * 执行 isAdmin 操作。
+    */
     public boolean isAdmin() {
         return DomainConstants.ROLE_ADMIN.equals(role);
     }

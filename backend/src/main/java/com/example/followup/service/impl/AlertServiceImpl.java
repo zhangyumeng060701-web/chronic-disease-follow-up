@@ -44,6 +44,12 @@ public class AlertServiceImpl implements AlertService {
     private PatientMapper patientMapper;
 
     @Override
+    /**
+     * 查询listAlerts。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     public PageResponse<AlertVO> listAlerts(AlertQuery query) {
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();

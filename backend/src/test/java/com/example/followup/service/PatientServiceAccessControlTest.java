@@ -41,6 +41,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
+/**
+ * PatientServiceAccessControlTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class PatientServiceAccessControlTest {
     @Mock

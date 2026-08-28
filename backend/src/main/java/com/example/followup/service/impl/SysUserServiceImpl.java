@@ -43,6 +43,12 @@ public class SysUserServiceImpl implements SysUserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
+    /**
+     * 查询listUsers。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     public PageResponse<UserVO> listUsers(UserQuery query) {
         long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();

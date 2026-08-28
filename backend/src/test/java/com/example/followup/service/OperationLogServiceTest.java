@@ -19,6 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * OperationLogServiceTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class OperationLogServiceTest {
     @Mock

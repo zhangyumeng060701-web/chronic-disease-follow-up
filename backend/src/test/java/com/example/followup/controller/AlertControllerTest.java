@@ -27,6 +27,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
+/**
+ * AlertControllerTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class AlertControllerTest {
     @Mock

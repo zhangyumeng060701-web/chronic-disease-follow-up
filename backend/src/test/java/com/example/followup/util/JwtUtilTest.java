@@ -16,6 +16,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+/**
+ * JwtUtilTest 测试。
+ *
+ * @since 2026-08-28
+ */
 class JwtUtilTest {
     private JwtUtil jwtUtil;
 

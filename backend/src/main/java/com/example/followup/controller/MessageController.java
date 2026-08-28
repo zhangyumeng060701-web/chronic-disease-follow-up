@@ -40,6 +40,12 @@ public class MessageController {
 
     @GetMapping
     @ApiOperation(value = "分页查询消息")
+    /**
+     * 分页查询消息
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     public Result<PageResponse<Message>> list(@Valid MessageQuery query) {
         return Result.success(messageService.listMessages(query));
     }

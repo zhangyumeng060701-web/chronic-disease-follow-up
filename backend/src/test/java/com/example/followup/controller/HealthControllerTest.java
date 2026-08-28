@@ -13,6 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+/**
+ * HealthControllerTest 测试。
+ *
+ * @since 2026-08-28
+ */
 class HealthControllerTest {
     private final MockMvc mockMvc = MockMvcBuilders
             .standaloneSetup(new HealthController())

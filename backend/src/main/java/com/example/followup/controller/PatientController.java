@@ -44,9 +44,9 @@ public class PatientController {
     @GetMapping
     @ApiOperation(value = "分页查询患者列表",
             notes = "示例：GET /api/patients?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限，404 不存在，500 服务异常。")
-/**
- * 执行 list 操作。
- */
+    /**
+    * 执行 list 操作。
+    */
     public Result<PageResponse<PatientVO>> list(@Valid PatientQuery query) {
         return Result.success(patientService.listPatients(query));
     }
@@ -60,9 +60,9 @@ public class PatientController {
     @GetMapping("/{id}")
     @ApiOperation(value = "获取患者详情",
             notes = "示例：GET /api/patients/1。错误码：401 未登录，403 无权限，404 不存在。")
-/**
- * 执行 getById 操作。
- */
+    /**
+    * 执行 getById 操作。
+    */
     public Result<PatientVO> getById(@PathVariable Long id) {
         return Result.success(patientService.getPatientById(id));
     }

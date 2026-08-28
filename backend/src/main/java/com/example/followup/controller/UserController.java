@@ -43,9 +43,9 @@ public class UserController {
     @GetMapping
     @ApiOperation(value = "分页查询用户列表",
             notes = "示例：GET /api/users?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限。")
-/**
- * 执行 list 操作。
- */
+    /**
+    * 执行 list 操作。
+    */
     public Result<PageResponse<UserVO>> list(@Valid UserQuery query) {
         return Result.success(sysUserService.listUsers(query));
     }

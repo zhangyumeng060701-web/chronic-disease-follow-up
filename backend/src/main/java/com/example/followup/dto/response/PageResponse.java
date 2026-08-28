@@ -24,8 +24,8 @@ public class PageResponse<T extends Object> {
     private long size;
 
     /**
-     * 从 MyBatis-Plus Page 和查询参数构建统一的 PageResponse。
-     */
+    * 从 MyBatis-Plus Page 和查询参数构建统一的 PageResponse。
+    */
     public static <T> PageResponse<T> of(Page<T> mpPage, long pageNum, long pageSize) {
         PageResponse<T> resp = new PageResponse<>();
         resp.setRecords(mpPage.getRecords());

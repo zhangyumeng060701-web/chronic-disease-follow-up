@@ -22,13 +22,19 @@ public class Result<T extends Object> {
     private T data;
     private String message;
 
+    /**
+     * 执行success操作。
+     *
+     * @param data 参数说明
+     * @return 返回值
+     */
     public static <T> Result<T> success(T data) {
         return new Result<>(200, data, "success");
     }
 
-/**
- * 执行 success 操作。
- */
+    /**
+    * 执行 success 操作。
+    */
     public static <T> Result<T> success() {
         return new Result<>(200, null, "success");
     }

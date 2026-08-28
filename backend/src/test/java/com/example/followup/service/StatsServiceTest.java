@@ -47,6 +47,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * StatsServiceTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class StatsServiceTest {
     @Mock

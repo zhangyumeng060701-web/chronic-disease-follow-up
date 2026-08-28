@@ -38,6 +38,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * FollowUpTaskServiceTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class FollowUpTaskServiceTest {
     @Mock

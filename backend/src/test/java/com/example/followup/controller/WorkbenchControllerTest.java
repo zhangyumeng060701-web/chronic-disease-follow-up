@@ -42,6 +42,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * WorkbenchControllerTest 测试。
+ *
+ * @since 2026-08-28
+ */
 @ExtendWith(MockitoExtension.class)
 class WorkbenchControllerTest {
     @Mock

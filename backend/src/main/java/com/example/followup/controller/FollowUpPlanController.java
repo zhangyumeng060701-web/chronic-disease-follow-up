@@ -41,6 +41,12 @@ public class FollowUpPlanController {
 
     @GetMapping
     @ApiOperation(value = "分页查询随访计划")
+    /**
+     * 分页查询随访计划
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     public Result<PageResponse<FollowUpPlanVO>> list(@Valid FollowUpPlanQuery query) {
         return Result.success(planService.listPlans(query));
     }

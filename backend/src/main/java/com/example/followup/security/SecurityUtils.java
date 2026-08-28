@@ -10,13 +10,18 @@ import com.example.followup.exception.ErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * SecurityUtils 工具类。
+ *
+ * @since 2026-08-28
+ */
 public final class SecurityUtils {
     private SecurityUtils() {
     }
 
-/**
- * 执行 currentUser 操作。
- */
+    /**
+    * 执行 currentUser 操作。
+    */
     public static CurrentUser currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
@@ -30,9 +35,9 @@ public final class SecurityUtils {
         return currentUser().isAdmin();
     }
 
-/**
- * 执行 isPatient 操作。
- */
+    /**
+    * 执行 isPatient 操作。
+    */
     public static boolean isPatient() {
         return currentUser().isPatient();
     }

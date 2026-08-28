@@ -44,6 +44,13 @@ public class SecurityConfig {
     }
 
     @Bean
+    /**
+     * 执行filterChain操作。
+     *
+     * @param http 参数说明
+     * @param jwtUtil 参数说明
+     * @return 返回值
+     */
     public SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http.csrf().disable()
             .cors().and()

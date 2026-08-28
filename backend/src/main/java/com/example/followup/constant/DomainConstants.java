@@ -4,6 +4,11 @@
 
 package com.example.followup.constant;
 
+/**
+ * DomainConstants 业务组件。
+ *
+ * @since 2026-08-28
+ */
 public final class DomainConstants {
     private DomainConstants() {
     }

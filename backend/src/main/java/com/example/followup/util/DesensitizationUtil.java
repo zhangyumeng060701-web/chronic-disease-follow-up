@@ -8,14 +8,15 @@ import org.springframework.util.StringUtils;
 
 /**
  * 数据脱敏工具：非管理员访问患者数据时统一脱敏。
+ * @since 2026-08-28
  */
 public final class DesensitizationUtil {
     private DesensitizationUtil() {
     }
 
     /**
-     * 姓名：保留首位，其余替换为 *。
-     */
+    * 姓名：保留首位，其余替换为 *。
+    */
     public static String maskName(String name) {
         if (!StringUtils.hasText(name)) {
             return name;
@@ -27,8 +28,8 @@ public final class DesensitizationUtil {
     }
 
     /**
-     * 手机号：保留前 3 位和后 4 位。
-     */
+    * 手机号：保留前 3 位和后 4 位。
+    */
     public static String maskPhone(String phone) {
         if (!StringUtils.hasText(phone)) {
             return phone;
@@ -41,8 +42,8 @@ public final class DesensitizationUtil {
     }
 
     /**
-     * 身份证号：保留前 3 位和后 4 位，中间按原长度隐藏。
-     */
+    * 身份证号：保留前 3 位和后 4 位，中间按原长度隐藏。
+    */
     public static String maskIdCard(String idCard) {
         if (!StringUtils.hasText(idCard)) {
             return idCard;
@@ -55,8 +56,8 @@ public final class DesensitizationUtil {
     }
 
     /**
-     * 住址：保留前 6 个字符，其余隐藏。
-     */
+    * 住址：保留前 6 个字符，其余隐藏。
+    */
     public static String maskAddress(String address) {
         if (!StringUtils.hasText(address)) {
             return address;

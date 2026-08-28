@@ -42,6 +42,12 @@ public class ClinicalDecisionController {
 
     @PostMapping("/patients/{patientId}/risk-assessment")
     @ApiOperation(value = "评估患者风险分层")
+    /**
+     * 评估患者风险分层
+     *
+     * @param patientId 参数说明
+     * @return 返回值
+     */
     public Result<PatientRiskAssessment> assess(@PathVariable Long patientId) {
         return Result.success(clinicalDecisionService.assessPatientRisk(patientId));
     }

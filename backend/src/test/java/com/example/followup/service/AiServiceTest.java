@@ -15,6 +15,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Map;
 
+/**
+ * AiServiceTest 测试。
+ *
+ * @since 2026-08-28
+ */
 class AiServiceTest {
     private AiController aiController;
 

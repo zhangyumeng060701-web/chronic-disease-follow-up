@@ -33,15 +33,15 @@ public class AlertRuleEngine {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * 兼容旧调用：仅执行阈值规则。
-     */
+    * 兼容旧调用：仅执行阈值规则。
+    */
     public List<Alert> evaluate(FollowUp current, FollowUp previous, List<AlertRule> rules) {
         return evaluate(current, previous, null, rules);
     }
 
     /**
-     * 按阈值、趋势、合并症、用药四类规则生成预警，并携带建议与证据来源。
-     */
+    * 按阈值、趋势、合并症、用药四类规则生成预警，并携带建议与证据来源。
+    */
     public List<Alert> evaluate(FollowUp current, FollowUp previous, Patient patient, List<AlertRule> rules) {
         List<Alert> alerts = new ArrayList<>();
         if (current == null || rules == null) {
