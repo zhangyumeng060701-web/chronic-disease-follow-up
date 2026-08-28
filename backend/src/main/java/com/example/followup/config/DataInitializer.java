@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import com.example.followup.constant.DomainConstants;
@@ -14,6 +17,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * DataInitializer 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Component
 public class DataInitializer implements ApplicationRunner {
@@ -25,6 +34,9 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+/**
+ * 执行 run 操作。
+ */
     @Override
     public void run(ApplicationArguments args) {
         createDefaultUserIfMissing("admin", "管理员", DomainConstants.ROLE_ADMIN);

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -34,6 +37,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * StatsServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class StatsServiceImpl implements StatsService {
@@ -49,6 +58,9 @@ public class StatsServiceImpl implements StatsService {
     @Autowired
     private FollowUpTaskMapper followUpTaskMapper;
 
+/**
+ * 执行 getOverview 操作。
+ */
     @Override
     public StatsOverview getOverview() {
         long start = System.currentTimeMillis();
@@ -209,6 +221,9 @@ public class StatsServiceImpl implements StatsService {
         return avgHours + "小时";
     }
 
+/**
+ * 执行 getBpTrend 操作。
+ */
     @Override
     public List<TrendItem> getBpTrend() {
         return getTrend("bp");
@@ -275,6 +290,9 @@ public class StatsServiceImpl implements StatsService {
         return result;
     }
 
+/**
+ * 执行 getDoctorComparison 操作。
+ */
     @Override
     public List<DoctorStats> getDoctorComparison() {
         long start = System.currentTimeMillis();

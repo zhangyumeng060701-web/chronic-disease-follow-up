@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 <template>
   <div class="oper-log">
     <el-form :model="searchForm" inline>

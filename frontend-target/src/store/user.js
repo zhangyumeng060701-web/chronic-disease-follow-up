@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import storage from '@/utils/storage';

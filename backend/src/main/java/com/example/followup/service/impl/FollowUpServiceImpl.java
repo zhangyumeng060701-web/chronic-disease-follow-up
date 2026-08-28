@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,9 +35,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
+/**
+ * FollowUpServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class FollowUpServiceImpl implements FollowUpService {
@@ -50,6 +59,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Autowired
     private AlertRuleEngine alertRuleEngine;
 
+/**
+ * 执行 listFollowUps 操作。
+ */
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
         long start = System.currentTimeMillis();
@@ -93,10 +105,13 @@ public class FollowUpServiceImpl implements FollowUpService {
         }).collect(Collectors.toList());
 
         log.info("listFollowUps userId={} total={} cost={}ms",
-                currentUserIdSafely().orElse(null), page.getTotal(), System.currentTimeMillis() - start);
+                currentUserIdSafely().orElse(-1L), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 getFollowUpById 操作。
+ */
     @Override
     public FollowUp getFollowUpById(Long id) {
         long start = System.currentTimeMillis();
@@ -112,6 +127,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         return followUp;
     }
 
+/**
+ * 执行 addFollowUp 操作。
+ */
     @Override
     @Transactional
     public void addFollowUp(FollowUp followUp) {
@@ -122,6 +140,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("addFollowUp id={} cost={}ms", followUp.getId(), System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 updateFollowUp 操作。
+ */
     @Override
     @Transactional
     public void updateFollowUp(FollowUp followUp) {
@@ -140,6 +161,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("deleteFollowUp id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 listOverdueFollowUps 操作。
+ */
     @Override
     public List<FollowUpVO> listOverdueFollowUps() {
         FollowUpQuery query = new FollowUpQuery();
@@ -174,11 +198,12 @@ public class FollowUpServiceImpl implements FollowUpService {
         }
     }
 
-    private Optional<Long> currentUserIdSafely() {
+    private OptionalLong currentUserIdSafely() {
         try {
-            return Optional.ofNullable(SecurityUtils.currentUser().getUserId());
+            Long userId = SecurityUtils.currentUser().getUserId();
+            return userId == null ? OptionalLong.empty() : OptionalLong.of(userId);
         } catch (BusinessException e) {
-            return Optional.empty();
+            return OptionalLong.empty();
         }
     }
 }

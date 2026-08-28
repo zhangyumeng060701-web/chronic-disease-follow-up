@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.exception;
 
 /**
@@ -28,6 +31,9 @@ public enum ErrorCode {
         this.defaultMessage = defaultMessage;
     }
 
+/**
+ * 执行 getHttpStatus 操作。
+ */
     public int getHttpStatus() {
         return httpStatus;
     }

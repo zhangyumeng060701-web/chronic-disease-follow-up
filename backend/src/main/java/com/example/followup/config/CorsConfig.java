@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * CorsConfig 配置。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Configuration
 public class CorsConfig {
 

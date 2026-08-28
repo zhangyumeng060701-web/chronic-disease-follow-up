@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.engine;
 
 import com.example.followup.constant.DomainConstants;
@@ -18,6 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * AlertRuleEngine 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Component
 public class AlertRuleEngine {
 

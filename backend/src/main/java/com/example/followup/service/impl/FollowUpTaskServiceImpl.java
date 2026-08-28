@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -34,6 +37,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * FollowUpTaskServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class FollowUpTaskServiceImpl implements FollowUpTaskService {
@@ -47,6 +56,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+/**
+ * 执行 listTasks 操作。
+ */
     @Override
     public PageResponse<FollowUpTaskVO> listTasks(FollowUpTaskQuery query) {
         long start = System.currentTimeMillis();
@@ -79,6 +91,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 completeTask 操作。
+ */
     @Override
     @Transactional
     public void completeTask(Long id) {
@@ -97,6 +112,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
         log.info("completeTask id={}", id);
     }
 
+/**
+ * 执行 cancelTask 操作。
+ */
     @Override
     @Transactional
     public void cancelTask(Long id) {

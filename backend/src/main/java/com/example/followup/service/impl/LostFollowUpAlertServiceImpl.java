@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -22,6 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * LostFollowUpAlertServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
@@ -34,6 +43,9 @@ public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
     @Autowired
     private AlertMapper alertMapper;
 
+/**
+ * 执行 generateLostFollowUpAlerts 操作。
+ */
     @Override
     @Scheduled(cron = "0 0 2 * * ?")
     @Transactional

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -38,6 +41,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ClinicalDecisionServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
@@ -57,6 +66,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     @Autowired
     private FollowUpSuggestionMapper suggestionMapper;
 
+/**
+ * 执行 assessPatientRisk 操作。
+ */
     @Override
     @Transactional
     public PatientRiskAssessment assessPatientRisk(Long patientId) {
@@ -107,6 +119,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         return assessment;
     }
 
+/**
+ * 执行 generateSuggestion 操作。
+ */
     @Override
     @Transactional
     public FollowUpSuggestion generateSuggestion(Long patientId) {
@@ -137,6 +152,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         return suggestion;
     }
 
+/**
+ * 执行 generateAISuggestion 操作。
+ */
     @Override
     @Transactional
     public FollowUpSuggestion generateAISuggestion(AISuggestionRequest request) {
@@ -181,6 +199,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         return suggestion;
     }
 
+/**
+ * 执行 listSuggestions 操作。
+ */
     @Override
     public PageResponse<FollowUpSuggestion> listSuggestions(Integer page, Integer size, String status) {
         LambdaQueryWrapper<FollowUpSuggestion> wrapper = new LambdaQueryWrapper<>();
@@ -200,6 +221,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         return response;
     }
 
+/**
+ * 执行 confirmSuggestion 操作。
+ */
     @Override
     @Transactional
     public void confirmSuggestion(Long id) {
@@ -219,6 +243,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         log.info("confirmSuggestion id={}", id);
     }
 
+/**
+ * 执行 rejectSuggestion 操作。
+ */
     @Override
     public void rejectSuggestion(Long id) {
         FollowUpSuggestion suggestion = getSuggestionOrThrow(id);
@@ -229,6 +256,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         log.info("rejectSuggestion id={}", id);
     }
 
+/**
+ * 执行 assessAllPatientsDaily 操作。
+ */
     @Scheduled(cron = "0 10 2 * * ?")
     public void assessAllPatientsDaily() {
         List<Patient> patients = patientMapper.selectList(new LambdaQueryWrapper<Patient>()

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.dto.request;
 
 import lombok.Data;
@@ -5,6 +8,12 @@ import lombok.Data;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+/**
+ * UserQuery 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Data
 public class UserQuery {
     @Min(value = 1, message = "页码不能小于1")

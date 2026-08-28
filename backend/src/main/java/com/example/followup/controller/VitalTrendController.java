@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,6 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * VitalTrendController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/vitals")
 @Api(tags = "指标趋势")

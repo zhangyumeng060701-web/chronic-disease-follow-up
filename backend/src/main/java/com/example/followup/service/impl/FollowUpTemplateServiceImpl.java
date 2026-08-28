@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -21,6 +24,12 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * FollowUpTemplateServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
@@ -50,6 +59,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 createTemplate 操作。
+ */
     @Override
     public FollowUpTemplateVO createTemplate(FollowUpTemplate template) {
         if (StringUtils.hasText(template.getTemplateCode())) {
@@ -67,6 +79,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return toVO(template);
     }
 
+/**
+ * 执行 updateTemplate 操作。
+ */
     @Override
     public FollowUpTemplateVO updateTemplate(Long id, FollowUpTemplate template) {
         FollowUpTemplate existing = getTemplateOrThrow(id);
@@ -84,6 +99,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return toVO(existing);
     }
 
+/**
+ * 执行 toggleTemplate 操作。
+ */
     @Override
     public void toggleTemplate(Long id) {
         FollowUpTemplate template = getTemplateOrThrow(id);

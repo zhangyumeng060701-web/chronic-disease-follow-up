@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { createRouter, createWebHistory } from 'vue-router';
 import { resolveRoute } from './guard';
 

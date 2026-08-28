@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export const DISEASE_TYPES = {
   HYPERTENSION: '高血压',
   DIABETES: '糖尿病',

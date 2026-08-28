@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 <template>
   <el-card shadow="never" class="task-card">
     <div class="task-title-row">

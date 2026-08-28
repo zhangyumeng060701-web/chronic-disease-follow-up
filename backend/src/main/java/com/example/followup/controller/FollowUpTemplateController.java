@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.FollowUpTemplateQuery;
@@ -24,6 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * FollowUpTemplateController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/follow-up-templates")
 @Api(tags = "随访模板")
@@ -38,6 +47,9 @@ public class FollowUpTemplateController {
         return Result.success(templateService.listTemplates(query));
     }
 
+/**
+ * 执行 create 操作。
+ */
     @PostMapping
     @ApiOperation(value = "新增随访模板")
     public Result<FollowUpTemplateVO> create(@RequestBody FollowUpTemplate template) {
@@ -52,6 +64,9 @@ public class FollowUpTemplateController {
         return Result.success(templateService.updateTemplate(id, template));
     }
 
+/**
+ * 执行 toggle 操作。
+ */
     @PutMapping("/{id}/toggle")
     @ApiOperation(value = "启用/停用随访模板")
     public Result<Void> toggle(@PathVariable Long id) {

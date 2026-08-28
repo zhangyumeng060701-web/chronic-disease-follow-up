@@ -1,4 +1,8 @@
-﻿import request from './request';
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
+import request from './request';
 
 export function getUserList(params) {
   return request.get('/users', { params });

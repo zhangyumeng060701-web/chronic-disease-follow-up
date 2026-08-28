@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import { clearAuthSession, redirectToLogin } from '../utils/auth';

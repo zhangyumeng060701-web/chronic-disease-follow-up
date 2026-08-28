@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 <template>
   <div class="patient-app">
     <section v-if="!token" class="login-page">

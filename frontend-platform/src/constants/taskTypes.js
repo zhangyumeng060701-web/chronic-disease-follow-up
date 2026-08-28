@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export const TASK_TYPES = [
   { type: 'FRONTEND', label: '前端任务', tagType: 'success' },
   { type: 'BACKEND', label: '后端任务', tagType: 'primary' },

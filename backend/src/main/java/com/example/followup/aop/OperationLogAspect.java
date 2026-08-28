@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.aop;
 
 import com.example.followup.annotation.OperationLog;
@@ -18,9 +21,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalLong;
 
+/**
+ * OperationLogAspect 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Aspect
 @Component
@@ -33,16 +41,19 @@ public class OperationLogAspect {
             pointcut = "@annotation(operationLog)",
             returning = "result"
     )
+/**
+ * 执行 afterReturning 操作。
+ */
     public void afterReturning(JoinPoint joinPoint, OperationLog operationLog, Object result) {
         try {
             CurrentUser currentUser = SecurityUtils.currentUser();
-            Long targetId = resolveTargetId(Arrays.asList(joinPoint.getArgs())).orElse(null);
+            OptionalLong targetId = resolveTargetId(Arrays.asList(joinPoint.getArgs()));
             operationLogService.log(
                     currentUser.getUserId(),
                     currentUser.getUsername(),
                     operationLog.operation(),
                     operationLog.targetType(),
-                    targetId,
+                    targetId.isPresent() ? targetId.getAsLong() : null,
                     operationLog.detail()
             );
         } catch (BusinessException | DataAccessException e) {
@@ -50,11 +61,10 @@ public class OperationLogAspect {
         }
     }
 
-    private Optional<Long> resolveTargetId(List<?> args) {
+    private OptionalLong resolveTargetId(List<?> args) {
         return args.stream()
                 .filter(arg -> arg instanceof Long || arg instanceof FollowUp)
-                .map(arg -> arg instanceof Long ? (Long) arg : ((FollowUp) arg).getId())
-                .filter(Objects::nonNull)
+                .mapToLong(arg -> arg instanceof Long ? (Long) arg : ((FollowUp) arg).getId())
                 .findFirst();
     }
 }

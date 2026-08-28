@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.QuestionnaireQuery;
@@ -23,6 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * QuestionnaireController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/questionnaires")
 @Api(tags = "问卷管理")
@@ -37,6 +46,9 @@ public class QuestionnaireController {
         return Result.success(questionnaireService.listQuestionnaires(query));
     }
 
+/**
+ * 执行 create 操作。
+ */
     @PostMapping
     @ApiOperation(value = "新增问卷")
     public Result<Questionnaire> create(@RequestBody Questionnaire questionnaire) {
@@ -51,6 +63,9 @@ public class QuestionnaireController {
         return Result.success(questionnaireService.updateQuestionnaire(id, questionnaire));
     }
 
+/**
+ * 执行 toggle 操作。
+ */
     @PutMapping("/{id}/toggle")
     @ApiOperation(value = "启用/停用问卷")
     public Result<Void> toggle(@PathVariable Long id) {

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -24,6 +27,12 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+/**
+ * PatientAuthController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/patient")
 @Api(tags = "患者端认证")
@@ -36,6 +45,9 @@ public class PatientAuthController {
     @Autowired
     private SensitiveDataCipher sensitiveDataCipher;
 
+/**
+ * 执行 login 操作。
+ */
     @PostMapping("/login")
     @ApiOperation(value = "患者端登录")
     public Result<Map<String, String>> login(@Valid @RequestBody PatientLoginRequest request) {

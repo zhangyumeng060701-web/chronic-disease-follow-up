@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export function buildLineChartOption(data = [], name = '控制率') {
   return {
     tooltip: {

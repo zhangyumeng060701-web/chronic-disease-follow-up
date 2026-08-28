@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.LoginRequest;
@@ -22,6 +25,12 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+/**
+ * AuthController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/auth")
 @Api(tags = "认证管理")
@@ -39,6 +48,9 @@ public class AuthController {
     @PostMapping("/login")
     @ApiOperation(value = "用户登录",
             notes = "请求体包含 username/password。错误码：400 参数错误，401 用户名或密码错误，403 账号禁用。")
+/**
+ * 执行 login 操作。
+ */
     public Result<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
         SysUser user = sysUserMapper.findByUsername(request.getUsername());
         if (user == null) {

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -17,6 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+/**
+ * QuestionnaireServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
@@ -36,6 +45,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 createQuestionnaire 操作。
+ */
     @Override
     public Questionnaire createQuestionnaire(Questionnaire questionnaire) {
         if (!StringUtils.hasText(questionnaire.getCode())) {
@@ -48,6 +60,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return questionnaire;
     }
 
+/**
+ * 执行 updateQuestionnaire 操作。
+ */
     @Override
     public Questionnaire updateQuestionnaire(Long id, Questionnaire questionnaire) {
         Questionnaire existing = getOrThrow(id);
@@ -62,6 +77,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return existing;
     }
 
+/**
+ * 执行 toggleQuestionnaire 操作。
+ */
     @Override
     public void toggleQuestionnaire(Long id) {
         Questionnaire questionnaire = getOrThrow(id);

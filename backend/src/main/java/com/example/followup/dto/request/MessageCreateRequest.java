@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.dto.request;
 
 import lombok.Data;
@@ -6,6 +9,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * MessageCreateRequest 请求参数。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Data
 public class MessageCreateRequest {
     @NotBlank(message = "接收方类型不能为空")

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export function toPatientPayload(data = {}) {
   return {
     name: data.name,

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.AlertQuery;
@@ -20,6 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * AlertController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/alerts")
 @Api(tags = "预警管理")
@@ -31,6 +40,9 @@ public class AlertController {
     @GetMapping
     @ApiOperation(value = "分页查询预警列表",
             notes = "示例：GET /api/alerts?page=1&size=20&alertLevel=RED。错误码：400 参数错误，401 未登录，403 无权限。")
+/**
+ * 执行 list 操作。
+ */
     public Result<PageResponse<AlertVO>> list(@Valid AlertQuery query) {
         return Result.success(alertService.listAlerts(query));
     }
@@ -46,6 +58,9 @@ public class AlertController {
     @PutMapping("/{id}/contact")
     @ApiOperation(value = "标记预警为已联系",
             notes = "示例：PUT /api/alerts/1/contact。错误码：401 未登录，403 无权限，404 不存在。")
+/**
+ * 执行 contact 操作。
+ */
     public Result<Void> contact(@PathVariable Long id) {
         alertService.contactAlert(id);
         return Result.success();

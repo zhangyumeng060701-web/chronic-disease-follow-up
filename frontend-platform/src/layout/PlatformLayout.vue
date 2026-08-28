@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 <template>
   <el-container class="platform-layout">
     <el-header class="platform-header">

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import com.example.followup.security.CurrentUser;
@@ -25,6 +28,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * SecurityConfig 配置。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -53,6 +62,9 @@ public class SecurityConfig {
         private final JwtUtil jwtUtil;
         JwtAuthFilter(JwtUtil jwtUtil) { this.jwtUtil = jwtUtil; }
 
+/**
+ * 执行 doFilterInternal 操作。
+ */
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                         FilterChain chain) throws ServletException, IOException {

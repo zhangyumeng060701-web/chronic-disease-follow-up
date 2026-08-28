@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -24,6 +27,12 @@ import org.springframework.util.StringUtils;
 
 import java.util.stream.Collectors;
 
+/**
+ * SysUserServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -56,6 +65,9 @@ public class SysUserServiceImpl implements SysUserService {
         );
     }
 
+/**
+ * 执行 createUser 操作。
+ */
     @Override
     public void createUser(CreateUserRequest request) {
         long start = System.currentTimeMillis();
@@ -74,6 +86,9 @@ public class SysUserServiceImpl implements SysUserService {
         log.info("createUser username={} cost={}ms", request.getUsername(), System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 updateUser 操作。
+ */
     @Override
     public void updateUser(Long id, UpdateUserRequest request) {
         long start = System.currentTimeMillis();
@@ -91,6 +106,9 @@ public class SysUserServiceImpl implements SysUserService {
         log.info("updateUser id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 toggleUserStatus 操作。
+ */
     @Override
     public void toggleUserStatus(Long id) {
         long start = System.currentTimeMillis();

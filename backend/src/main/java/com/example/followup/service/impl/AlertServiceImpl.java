@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -25,6 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * AlertServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class AlertServiceImpl implements AlertService {
@@ -87,6 +96,9 @@ public class AlertServiceImpl implements AlertService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 contactAlert 操作。
+ */
     @Override
     public void contactAlert(Long id) {
         Alert alert = getAlertOrThrow(id);
@@ -106,6 +118,9 @@ public class AlertServiceImpl implements AlertService {
         log.info("resolveAlert id={}", id);
     }
 
+/**
+ * 执行 referAlert 操作。
+ */
     @Override
     public void referAlert(Long id, String referralReason) {
         Alert alert = getAlertOrThrow(id);

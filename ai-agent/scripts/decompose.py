@@ -1,7 +1,10 @@
 import json
+import logging
 import os
 import sys
 import time
+
+logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
 try:
     import requests
@@ -121,4 +124,4 @@ def call_agent_arts(requirement):
 
 if __name__ == "__main__":
     requirement = sys.argv[1] if len(sys.argv) > 1 else "测试需求"
-    sys.stdout.write(json.dumps(call_agent_arts(requirement), ensure_ascii=False) + "\n")
+    logging.info(json.dumps(call_agent_arts(requirement), ensure_ascii=False))

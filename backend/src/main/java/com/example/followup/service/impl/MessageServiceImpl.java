@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -21,6 +24,12 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
+/**
+ * MessageServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -46,6 +55,9 @@ public class MessageServiceImpl implements MessageService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 createMessage 操作。
+ */
     @Override
     public Message createMessage(MessageCreateRequest request) {
         Message message = new Message();
@@ -62,6 +74,9 @@ public class MessageServiceImpl implements MessageService {
         return message;
     }
 
+/**
+ * 执行 markRead 操作。
+ */
     @Override
     public void markRead(Long id) {
         Message message = messageMapper.selectById(id);

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.example.followup.dto.request.FollowUpTaskQuery;
@@ -18,6 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * FollowUpTaskController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/follow-up-tasks")
 @Api(tags = "随访任务")
@@ -32,6 +41,9 @@ public class FollowUpTaskController {
         return Result.success(taskService.listTasks(query));
     }
 
+/**
+ * 执行 complete 操作。
+ */
     @PutMapping("/{id}/complete")
     @ApiOperation(value = "完成任务")
     public Result<Void> complete(@PathVariable Long id) {

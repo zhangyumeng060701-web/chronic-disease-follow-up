@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { reactive, ref } from 'vue';
 
 export function useTable({ fetcher, initialPage = 1, initialSize = 20 }) {

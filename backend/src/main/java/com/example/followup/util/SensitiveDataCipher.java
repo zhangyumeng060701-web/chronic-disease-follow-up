@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.util;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,12 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * SensitiveDataCipher 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Component
 public class SensitiveDataCipher {
 
@@ -25,6 +34,9 @@ public class SensitiveDataCipher {
     @Value("${data.encryption.key:}")
     private String encryptionKey;
 
+/**
+ * 执行 isConfigured 操作。
+ */
     public boolean isConfigured() {
         return StringUtils.hasText(encryptionKey);
     }
@@ -48,6 +60,9 @@ public class SensitiveDataCipher {
         }
     }
 
+/**
+ * 执行 decrypt 操作。
+ */
     public String decrypt(String encryptedText) {
         if (!StringUtils.hasText(encryptedText) || !encryptedText.startsWith(PREFIX)) {
             return encryptedText;

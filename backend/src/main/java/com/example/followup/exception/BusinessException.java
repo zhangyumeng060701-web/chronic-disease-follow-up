@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.exception;
 
 public class BusinessException extends RuntimeException {
@@ -9,6 +12,9 @@ public class BusinessException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+/**
+ * 执行 BusinessException 操作。
+ */
     public BusinessException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;

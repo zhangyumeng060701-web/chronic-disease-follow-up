@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -34,6 +37,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * FollowUpPlanServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class FollowUpPlanServiceImpl implements FollowUpPlanService {
@@ -49,6 +58,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
+/**
+ * 执行 listPlans 操作。
+ */
     @Override
     public PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query) {
         long start = System.currentTimeMillis();
@@ -78,6 +90,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 createPlan 操作。
+ */
     @Override
     @Transactional
     public FollowUpPlanVO createPlan(FollowUpPlanSaveRequest request) {
@@ -98,6 +113,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
         return toVO(plan);
     }
 
+/**
+ * 执行 updatePlan 操作。
+ */
     @Override
     @Transactional
     public FollowUpPlanVO updatePlan(Long id, FollowUpPlanSaveRequest request) {
@@ -111,6 +129,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
         return toVO(plan);
     }
 
+/**
+ * 执行 deletePlan 操作。
+ */
     @Override
     @Transactional
     public void deletePlan(Long id) {

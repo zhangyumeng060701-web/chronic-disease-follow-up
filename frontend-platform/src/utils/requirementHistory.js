@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { maskSensitiveText, truncateText } from './requirementFormat';
 
 export const HISTORY_STORAGE_KEY = 'platform_requirement_history';

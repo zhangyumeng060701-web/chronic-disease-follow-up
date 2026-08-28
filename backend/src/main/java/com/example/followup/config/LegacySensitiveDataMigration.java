@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,6 +18,12 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * LegacySensitiveDataMigration 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Component
 public class LegacySensitiveDataMigration implements ApplicationRunner {

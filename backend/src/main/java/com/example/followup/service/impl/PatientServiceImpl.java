@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -37,9 +40,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
+/**
+ * PatientServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -55,6 +64,9 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private OperationLogService operationLogService;
 
+/**
+ * 执行 listPatients 操作。
+ */
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
         long start = System.currentTimeMillis();
@@ -86,10 +98,13 @@ public class PatientServiceImpl implements PatientService {
         }
 
         log.info("listPatients userId={} total={} cost={}ms",
-                currentUserIdSafely().orElse(null), page.getTotal(), System.currentTimeMillis() - start);
+                currentUserIdSafely().orElse(-1L), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 getPatientById 操作。
+ */
     @Override
     public PatientVO getPatientById(Long id) {
         long start = System.currentTimeMillis();
@@ -111,6 +126,9 @@ public class PatientServiceImpl implements PatientService {
         return vo;
     }
 
+/**
+ * 执行 addPatient 操作。
+ */
     @Override
     public void addPatient(PatientSaveRequest request) {
         long start = System.currentTimeMillis();
@@ -127,6 +145,9 @@ public class PatientServiceImpl implements PatientService {
         log.info("addPatient id={} cost={}ms", patient.getId(), System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 updatePatient 操作。
+ */
     @Override
     @Transactional
     public void updatePatient(Long id, PatientUpdateRequest request) {
@@ -143,6 +164,9 @@ public class PatientServiceImpl implements PatientService {
         log.info("updatePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
+/**
+ * 执行 deletePatient 操作。
+ */
     @Override
     @Transactional
     public void deletePatient(Long id) {
@@ -197,6 +221,9 @@ public class PatientServiceImpl implements PatientService {
         vo.setIdCard(sensitiveDataCipher.decrypt(vo.getIdCard()));
     }
 
+/**
+ * 执行 exportPatientsCsv 操作。
+ */
     @Override
     public String exportPatientsCsv() {
         LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
@@ -239,11 +266,12 @@ public class PatientServiceImpl implements PatientService {
         return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
-    private Optional<Long> currentUserIdSafely() {
+    private OptionalLong currentUserIdSafely() {
         try {
-            return Optional.ofNullable(SecurityUtils.currentUser().getUserId());
+            Long userId = SecurityUtils.currentUser().getUserId();
+            return userId == null ? OptionalLong.empty() : OptionalLong.of(userId);
         } catch (BusinessException e) {
-            return Optional.empty();
+            return OptionalLong.empty();
         }
     }
 

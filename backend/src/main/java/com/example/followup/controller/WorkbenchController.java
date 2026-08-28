@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -28,6 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * WorkbenchController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/dashboard")
 @Api(tags = "医生工作台")
@@ -42,6 +51,9 @@ public class WorkbenchController {
     @Autowired
     private PatientMapper patientMapper;
 
+/**
+ * 执行 workbench 操作。
+ */
     @GetMapping("/workbench")
     @ApiOperation(value = "医生工作台：今日任务、待处理预警、待确认AI建议")
     public Result<Map<String, Object>> workbench() {

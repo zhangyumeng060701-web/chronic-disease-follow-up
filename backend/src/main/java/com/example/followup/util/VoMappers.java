@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.util;
 
 import com.example.followup.dto.response.FollowUpVO;
@@ -14,6 +17,9 @@ public final class VoMappers {
     private VoMappers() {
     }
 
+/**
+ * 执行 toPatientVO 操作。
+ */
     public static PatientVO toPatientVO(Patient patient) {
         PatientVO vo = new PatientVO();
         BeanUtils.copyProperties(patient, vo);
@@ -32,6 +38,9 @@ public final class VoMappers {
         return vo;
     }
 
+/**
+ * 执行 toFollowUpVO 操作。
+ */
     public static FollowUpVO toFollowUpVO(FollowUp followUp) {
         FollowUpVO vo = new FollowUpVO();
         BeanUtils.copyProperties(followUp, vo);

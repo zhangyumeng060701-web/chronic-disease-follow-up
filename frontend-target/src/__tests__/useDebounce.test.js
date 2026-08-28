@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useDebounce } from '@/composables/useDebounce';
 

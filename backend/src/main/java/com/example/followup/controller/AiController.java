@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +27,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * AiController HTTP 接口。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/ai")
@@ -43,6 +52,9 @@ public class AiController {
     @Value("${agent.arts.session-id:}")
     private String agentArtsSessionId;
 
+/**
+ * 执行 decompose 操作。
+ */
     @PostMapping("/decompose")
     public Map<String, Object> decompose(@RequestBody Map<String, String> request) {
         String requirement = request.get("requirement");
@@ -96,7 +108,6 @@ public class AiController {
             jsonData = normalizeKeys(jsonData);
             return Map.of("code", 200, "message", "success", "data", jsonData);
         } catch (IOException | InterruptedException e) {
-            Thread.currentThread().interrupt();
             log.error("Backend failed to process AI request", e);
             return Map.of("code", 500, "message", "后端解析异常: " + e.getMessage());
         }
@@ -104,7 +115,7 @@ public class AiController {
 
     private String resolveScriptPath(File scriptFile) throws IOException {
         String canonicalPath = scriptFile.getCanonicalPath();
-        if (!canonicalPath.equals("/root/ai-decompose.py")
+        if (!"/root/ai-decompose.py".equals(canonicalPath)
                 && !canonicalPath.endsWith("/ai-agent/scripts/decompose.py")) {
             throw new IllegalStateException("Unsafe AI script path: " + canonicalPath);
         }

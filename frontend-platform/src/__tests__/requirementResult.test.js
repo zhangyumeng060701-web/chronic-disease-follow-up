@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 import { describe, expect, it } from 'vitest';
 import { groupTasksByType, TASK_TYPES } from '../constants/taskTypes';
 import { createMockTasks } from '../mocks/requirement';

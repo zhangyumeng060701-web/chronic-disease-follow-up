@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export function displayText(value) {
   return value === null || value === undefined || value === '' ? '--' : value;
 }

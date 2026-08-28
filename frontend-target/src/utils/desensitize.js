@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026. All rights reserved.
+ */
+
 export function maskName(value = '') {
   if (!value) return '';
   if (value.length === 1) return '*';

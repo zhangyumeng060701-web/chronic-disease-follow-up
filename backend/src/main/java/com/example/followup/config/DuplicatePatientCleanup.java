@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -22,6 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * DuplicatePatientCleanup 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Component
 public class DuplicatePatientCleanup implements ApplicationRunner {
@@ -44,6 +53,9 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+/**
+ * 执行 run 操作。
+ */
     @Override
     public void run(ApplicationArguments args) {
         List<Patient> patients = patientMapper.selectList(new LambdaQueryWrapper<Patient>()

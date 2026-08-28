@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.util;
 
 import io.jsonwebtoken.Claims;
@@ -14,6 +17,12 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+/**
+ * JwtUtil 工具类。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Component
 public class JwtUtil {
 
@@ -27,6 +36,9 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+/**
+ * 执行 generateToken 操作。
+ */
     public String generateToken(String username, String role, Long userId) {
         return generateToken(username, role, userId, null);
     }
@@ -43,6 +55,9 @@ public class JwtUtil {
                 .compact();
     }
 
+/**
+ * 执行 parseToken 操作。
+ */
     public Claims parseToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())

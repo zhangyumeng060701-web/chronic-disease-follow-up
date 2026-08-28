@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -19,6 +22,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * OperationLogServiceImpl 业务实现。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 public class OperationLogServiceImpl implements OperationLogService {
@@ -45,6 +54,9 @@ public class OperationLogServiceImpl implements OperationLogService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
+/**
+ * 执行 log 操作。
+ */
     @Override
     public void log(Long userId, String username, String operation, String targetType, Long targetId, String detail) {
         long start = System.currentTimeMillis();

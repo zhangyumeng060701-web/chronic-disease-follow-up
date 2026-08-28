@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -15,6 +18,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+/**
+ * Patient 业务组件。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Data
 @TableName("t_patient")
 public class Patient {

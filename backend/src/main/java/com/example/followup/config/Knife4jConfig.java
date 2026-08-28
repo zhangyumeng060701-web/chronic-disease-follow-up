@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2026-2026. All rights reserved.
+ */
 package com.example.followup.config;
 
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -10,6 +13,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Knife4jConfig 配置。
+ *
+ * @since 2026-07-27
+ * @version 1.0.0
+ */
 @Configuration
 @EnableSwagger2WebMvc
 public class Knife4jConfig {
