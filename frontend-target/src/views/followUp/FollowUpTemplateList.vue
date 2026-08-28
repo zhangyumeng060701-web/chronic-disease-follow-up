@@ -194,7 +194,9 @@ async function handleSubmit() {
   } catch {
     return;
   }
-  if (submitting.value) return;
+  if (submitting.value) {
+    return;
+  }
   submitting.value = true;
   try {
     if (isEdit.value) {

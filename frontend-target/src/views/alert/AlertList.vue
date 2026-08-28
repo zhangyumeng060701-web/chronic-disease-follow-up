@@ -145,10 +145,18 @@ const { loading, error, tableData, pagination, load, search, retry } = useTable(
 
 function queryParams() {
   const params = {};
-  if (searchForm.alertType) params.alertType = searchForm.alertType;
-  if (searchForm.alertLevel) params.alertLevel = searchForm.alertLevel;
-  if (searchForm.isResolved !== '') params.isResolved = searchForm.isResolved;
-  if (searchForm.alertStatus) params.alertStatus = searchForm.alertStatus;
+  if (searchForm.alertType) {
+    params.alertType = searchForm.alertType;
+  }
+  if (searchForm.alertLevel) {
+    params.alertLevel = searchForm.alertLevel;
+  }
+  if (searchForm.isResolved !== '') {
+    params.isResolved = searchForm.isResolved;
+  }
+  if (searchForm.alertStatus) {
+    params.alertStatus = searchForm.alertStatus;
+  }
   return params;
 }
 

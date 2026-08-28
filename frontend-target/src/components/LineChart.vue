@@ -25,7 +25,9 @@ const chartEl = ref(null);
 let instance = null;
 
 function render() {
-  if (!instance) return;
+  if (!instance) {
+    return;
+  }
   instance.setOption(buildLineChartOption(props.data, props.name));
 }
 

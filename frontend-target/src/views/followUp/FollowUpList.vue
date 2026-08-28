@@ -236,7 +236,9 @@ async function fetchPatients() {
 
 function queryParams() {
   const params = {};
-  if (searchForm.patientId) params.patientId = searchForm.patientId;
+  if (searchForm.patientId) {
+    params.patientId = searchForm.patientId;
+  }
   if (dateRange.value && dateRange.value.length === 2) {
     params.startDate = dateRange.value[0];
     params.endDate = dateRange.value[1];

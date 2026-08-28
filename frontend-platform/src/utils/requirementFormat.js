@@ -11,14 +11,20 @@ export function getFiles(task) {
 }
 
 export function formatAcceptanceCriteria(value) {
-  if (Array.isArray(value)) return value.filter(Boolean).join('；') || '--';
+  if (Array.isArray(value)) {
+    return value.filter(Boolean).join('；') || '--';
+  }
   return displayText(value);
 }
 
 export function formatHistoryTime(value) {
-  if (!value) return '--';
+  if (!value) {
+    return '--';
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
 
   const parts = [
     date.getFullYear(),

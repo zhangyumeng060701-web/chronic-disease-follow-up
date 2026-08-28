@@ -191,7 +191,9 @@ async function handleSubmit() {
     ElMessage.warning('请输入维护需求');
     return;
   }
-  if (submitting.value) return;
+  if (submitting.value) {
+    return;
+  }
 
   submitting.value = true;
   submitError.value = '';
@@ -256,7 +258,9 @@ async function handleDeleteHistory(item) {
     return;
   }
   historyList.value = historyList.value.filter((historyItem) => historyItem.id !== item.id);
-  if (activeHistoryId.value === item.id) handleNewRequirement();
+  if (activeHistoryId.value === item.id) {
+    handleNewRequirement();
+  }
   saveHistory();
   ElMessage.success('历史需求已删除');
 }

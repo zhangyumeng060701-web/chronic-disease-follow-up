@@ -383,7 +383,9 @@ function riskLabel(level) {
 }
 
 onMounted(() => {
-  if (token.value) loadAll();
+  if (token.value) {
+    loadAll();
+  }
 });
 </script>
 

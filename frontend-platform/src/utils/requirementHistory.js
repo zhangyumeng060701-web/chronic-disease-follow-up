@@ -20,7 +20,9 @@ export function createHistoryItem(requirement, result, now = new Date()) {
 }
 
 export function parseHistory(rawHistory) {
-  if (!rawHistory) return [];
+  if (!rawHistory) {
+    return [];
+  }
   try {
     const parsedHistory = JSON.parse(rawHistory);
     return Array.isArray(parsedHistory)
@@ -32,7 +34,9 @@ export function parseHistory(rawHistory) {
 }
 
 export function normalizeHistoryItem(item) {
-  if (!item || typeof item !== 'object' || !item.id || !item.requirement) return null;
+  if (!item || typeof item !== 'object' || !item.id || !item.requirement) {
+    return null;
+  }
   const requirement = maskSensitiveText(item.requirement);
   return {
     id: String(item.id),
@@ -45,7 +49,9 @@ export function normalizeHistoryItem(item) {
 }
 
 function maskResult(result) {
-  if (!result || typeof result !== 'object') return null;
+  if (!result || typeof result !== 'object') {
+    return null;
+  }
   return {
     ...result,
     summary: maskSensitiveText(result.summary || ''),

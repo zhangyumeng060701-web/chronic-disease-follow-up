@@ -3,8 +3,12 @@
  */
 
 export function maskName(value = '') {
-  if (!value) return '';
-  if (value.length === 1) return '*';
+  if (!value) {
+    return '';
+  }
+  if (value.length === 1) {
+    return '*';
+  }
   return value[0] + '*'.repeat(value.length - 1);
 }
 
@@ -17,7 +21,9 @@ export function maskIdCard(value = '') {
 }
 
 export function maskAddress(value = '') {
-  if (!value) return '';
+  if (!value) {
+    return '';
+  }
   const match = value.match(/^(.+?[\u533a\u53bf])/);
   return match ? `${match[1]}****` : '****';
 }

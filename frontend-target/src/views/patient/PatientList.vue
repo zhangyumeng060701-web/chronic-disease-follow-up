@@ -178,7 +178,9 @@ async function handleSubmit() {
   } catch {
     return;
   }
-  if (submitting.value) return;
+  if (submitting.value) {
+    return;
+  }
   submitting.value = true;
   try {
     const payload = toPatientPayload({ ...formData });

@@ -19,7 +19,9 @@ const props = defineProps({
 const userStore = useUserStore();
 
 const displayText = computed(() => {
-  if (userStore.isAdmin || !props.text) return props.text;
+  if (userStore.isAdmin || !props.text) {
+    return props.text;
+  }
   return maskSensitiveText(props.text, props.type);
 });
 </script>
