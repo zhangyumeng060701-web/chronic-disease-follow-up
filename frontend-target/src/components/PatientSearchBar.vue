@@ -5,7 +5,12 @@
     </el-form-item>
     <el-form-item label="慢病类型">
       <el-select v-model="model.diseaseType" placeholder="请选择" clearable @change="emitSearch">
-        <el-option v-for="(label, value) in DISEASE_TYPES" :key="value" :label="label" :value="value" />
+        <el-option
+          v-for="(label, value) in DISEASE_TYPES"
+          :key="value"
+          :label="label"
+          :value="value"
+        />
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -16,42 +21,38 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
-import { DISEASE_TYPES } from '@/constants/domain'
-import { useDebounce } from '@/composables/useDebounce'
+import { reactive, watch } from 'vue';
+import { DISEASE_TYPES } from '@/constants/domain';
+import { useDebounce } from '@/composables/useDebounce';
 
 const props = defineProps({
-  modelValue: { type: Object, default: () => ({}) }
-})
+  modelValue: { type: Object, default: () => ({}) },
+});
 
-const emit = defineEmits(['update:modelValue', 'search', 'reset'])
+const emit = defineEmits(['update:modelValue', 'search', 'reset']);
 
-const model = reactive({ name: '', diseaseType: '' })
+const model = reactive({ name: '', diseaseType: '' });
 
 watch(
   () => props.modelValue,
-  value => {
-    model.name = value?.name || ''
-    model.diseaseType = value?.diseaseType || ''
+  (value) => {
+    model.name = value?.name || '';
+    model.diseaseType = value?.diseaseType || '';
   },
-  { immediate: true, deep: true }
-)
+  { immediate: true, deep: true },
+);
 
-watch(
-  model,
-  () => emit('update:modelValue', { ...model }),
-  { deep: true }
-)
+watch(model, () => emit('update:modelValue', { ...model }), { deep: true });
 
-const debouncedSearch = useDebounce(() => emit('search'), 300)
+const debouncedSearch = useDebounce(() => emit('search'), 300);
 
 function emitSearch() {
-  emit('search')
+  emit('search');
 }
 
 function handleReset() {
-  model.name = ''
-  model.diseaseType = ''
-  emit('reset')
+  model.name = '';
+  model.diseaseType = '';
+  emit('reset');
 }
 </script>

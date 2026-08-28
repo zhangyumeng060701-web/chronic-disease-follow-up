@@ -1,25 +1,25 @@
-﻿import request from './request'
+﻿import request from './request';
 
 export function getFollowUpList(params) {
-  return request.get('/follow-ups', { params })
+  return request.get('/follow-ups', { params });
 }
 
 export function getFollowUpById(id) {
-  return request.get(`/follow-ups/${id}`)
+  return request.get(`/follow-ups/${id}`);
 }
 
 export function addFollowUp(data) {
-  return request.post('/follow-ups', data)
+  return request.post('/follow-ups', data);
 }
 
 export function updateFollowUp(id, data) {
-  return request.put(`/follow-ups/${id}`, data)
+  return request.put(`/follow-ups/${id}`, data);
 }
 
 export function deleteFollowUp(id) {
-  return request.delete(`/follow-ups/${id}`)
+  return request.delete(`/follow-ups/${id}`);
 }
 
 export function getOverdueFollowUps() {
-  return request.get('/follow-ups/overdue')
+  return request.get('/follow-ups/overdue');
 }

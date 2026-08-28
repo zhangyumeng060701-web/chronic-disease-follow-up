@@ -15,10 +15,10 @@
 
 <script setup>
 defineProps({
-  error: { type: String, default: '' }
-})
+  error: { type: String, default: '' },
+});
 
-const emit = defineEmits(['retry'])
+const emit = defineEmits(['retry']);
 </script>
 
 <style scoped>

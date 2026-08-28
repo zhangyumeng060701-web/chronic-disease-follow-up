@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { resolveRoute } from './guard'
+import { createRouter, createWebHistory } from 'vue-router';
+import { resolveRoute } from './guard';
 
 const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/login/LoginView.vue')
+    component: () => import('@/views/login/LoginView.vue'),
   },
   {
     path: '/',
@@ -16,87 +16,87 @@ const routes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/Dashboard.vue'),
-        meta: { title: '工作台' }
+        meta: { title: '工作台' },
       },
       {
         path: 'patients',
         name: 'Patients',
         component: () => import('@/views/patient/PatientList.vue'),
-        meta: { title: '患者管理' }
+        meta: { title: '患者管理' },
       },
       {
         path: 'follow-ups',
         name: 'FollowUps',
         component: () => import('@/views/followUp/FollowUpList.vue'),
-        meta: { title: '随访记录' }
+        meta: { title: '随访记录' },
       },
       {
         path: 'plans',
         name: 'FollowUpPlans',
         component: () => import('@/views/followUp/FollowUpPlanList.vue'),
-        meta: { title: '随访计划' }
+        meta: { title: '随访计划' },
       },
       {
         path: 'follow-up-tasks',
         name: 'FollowUpTasks',
         component: () => import('@/views/followUp/FollowUpTaskList.vue'),
-        meta: { title: '随访任务' }
+        meta: { title: '随访任务' },
       },
       {
         path: 'follow-up-templates',
         name: 'FollowUpTemplates',
         component: () => import('@/views/followUp/FollowUpTemplateList.vue'),
-        meta: { title: '随访模板', requiresAdmin: true }
+        meta: { title: '随访模板', requiresAdmin: true },
       },
       {
         path: 'alerts',
         name: 'Alerts',
         component: () => import('@/views/alert/AlertList.vue'),
-        meta: { title: '预警中心' }
+        meta: { title: '预警中心' },
       },
       {
         path: 'messages',
         name: 'Messages',
         component: () => import('@/views/message/MessageList.vue'),
-        meta: { title: '消息中心' }
+        meta: { title: '消息中心' },
       },
       {
         path: 'clinical-suggestions',
         name: 'ClinicalSuggestions',
         component: () => import('@/views/clinical/ClinicalSuggestionList.vue'),
-        meta: { title: 'AI随访建议' }
+        meta: { title: 'AI随访建议' },
       },
       {
         path: 'system/users',
         name: 'Users',
         component: () => import('@/views/system/UserManage.vue'),
-        meta: { title: '用户管理', requiresAdmin: true }
+        meta: { title: '用户管理', requiresAdmin: true },
       },
       {
         path: 'system/logs',
         name: 'Logs',
         component: () => import('@/views/system/OperLog.vue'),
-        meta: { title: '操作日志', requiresAdmin: true }
-      }
-    ]
-  }
-]
+        meta: { title: '操作日志', requiresAdmin: true },
+      },
+    ],
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
   const decision = resolveRoute(to, {
     token: localStorage.getItem('token'),
-    role: localStorage.getItem('role')
-  })
+    role: localStorage.getItem('role'),
+  });
   if (decision === true) {
-    next()
+    next();
   } else {
-    next(decision)
+    next(decision);
   }
-})
+});
 
-export default router
+export default router;

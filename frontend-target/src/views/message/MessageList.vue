@@ -43,7 +43,7 @@
       :total="pagination.total"
       layout="total, prev, pager, next"
       @current-change="handlePageChange"
-      style="margin-top:16px;justify-content:flex-end"
+      style="margin-top: 16px; justify-content: flex-end"
     />
 
     <el-dialog v-model="dialogVisible" title="发送消息" width="520px" @closed="resetForm">
@@ -56,7 +56,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="接收方ID" prop="recipientId">
-          <el-input-number v-model="formData.recipientId" :min="1" style="width:100%" />
+          <el-input-number v-model="formData.recipientId" :min="1" style="width: 100%" />
         </el-form-item>
         <el-form-item label="渠道" prop="channel">
           <el-select v-model="formData.channel">
@@ -84,66 +84,80 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { getMessageList, createMessage } from '@/api/message'
-import { useTable } from '@/composables/useTable'
-import TableError from '@/components/TableError.vue'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, onMounted } from 'vue';
+import { getMessageList, createMessage } from '@/api/message';
+import { useTable } from '@/composables/useTable';
+import TableError from '@/components/TableError.vue';
+import { ElMessage } from 'element-plus';
 
-const searchForm = reactive({ channel: '', status: '' })
-const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getMessageList })
+const searchForm = reactive({ channel: '', status: '' });
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
+  fetcher: getMessageList,
+});
 
-const dialogVisible = ref(false)
-const formRef = ref(null)
-const submitting = ref(false)
+const dialogVisible = ref(false);
+const formRef = ref(null);
+const submitting = ref(false);
 const emptyForm = () => ({
-  recipientType: 'PATIENT', recipientId: 1, channel: 'IN_APP',
-  title: '', content: '', templateCode: ''
-})
-const formData = reactive(emptyForm())
+  recipientType: 'PATIENT',
+  recipientId: 1,
+  channel: 'IN_APP',
+  title: '',
+  content: '',
+  templateCode: '',
+});
+const formData = reactive(emptyForm());
 const rules = {
   recipientType: [{ required: true, message: '请选择接收方', trigger: 'change' }],
   recipientId: [{ required: true, message: '请输入接收方ID', trigger: 'change' }],
   channel: [{ required: true, message: '请选择渠道', trigger: 'change' }],
   title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-  content: [{ required: true, message: '请输入内容', trigger: 'blur' }]
-}
+  content: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+};
 
 function queryParams() {
   return {
     channel: searchForm.channel || undefined,
-    status: searchForm.status || undefined
-  }
+    status: searchForm.status || undefined,
+  };
 }
 
-function handleSearch() { search(queryParams()) }
-function handleReset() { searchForm.channel = ''; searchForm.status = ''; search(queryParams()) }
-function handlePageChange() { load() }
+function handleSearch() {
+  search(queryParams());
+}
+function handleReset() {
+  searchForm.channel = '';
+  searchForm.status = '';
+  search(queryParams());
+}
+function handlePageChange() {
+  load();
+}
 
 async function handleSubmit() {
   try {
-    await formRef.value.validate()
+    await formRef.value.validate();
   } catch {
-    return
+    return;
   }
-  if (submitting.value) return
-  submitting.value = true
+  if (submitting.value) return;
+  submitting.value = true;
   try {
-    await createMessage({ ...formData })
-    ElMessage.success('消息已发送')
-    dialogVisible.value = false
-    load()
+    await createMessage({ ...formData });
+    ElMessage.success('消息已发送');
+    dialogVisible.value = false;
+    load();
   } finally {
-    submitting.value = false
+    submitting.value = false;
   }
 }
 
 function resetForm() {
-  Object.assign(formData, emptyForm())
-  formRef.value?.resetFields()
+  Object.assign(formData, emptyForm());
+  formRef.value?.resetFields();
 }
 
-onMounted(() => load())
+onMounted(() => load());
 </script>
 
 <style scoped>

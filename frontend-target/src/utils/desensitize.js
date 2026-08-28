@@ -1,21 +1,21 @@
 export function maskName(value = '') {
-  if (!value) return ''
-  if (value.length === 1) return '*'
-  return value[0] + '*'.repeat(value.length - 1)
+  if (!value) return '';
+  if (value.length === 1) return '*';
+  return value[0] + '*'.repeat(value.length - 1);
 }
 
 export function maskPhone(value = '') {
-  return value.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
+  return value.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
 }
 
 export function maskIdCard(value = '') {
-  return value.replace(/^(.{6}).{8}(.{4})$/, '$1********$2')
+  return value.replace(/^(.{6}).{8}(.{4})$/, '$1********$2');
 }
 
 export function maskAddress(value = '') {
-  if (!value) return ''
-  const match = value.match(/^(.+?[\u533a\u53bf])/)
-  return match ? `${match[1]}****` : '****'
+  if (!value) return '';
+  const match = value.match(/^(.+?[\u533a\u53bf])/);
+  return match ? `${match[1]}****` : '****';
 }
 
 export function maskSensitiveText(value = '', type = '') {
@@ -23,7 +23,7 @@ export function maskSensitiveText(value = '', type = '') {
     name: maskName,
     phone: maskPhone,
     idCard: maskIdCard,
-    address: maskAddress
-  }
-  return (rules[type] || (() => value))(value)
+    address: maskAddress,
+  };
+  return (rules[type] || (() => value))(value);
 }

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { toPatientPayload } from '@/utils/patientPayload'
+import { describe, expect, it } from 'vitest';
+import { toPatientPayload } from '@/utils/patientPayload';
 
 describe('patient payload', () => {
   it('only keeps editable fields', () => {
@@ -9,14 +9,14 @@ describe('patient payload', () => {
       status: 0,
       createTime: '2026-01-01',
       updateTime: '2026-02-01',
-      diseaseType: 'HYPERTENSION'
-    })
+      diseaseType: 'HYPERTENSION',
+    });
 
-    expect(payload.id).toBeUndefined()
-    expect(payload.status).toBeUndefined()
-    expect(payload.createTime).toBeUndefined()
-    expect(payload.updateTime).toBeUndefined()
-    expect(payload.name).toBe('张三')
-    expect(payload.diseaseType).toBe('HYPERTENSION')
-  })
-})
+    expect(payload.id).toBeUndefined();
+    expect(payload.status).toBeUndefined();
+    expect(payload.createTime).toBeUndefined();
+    expect(payload.updateTime).toBeUndefined();
+    expect(payload.name).toBe('张三');
+    expect(payload.diseaseType).toBe('HYPERTENSION');
+  });
+});

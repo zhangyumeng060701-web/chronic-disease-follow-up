@@ -9,11 +9,7 @@
         </div>
       </div>
 
-      <el-menu
-        :default-active="activeMenu"
-        router
-        class="side-menu"
-      >
+      <el-menu :default-active="activeMenu" router class="side-menu">
         <el-menu-item index="/dashboard">
           <el-icon><DataAnalysis /></el-icon><span>工作台</span>
         </el-menu-item>
@@ -86,24 +82,36 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '@/store/user'
-import { DataAnalysis, UserFilled, Document, Calendar, List, Tickets, Bell, Message, MagicStick, Setting, SwitchButton } from '@element-plus/icons-vue'
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
+import {
+  DataAnalysis,
+  UserFilled,
+  Document,
+  Calendar,
+  List,
+  Tickets,
+  Bell,
+  Message,
+  MagicStick,
+  Setting,
+  SwitchButton,
+} from '@element-plus/icons-vue';
 
-const route = useRoute()
-const router = useRouter()
-const userStore = useUserStore()
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
 
-const activeMenu = computed(() => route.path)
+const activeMenu = computed(() => route.path);
 const avatarText = computed(() => {
-  const source = userStore.realName || userStore.username || '管'
-  return source.charAt(0)
-})
+  const source = userStore.realName || userStore.username || '管';
+  return source.charAt(0);
+});
 
 function handleLogout() {
-  userStore.logout()
-  router.push('/login')
+  userStore.logout();
+  router.push('/login');
 }
 </script>
 
@@ -116,7 +124,7 @@ function handleLogout() {
 .aside {
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #ffffff;
   border-right: 1px solid var(--color-border);
   overflow-y: auto;
 }
@@ -141,7 +149,7 @@ function handleLogout() {
 
 .brand-mark::before,
 .brand-mark::after {
-  content: "";
+  content: '';
   position: absolute;
   background: rgba(255, 255, 255, 0.88);
 }
@@ -169,7 +177,7 @@ function handleLogout() {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
 }
 
@@ -200,9 +208,9 @@ function handleLogout() {
   border-right: none;
   background: transparent;
   --el-menu-bg-color: transparent;
-  --el-menu-text-color: #4B5563;
-  --el-menu-active-color: #0FA47F;
-  --el-menu-hover-bg-color: #F3FBF8;
+  --el-menu-text-color: #4b5563;
+  --el-menu-active-color: #0fa47f;
+  --el-menu-hover-bg-color: #f3fbf8;
   --el-menu-item-height: 44px;
   --el-menu-sub-item-height: 40px;
 }
@@ -212,23 +220,25 @@ function handleLogout() {
   margin-bottom: 2px;
   border-radius: 4px;
   font-weight: 500;
-  transition: background-color 0.16s ease, color 0.16s ease;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
 }
 
 :deep(.el-menu-item.is-active) {
-  color: #0FA47F;
-  background: #EDF9F5;
+  color: #0fa47f;
+  background: #edf9f5;
   box-shadow: inset 3px 0 0 var(--color-primary);
 }
 
 :deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {
-  color: #0B8264;
-  background: #F3FBF8;
+  color: #0b8264;
+  background: #f3fbf8;
 }
 
 :deep(.el-sub-menu .el-menu) {
-  background: #FBFCFC;
+  background: #fbfcfc;
 }
 
 .aside-footer {

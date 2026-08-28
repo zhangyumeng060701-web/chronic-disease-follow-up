@@ -25,11 +25,7 @@
 
     <el-container class="platform-body">
       <el-aside class="platform-sidebar" width="220px">
-        <el-menu
-          router
-          class="platform-menu"
-          :default-active="activeMenu"
-        >
+        <el-menu router class="platform-menu" :default-active="activeMenu">
           <el-menu-item index="/requirement">
             <el-icon>
               <EditPen />
@@ -47,18 +43,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { EditPen, Operation, SwitchButton, User } from '@element-plus/icons-vue'
-import { clearAuthSession, getCurrentUserName, redirectToLogin } from '../utils/auth'
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { EditPen, Operation, SwitchButton, User } from '@element-plus/icons-vue';
+import { clearAuthSession, getCurrentUserName, redirectToLogin } from '../utils/auth';
 
-const route = useRoute()
-const activeMenu = computed(() => route.path)
-const currentUserName = computed(() => getCurrentUserName())
+const route = useRoute();
+const activeMenu = computed(() => route.path);
+const currentUserName = computed(() => getCurrentUserName());
 
 function handleLogout() {
-  clearAuthSession()
-  redirectToLogin()
+  clearAuthSession();
+  redirectToLogin();
 }
 </script>
 

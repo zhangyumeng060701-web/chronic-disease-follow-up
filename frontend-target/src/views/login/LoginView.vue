@@ -34,12 +34,18 @@
             <el-input v-model="form.username" placeholder="用户名" :prefix-icon="User" />
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="form.password" type="password" placeholder="密码"
-                      :prefix-icon="Lock" show-password />
+            <el-input
+              v-model="form.password"
+              type="password"
+              placeholder="密码"
+              :prefix-icon="Lock"
+              show-password
+            />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" :loading="loading" class="login-btn"
-                       @click="handleLogin">登录</el-button>
+            <el-button type="primary" :loading="loading" class="login-btn" @click="handleLogin"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
         <div class="login-meta">
@@ -52,44 +58,44 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { User, Lock } from '@element-plus/icons-vue'
-import { login } from '@/api/auth'
-import { useUserStore } from '@/store/user'
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { User, Lock } from '@element-plus/icons-vue';
+import { login } from '@/api/auth';
+import { useUserStore } from '@/store/user';
 
-const router = useRouter()
-const userStore = useUserStore()
-const formRef = ref(null)
-const loading = ref(false)
+const router = useRouter();
+const userStore = useUserStore();
+const formRef = ref(null);
+const loading = ref(false);
 
-const form = reactive({ username: '', password: '' })
+const form = reactive({ username: '', password: '' });
 const rules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-}
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+};
 
 async function handleLogin() {
   try {
-    await formRef.value.validate()
+    await formRef.value.validate();
   } catch {
-    return
+    return;
   }
 
-  loading.value = true
+  loading.value = true;
   try {
-    const res = await login(form)
+    const res = await login(form);
     userStore.setLogin({
       token: res.data.token,
       role: res.data.role,
       username: form.username,
-      realName: res.data.realName
-    })
-    router.push('/dashboard')
+      realName: res.data.realName,
+    });
+    router.push('/dashboard');
   } catch {
     // 错误提示已在请求拦截器统一处理
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>
@@ -110,7 +116,7 @@ async function handleLogin() {
   padding: 48px 56px;
   overflow: hidden;
   color: var(--color-text-primary);
-  background: #FAFBFC;
+  background: #fafbfc;
   border-right: 1px solid var(--color-border);
 }
 
@@ -125,7 +131,7 @@ async function handleLogin() {
 }
 
 .visual-content::after {
-  content: "";
+  content: '';
   position: absolute;
   right: -24px;
   left: -24px;
@@ -167,7 +173,7 @@ async function handleLogin() {
 
 .brand-box::before,
 .brand-box::after {
-  content: "";
+  content: '';
   position: absolute;
   background: rgba(255, 255, 255, 0.9);
 }
@@ -218,7 +224,7 @@ async function handleLogin() {
   font-size: 12px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .visual-footer {

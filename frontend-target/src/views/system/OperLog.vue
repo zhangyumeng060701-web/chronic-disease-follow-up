@@ -19,7 +19,7 @@
       :data="tableData"
       v-loading="loading"
       :empty-text="EMPTY_TEXT.LOG"
-      style="margin-top:16px"
+      style="margin-top: 16px"
     >
       <el-table-column prop="username" label="操作人" width="100" />
       <el-table-column prop="operation" label="操作类型" width="140" />
@@ -36,38 +36,44 @@
       :total="pagination.total"
       layout="total, prev, pager, next"
       @current-change="handlePageChange"
-      style="margin-top:16px;justify-content:flex-end"
+      style="margin-top: 16px; justify-content: flex-end"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { EMPTY_TEXT } from '@/constants/domain'
-import { getLogList } from '@/api/log'
-import { useTable } from '@/composables/useTable'
-import TableError from '@/components/TableError.vue'
+import { ref, reactive, onMounted } from 'vue';
+import { EMPTY_TEXT } from '@/constants/domain';
+import { getLogList } from '@/api/log';
+import { useTable } from '@/composables/useTable';
+import TableError from '@/components/TableError.vue';
 
-const searchForm = reactive({ username: '', operation: '' })
+const searchForm = reactive({ username: '', operation: '' });
 const { loading, error, tableData, pagination, load, search, retry } = useTable({
-  fetcher: getLogList
-})
+  fetcher: getLogList,
+});
 
 function queryParams() {
   return {
     username: searchForm.username || undefined,
-    operation: searchForm.operation || undefined
-  }
+    operation: searchForm.operation || undefined,
+  };
 }
 
 function handlePageChange() {
-  load()
+  load();
 }
 
-function handleSearch() { search(queryParams()) }
-function handleReset() { searchForm.username = ''; searchForm.operation = ''; search(queryParams()) }
+function handleSearch() {
+  search(queryParams());
+}
+function handleReset() {
+  searchForm.username = '';
+  searchForm.operation = '';
+  search(queryParams());
+}
 
-onMounted(() => load())
+onMounted(() => load());
 </script>
 
 <style scoped>

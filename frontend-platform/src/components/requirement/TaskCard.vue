@@ -24,22 +24,53 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { displayText, formatAcceptanceCriteria, getFiles } from '../../utils/requirementFormat'
+import { computed } from 'vue';
+import { displayText, formatAcceptanceCriteria, getFiles } from '../../utils/requirementFormat';
 
 const props = defineProps({
   task: { type: Object, required: true },
-  taskType: { type: Object, required: true }
-})
-const files = computed(() => getFiles(props.task))
+  taskType: { type: Object, required: true },
+});
+const files = computed(() => getFiles(props.task));
 </script>
 
 <style scoped>
-.task-card + .task-card { margin-top: 12px; }
-.task-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-.task-title-row h3, .task-desc { margin: 0; }
-.task-title-row h3 { color: var(--color-text-primary); font-size: 16px; font-weight: 500; }
-.task-desc { margin-bottom: 12px; line-height: 1.6; }
-.code-block { display: inline-block; max-width: 100%; margin: 0 6px 4px 0; padding: 2px 6px; overflow-wrap: anywhere; color: var(--color-text-regular); background: var(--color-bg); border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 12px; }
-.empty-value { color: var(--color-text-secondary); }
+.task-card + .task-card {
+  margin-top: 12px;
+}
+.task-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.task-title-row h3,
+.task-desc {
+  margin: 0;
+}
+.task-title-row h3 {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 500;
+}
+.task-desc {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.code-block {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 6px 4px 0;
+  padding: 2px 6px;
+  overflow-wrap: anywhere;
+  color: var(--color-text-regular);
+  background: var(--color-bg);
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+}
+.empty-value {
+  color: var(--color-text-secondary);
+}
 </style>

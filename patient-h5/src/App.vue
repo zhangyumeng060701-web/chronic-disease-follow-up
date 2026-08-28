@@ -15,7 +15,9 @@
         <el-form-item label="身份证号">
           <el-input v-model="loginForm.idCard" placeholder="请输入身份证号" />
         </el-form-item>
-        <el-button type="primary" class="login-btn" :loading="loginLoading" @click="handleLogin">登录</el-button>
+        <el-button type="primary" class="login-btn" :loading="loginLoading" @click="handleLogin"
+          >登录</el-button
+        >
       </el-form>
       <p class="demo-hint">演示账号：13800138000 / 110101199001011234</p>
     </section>
@@ -89,12 +91,25 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="测量值">
-                <el-input-number v-model="vitalForm.metricValue" :min="0" :max="500" :precision="1" style="width:100%" />
+                <el-input-number
+                  v-model="vitalForm.metricValue"
+                  :min="0"
+                  :max="500"
+                  :precision="1"
+                  style="width: 100%"
+                />
               </el-form-item>
               <el-form-item label="测量时间">
-                <el-date-picker v-model="vitalForm.measuredAt" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" style="width:100%" />
+                <el-date-picker
+                  v-model="vitalForm.measuredAt"
+                  type="datetime"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  style="width: 100%"
+                />
               </el-form-item>
-              <el-button type="primary" :loading="vitalLoading" @click="submitVital">提交</el-button>
+              <el-button type="primary" :loading="vitalLoading" @click="submitVital"
+                >提交</el-button
+              >
             </el-form>
           </el-card>
 
@@ -113,13 +128,21 @@
             <template #header>{{ q.title }}</template>
             <p v-if="q.description" class="muted">{{ q.description }}</p>
             <el-form label-position="top">
-              <el-form-item v-for="question in parseQuestions(q.content)" :key="question.key" :label="question.label">
+              <el-form-item
+                v-for="question in parseQuestions(q.content)"
+                :key="question.key"
+                :label="question.label"
+              >
                 <el-radio-group v-model="answers[q.id + '.' + question.key]">
-                  <el-radio v-for="option in question.options" :key="option" :label="option">{{ option }}</el-radio>
+                  <el-radio v-for="option in question.options" :key="option" :label="option">{{
+                    option
+                  }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-form>
-            <el-button type="primary" size="small" @click="submitQuestionnaire(q)">提交问卷</el-button>
+            <el-button type="primary" size="small" @click="submitQuestionnaire(q)"
+              >提交问卷</el-button
+            >
           </el-card>
           <el-empty v-if="!questionnaires.length" description="暂无问卷" />
         </section>
@@ -146,7 +169,12 @@
             <template #header>患者端自报随访</template>
             <el-form label-position="top" :model="followUpForm">
               <el-form-item label="随访日期">
-                <el-date-picker v-model="followUpForm.followUpDate" type="date" value-format="YYYY-MM-DD" style="width:100%" />
+                <el-date-picker
+                  v-model="followUpForm.followUpDate"
+                  type="date"
+                  value-format="YYYY-MM-DD"
+                  style="width: 100%"
+                />
               </el-form-item>
               <el-form-item label="症状描述">
                 <el-input v-model="followUpForm.symptoms" type="textarea" :rows="2" />
@@ -158,7 +186,9 @@
                   <el-option label="未用药" value="不服药" />
                 </el-select>
               </el-form-item>
-              <el-button type="primary" :loading="followUpLoading" @click="submitFollowUp">提交</el-button>
+              <el-button type="primary" :loading="followUpLoading" @click="submitFollowUp"
+                >提交</el-button
+              >
             </el-form>
           </el-card>
 
@@ -174,7 +204,12 @@
       </main>
 
       <nav class="tab-bar">
-        <button v-for="tab in tabs" :key="tab.key" :class="{ active: activeTab === tab.key }" @click="activeTab = tab.key">
+        <button
+          v-for="tab in tabs"
+          :key="tab.key"
+          :class="{ active: activeTab === tab.key }"
+          @click="activeTab = tab.key"
+        >
           {{ tab.label }}
         </button>
       </nav>
@@ -183,30 +218,30 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import request from './api/request'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, computed, onMounted } from 'vue';
+import request from './api/request';
+import { ElMessage } from 'element-plus';
 
-const token = ref(localStorage.getItem('patient_token') || '')
-const patientName = ref(localStorage.getItem('patient_name') || '')
-const activeTab = ref('home')
-const loginLoading = ref(false)
-const vitalLoading = ref(false)
-const followUpLoading = ref(false)
+const token = ref(localStorage.getItem('patient_token') || '');
+const patientName = ref(localStorage.getItem('patient_name') || '');
+const activeTab = ref('home');
+const loginLoading = ref(false);
+const vitalLoading = ref(false);
+const followUpLoading = ref(false);
 
-const loginForm = reactive({ phone: '', idCard: '' })
-const vitalForm = reactive({ metricType: 'SYSTOLIC_BP', metricValue: 120, measuredAt: '' })
-const followUpForm = reactive({ followUpDate: '', symptoms: '', medicationAdherence: '规律' })
+const loginForm = reactive({ phone: '', idCard: '' });
+const vitalForm = reactive({ metricType: 'SYSTOLIC_BP', metricValue: 120, measuredAt: '' });
+const followUpForm = reactive({ followUpDate: '', symptoms: '', medicationAdherence: '规律' });
 
-const plans = ref([])
-const vitals = ref([])
-const questionnaires = ref([])
-const messages = ref([])
-const followUps = ref([])
-const unreadCount = ref(0)
-const riskLevel = ref('')
-const riskEvidence = ref('')
-const answers = reactive({})
+const plans = ref([]);
+const vitals = ref([]);
+const questionnaires = ref([]);
+const messages = ref([]);
+const followUps = ref([]);
+const unreadCount = ref(0);
+const riskLevel = ref('');
+const riskEvidence = ref('');
+const answers = reactive({});
 
 const tabs = [
   { key: 'home', label: '首页' },
@@ -214,148 +249,157 @@ const tabs = [
   { key: 'followup', label: '随访' },
   { key: 'vitals', label: '上报' },
   { key: 'questionnaire', label: '问卷' },
-  { key: 'messages', label: '消息' }
-]
+  { key: 'messages', label: '消息' },
+];
 
 async function handleLogin() {
   if (!loginForm.phone || !loginForm.idCard) {
-    ElMessage.warning('请输入手机号和身份证号')
-    return
+    ElMessage.warning('请输入手机号和身份证号');
+    return;
   }
-  loginLoading.value = true
+  loginLoading.value = true;
   try {
-    const res = await request.post('/patient/login', loginForm)
-    localStorage.setItem('patient_token', res.data.token)
-    localStorage.setItem('patient_name', res.data.name)
-    token.value = res.data.token
-    patientName.value = res.data.name
-    activeTab.value = 'home'
-    loadAll()
+    const res = await request.post('/patient/login', loginForm);
+    localStorage.setItem('patient_token', res.data.token);
+    localStorage.setItem('patient_name', res.data.name);
+    token.value = res.data.token;
+    patientName.value = res.data.name;
+    activeTab.value = 'home';
+    loadAll();
   } finally {
-    loginLoading.value = false
+    loginLoading.value = false;
   }
 }
 
 function handleLogout() {
-  localStorage.removeItem('patient_token')
-  localStorage.removeItem('patient_name')
-  token.value = ''
+  localStorage.removeItem('patient_token');
+  localStorage.removeItem('patient_name');
+  token.value = '';
 }
 
 async function loadAll() {
-  await Promise.all([loadPlans(), loadVitals(), loadQuestionnaires(), loadMessages(), loadFollowUps(), loadRiskLevel()])
+  await Promise.all([
+    loadPlans(),
+    loadVitals(),
+    loadQuestionnaires(),
+    loadMessages(),
+    loadFollowUps(),
+    loadRiskLevel(),
+  ]);
 }
 
 async function loadRiskLevel() {
-  const res = await request.get('/patient/risk-level')
-  riskLevel.value = res.data?.riskLevel || 'STABLE'
-  riskEvidence.value = res.data?.evidence || '暂无评估'
+  const res = await request.get('/patient/risk-level');
+  riskLevel.value = res.data?.riskLevel || 'STABLE';
+  riskEvidence.value = res.data?.evidence || '暂无评估';
 }
 
 async function loadPlans() {
-  const res = await request.get('/patient/plans')
-  plans.value = res.data || []
+  const res = await request.get('/patient/plans');
+  plans.value = res.data || [];
 }
 
 async function loadVitals() {
-  const res = await request.get('/patient/vitals')
-  vitals.value = res.data || []
+  const res = await request.get('/patient/vitals');
+  vitals.value = res.data || [];
 }
 
 async function loadQuestionnaires() {
-  const res = await request.get('/patient/questionnaires')
-  questionnaires.value = res.data || []
+  const res = await request.get('/patient/questionnaires');
+  questionnaires.value = res.data || [];
 }
 
 async function loadMessages() {
-  const res = await request.get('/patient/messages')
-  messages.value = res.data || []
-  unreadCount.value = messages.value.filter(item => item.status === 'PENDING').length
+  const res = await request.get('/patient/messages');
+  messages.value = res.data || [];
+  unreadCount.value = messages.value.filter((item) => item.status === 'PENDING').length;
 }
 
 async function loadFollowUps() {
-  const res = await request.get('/patient/follow-ups')
-  followUps.value = res.data || []
+  const res = await request.get('/patient/follow-ups');
+  followUps.value = res.data || [];
 }
 
 async function submitVital() {
-  vitalLoading.value = true
+  vitalLoading.value = true;
   try {
     await request.post('/patient/vitals', {
       ...vitalForm,
-      measuredAt: vitalForm.measuredAt || new Date().toISOString().slice(0, 19).replace('T', ' ')
-    })
-    ElMessage.success('指标已上报')
-    vitalForm.metricValue = 120
-    await loadVitals()
+      measuredAt: vitalForm.measuredAt || new Date().toISOString().slice(0, 19).replace('T', ' '),
+    });
+    ElMessage.success('指标已上报');
+    vitalForm.metricValue = 120;
+    await loadVitals();
   } finally {
-    vitalLoading.value = false
+    vitalLoading.value = false;
   }
 }
 
 async function submitQuestionnaire(q) {
-  const result = {}
+  const result = {};
   for (const question of parseQuestions(q.content)) {
-    result[question.key] = answers[`${q.id}.${question.key}`] || ''
+    result[question.key] = answers[`${q.id}.${question.key}`] || '';
   }
-  await request.post(`/patient/questionnaires/${q.id}/submit`, { answers: result })
-  ElMessage.success('问卷已提交')
+  await request.post(`/patient/questionnaires/${q.id}/submit`, { answers: result });
+  ElMessage.success('问卷已提交');
 }
 
 async function submitFollowUp() {
-  followUpLoading.value = true
+  followUpLoading.value = true;
   try {
     await request.post('/patient/follow-ups', {
       followUpDate: followUpForm.followUpDate || new Date().toISOString().slice(0, 10),
       symptoms: followUpForm.symptoms,
-      medicationAdherence: followUpForm.medicationAdherence
-    })
-    ElMessage.success('随访已提交')
-    await loadFollowUps()
+      medicationAdherence: followUpForm.medicationAdherence,
+    });
+    ElMessage.success('随访已提交');
+    await loadFollowUps();
   } finally {
-    followUpLoading.value = false
+    followUpLoading.value = false;
   }
 }
 
 async function markRead(message) {
   if (message.status === 'PENDING') {
-    await request.put(`/patient/messages/${message.id}/read`)
-    await loadMessages()
+    await request.put(`/patient/messages/${message.id}/read`);
+    await loadMessages();
   }
 }
 
 function parseQuestions(content) {
   try {
-    return JSON.parse(content || '[]')
+    return JSON.parse(content || '[]');
   } catch {
-    return []
+    return [];
   }
 }
 
 function riskLabel(level) {
-  return { LOW: '低风险', MEDIUM: '中风险', HIGH: '高风险', STABLE: '稳定' }[level] || level
+  return { LOW: '低风险', MEDIUM: '中风险', HIGH: '高风险', STABLE: '稳定' }[level] || level;
 }
 
 onMounted(() => {
-  if (token.value) loadAll()
-})
+  if (token.value) loadAll();
+});
 </script>
 
 <style>
 :root {
-  --brand: #0FA47F;
-  --ink: #1A1D21;
-  --muted: #6B7280;
-  --bg: #F7F8FA;
-  --border: #E5E7EB;
+  --brand: #0fa47f;
+  --ink: #1a1d21;
+  --muted: #6b7280;
+  --bg: #f7f8fa;
+  --border: #e5e7eb;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   color: var(--ink);
   background: var(--bg);
-  font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+  font-family: 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
 }
 
 .patient-app {
@@ -371,7 +415,7 @@ body {
   flex-direction: column;
   justify-content: center;
   padding: 28px 24px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 .brand {
@@ -388,28 +432,58 @@ body {
   background: var(--brand);
 }
 
-.brand h1 { margin: 0; font-size: 22px; }
-.brand p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+.brand h1 {
+  margin: 0;
+  font-size: 22px;
+}
+.brand p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
 
-.login-form { margin-bottom: 12px; }
-.login-btn { width: 100%; height: 42px; }
-.demo-hint { color: var(--muted); font-size: 12px; text-align: center; }
+.login-form {
+  margin-bottom: 12px;
+}
+.login-btn {
+  width: 100%;
+  height: 42px;
+}
+.demo-hint {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-bottom: 1px solid var(--border);
 }
 
-.app-header strong { display: block; font-size: 17px; }
-.app-header span { color: var(--muted); font-size: 12px; }
+.app-header strong {
+  display: block;
+  font-size: 17px;
+}
+.app-header span {
+  color: var(--muted);
+  font-size: 12px;
+}
 
-.app-main { padding: 14px 12px 76px; }
-.section-card { margin-bottom: 12px; border-radius: 8px; }
-.muted { color: var(--muted); font-size: 12px; }
+.app-main {
+  padding: 14px 12px 76px;
+}
+.section-card {
+  margin-bottom: 12px;
+  border-radius: 8px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
 
 .risk-banner {
   display: flex;
@@ -418,14 +492,27 @@ body {
   gap: 12px;
   margin-bottom: 12px;
   padding: 14px 16px;
-  color: #FFFFFF;
+  color: #ffffff;
   background: var(--brand);
   border-radius: 8px;
 }
 
-.risk-banner span { display: block; color: rgba(255, 255, 255, 0.8); font-size: 12px; }
-.risk-banner strong { display: block; margin-top: 4px; font-size: 20px; }
-.risk-banner p { margin: 0; color: rgba(255, 255, 255, 0.85); font-size: 12px; text-align: right; }
+.risk-banner span {
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+.risk-banner strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+.risk-banner p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  text-align: right;
+}
 
 .summary-grid {
   display: grid;
@@ -436,17 +523,39 @@ body {
 
 .summary-item {
   padding: 14px;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 8px;
 }
 
-.summary-item span { display: block; color: var(--muted); font-size: 12px; }
-.summary-item strong { display: block; margin-top: 6px; font-size: 24px; color: var(--brand); }
+.summary-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+.summary-item strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 24px;
+  color: var(--brand);
+}
 
-.plan-card h3 { margin: 10px 0 6px; font-size: 16px; }
-.plan-card p { margin: 0; color: var(--muted); font-size: 13px; }
-.plan-head { display: flex; justify-content: space-between; color: var(--brand); font-size: 13px; font-weight: 600; }
+.plan-card h3 {
+  margin: 10px 0 6px;
+  font-size: 16px;
+}
+.plan-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.plan-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 600;
+}
 
 .timeline-item {
   display: flex;
@@ -456,11 +565,26 @@ body {
   font-size: 13px;
 }
 
-.message-card { cursor: pointer; }
-.message-card.unread { border-color: rgba(15, 164, 127, 0.5); }
-.message-head { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
-.message-head span { color: var(--muted); }
-.message-card p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.message-card {
+  cursor: pointer;
+}
+.message-card.unread {
+  border-color: rgba(15, 164, 127, 0.5);
+}
+.message-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+.message-head span {
+  color: var(--muted);
+}
+.message-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
 
 .tab-bar {
   position: fixed;
@@ -472,7 +596,7 @@ body {
   max-width: 520px;
   margin: 0 auto;
   padding: 6px 0 env(safe-area-inset-bottom);
-  background: #FFFFFF;
+  background: #ffffff;
   border-top: 1px solid var(--border);
 }
 
@@ -484,5 +608,8 @@ body {
   background: transparent;
 }
 
-.tab-bar button.active { color: var(--brand); font-weight: 600; }
+.tab-bar button.active {
+  color: var(--brand);
+  font-weight: 600;
+}
 </style>

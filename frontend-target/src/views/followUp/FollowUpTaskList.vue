@@ -23,7 +23,9 @@
     <el-table :data="tableData" v-loading="loading" empty-text="暂无随访任务">
       <el-table-column prop="patientName" label="患者" min-width="100" />
       <el-table-column prop="taskType" label="任务类型" width="110">
-        <template #default="{ row }">{{ row.taskType === 'FOLLOW_UP' ? '随访任务' : '预警升级' }}</template>
+        <template #default="{ row }">{{
+          row.taskType === 'FOLLOW_UP' ? '随访任务' : '预警升级'
+        }}</template>
       </el-table-column>
       <el-table-column label="状态" width="90">
         <template #default="{ row }">
@@ -42,12 +44,14 @@
             size="small"
             type="primary"
             @click="handleComplete(row)"
-          >完成</el-button>
+            >完成</el-button
+          >
           <el-button
             v-if="!['COMPLETED', 'CANCELED'].includes(row.status)"
             size="small"
             @click="handleCancel(row)"
-          >取消</el-button>
+            >取消</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -59,35 +63,44 @@
       :total="pagination.total"
       layout="total, prev, pager, next"
       @current-change="handlePageChange"
-      style="margin-top:16px;justify-content:flex-end"
+      style="margin-top: 16px; justify-content: flex-end"
     />
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { getTaskList, completeTask, cancelTask } from '@/api/followUpTask'
-import { useTable } from '@/composables/useTable'
-import TableError from '@/components/TableError.vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { reactive } from 'vue';
+import { getTaskList, completeTask, cancelTask } from '@/api/followUpTask';
+import { useTable } from '@/composables/useTable';
+import TableError from '@/components/TableError.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
-const searchForm = reactive({ status: '' })
-const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getTaskList })
+const searchForm = reactive({ status: '' });
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
+  fetcher: getTaskList,
+});
 
 function queryParams() {
-  return { status: searchForm.status || undefined }
+  return { status: searchForm.status || undefined };
 }
 
-function handleSearch() { search(queryParams()) }
-function handleReset() { searchForm.status = ''; search(queryParams()) }
-function handlePageChange() { load() }
+function handleSearch() {
+  search(queryParams());
+}
+function handleReset() {
+  searchForm.status = '';
+  search(queryParams());
+}
+function handlePageChange() {
+  load();
+}
 
 async function handleComplete(row) {
   try {
-    await ElMessageBox.confirm('确认完成该随访任务吗？', '提示', { type: 'warning' })
-    await completeTask(row.id)
-    ElMessage.success('任务已完成')
-    load()
+    await ElMessageBox.confirm('确认完成该随访任务吗？', '提示', { type: 'warning' });
+    await completeTask(row.id);
+    ElMessage.success('任务已完成');
+    load();
   } catch {
     // user cancels or request layer shows error
   }
@@ -95,27 +108,37 @@ async function handleComplete(row) {
 
 async function handleCancel(row) {
   try {
-    await ElMessageBox.confirm('确认取消该随访任务吗？', '提示', { type: 'warning' })
-    await cancelTask(row.id)
-    ElMessage.success('任务已取消')
-    load()
+    await ElMessageBox.confirm('确认取消该随访任务吗？', '提示', { type: 'warning' });
+    await cancelTask(row.id);
+    ElMessage.success('任务已取消');
+    load();
   } catch {
     // user cancels or request layer shows error
   }
 }
 
 function statusLabel(status) {
-  return {
-    PENDING: '待处理', IN_PROGRESS: '进行中', CONTACTED: '已联系',
-    COMPLETED: '已完成', CANCELED: '已取消'
-  }[status] || status
+  return (
+    {
+      PENDING: '待处理',
+      IN_PROGRESS: '进行中',
+      CONTACTED: '已联系',
+      COMPLETED: '已完成',
+      CANCELED: '已取消',
+    }[status] || status
+  );
 }
 
 function statusType(status) {
-  return {
-    PENDING: 'info', IN_PROGRESS: 'warning', CONTACTED: 'primary',
-    COMPLETED: 'success', CANCELED: 'info'
-  }[status] || 'info'
+  return (
+    {
+      PENDING: 'info',
+      IN_PROGRESS: 'warning',
+      CONTACTED: 'primary',
+      COMPLETED: 'success',
+      CANCELED: 'info',
+    }[status] || 'info'
+  );
 }
 </script>
 

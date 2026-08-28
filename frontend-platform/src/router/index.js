@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import PlatformLayout from '../layout/PlatformLayout.vue'
-import ChatPanel from '../views/requirement/ChatPanel.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import PlatformLayout from '../layout/PlatformLayout.vue';
+import ChatPanel from '../views/requirement/ChatPanel.vue';
 
 const routes = [
   {
     path: '/',
-    redirect: '/requirement'
+    redirect: '/requirement',
   },
   {
     path: '/requirement',
@@ -14,15 +14,15 @@ const routes = [
       {
         path: '',
         name: 'RequirementInput',
-        component: ChatPanel
-      }
-    ]
-  }
-]
+        component: ChatPanel,
+      },
+    ],
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

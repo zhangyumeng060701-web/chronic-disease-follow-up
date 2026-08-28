@@ -1,40 +1,40 @@
 :root {
-  --color-primary: #0FA47F;
-  --color-primary-dark: #0B8264;
-  --color-primary-light: #E7F7F2;
-  --color-accent: #0FA47F;
-  --color-success: #0FA47F;
-  --color-warning: #D97706;
-  --color-danger: #E5484D;
-  --color-info: #6B7280;
+  --color-primary: #0fa47f;
+  --color-primary-dark: #0b8264;
+  --color-primary-light: #e7f7f2;
+  --color-accent: #0fa47f;
+  --color-success: #0fa47f;
+  --color-warning: #d97706;
+  --color-danger: #e5484d;
+  --color-info: #6b7280;
 
-  --color-bg: #F7F8FA;
-  --color-bg-deep: #EFF1F4;
-  --color-bg-card: #FFFFFF;
-  --color-border: #E5E7EB;
-  --color-border-strong: #D1D5DB;
-  --color-text-primary: #1A1D21;
-  --color-text-regular: #4B5563;
-  --color-text-secondary: #6B7280;
-  --color-text-placeholder: #9CA3AF;
+  --color-bg: #f7f8fa;
+  --color-bg-deep: #eff1f4;
+  --color-bg-card: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-text-primary: #1a1d21;
+  --color-text-regular: #4b5563;
+  --color-text-secondary: #6b7280;
+  --color-text-placeholder: #9ca3af;
 
   --layout-header-height: 60px;
   --layout-sidebar-width: 232px;
   --layout-main-padding: 24px;
 
-  --font-mono: "IBM Plex Mono", "SF Mono", "Roboto Mono", monospace;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', 'Roboto Mono', monospace;
 
-  --el-color-primary: #0FA47F;
-  --el-color-primary-light-3: #4FBE9F;
-  --el-color-primary-light-5: #86D3BF;
-  --el-color-primary-light-7: #BDE7DC;
-  --el-color-primary-light-8: #D6F0E9;
-  --el-color-primary-light-9: #EDF9F5;
-  --el-color-primary-dark-2: #0B8264;
-  --el-color-success: #0FA47F;
-  --el-color-warning: #D97706;
-  --el-color-danger: #E5484D;
-  --el-color-info: #6B7280;
+  --el-color-primary: #0fa47f;
+  --el-color-primary-light-3: #4fbe9f;
+  --el-color-primary-light-5: #86d3bf;
+  --el-color-primary-light-7: #bde7dc;
+  --el-color-primary-light-8: #d6f0e9;
+  --el-color-primary-light-9: #edf9f5;
+  --el-color-primary-dark-2: #0b8264;
+  --el-color-success: #0fa47f;
+  --el-color-warning: #d97706;
+  --el-color-danger: #e5484d;
+  --el-color-info: #6b7280;
 
   --el-border-radius-base: 4px;
   --el-border-radius-small: 4px;
@@ -56,7 +56,9 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  font-family: "SF Pro Text", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    'SF Pro Text', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Helvetica Neue', Arial,
+    sans-serif;
   font-size: 14px;
   line-height: 1.5;
   color: var(--color-text-regular);
@@ -77,7 +79,7 @@ select {
 }
 
 ::selection {
-  color: #FFFFFF;
+  color: #ffffff;
   background: var(--color-primary);
 }
 
@@ -100,9 +102,9 @@ select {
 
 .el-table {
   --el-table-border-color: var(--color-border);
-  --el-table-header-bg-color: #FAFBFC;
-  --el-table-header-text-color: #1A1D21;
-  --el-table-row-hover-bg-color: #F3FBF8;
+  --el-table-header-bg-color: #fafbfc;
+  --el-table-header-text-color: #1a1d21;
+  --el-table-row-hover-bg-color: #f3fbf8;
   font-size: 13px;
   color: var(--color-text-regular);
   font-variant-numeric: tabular-nums;
@@ -111,7 +113,7 @@ select {
 .el-table th.el-table__cell {
   height: 42px;
   font-weight: 600;
-  background: #FAFBFC;
+  background: #fafbfc;
 }
 
 .el-table .el-table__cell {

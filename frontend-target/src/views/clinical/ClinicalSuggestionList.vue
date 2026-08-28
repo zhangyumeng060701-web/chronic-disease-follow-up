@@ -50,35 +50,44 @@
       :total="pagination.total"
       layout="total, prev, pager, next"
       @current-change="handlePageChange"
-      style="margin-top:16px;justify-content:flex-end"
+      style="margin-top: 16px; justify-content: flex-end"
     />
   </div>
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue'
-import { getSuggestionList, confirmSuggestion, rejectSuggestion } from '@/api/clinical'
-import { useTable } from '@/composables/useTable'
-import TableError from '@/components/TableError.vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { reactive, onMounted } from 'vue';
+import { getSuggestionList, confirmSuggestion, rejectSuggestion } from '@/api/clinical';
+import { useTable } from '@/composables/useTable';
+import TableError from '@/components/TableError.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
-const searchForm = reactive({ status: 'PENDING' })
-const { loading, error, tableData, pagination, load, search, retry } = useTable({ fetcher: getSuggestionList })
+const searchForm = reactive({ status: 'PENDING' });
+const { loading, error, tableData, pagination, load, search, retry } = useTable({
+  fetcher: getSuggestionList,
+});
 
 function queryParams() {
-  return { status: searchForm.status || undefined }
+  return { status: searchForm.status || undefined };
 }
 
-function handleSearch() { search(queryParams()) }
-function handleReset() { searchForm.status = 'PENDING'; search(queryParams()) }
-function handlePageChange() { load() }
+function handleSearch() {
+  search(queryParams());
+}
+function handleReset() {
+  searchForm.status = 'PENDING';
+  search(queryParams());
+}
+function handlePageChange() {
+  load();
+}
 
 async function handleConfirm(row) {
   try {
-    await ElMessageBox.confirm('确认后建议将写入随访记录，是否继续？', '提示', { type: 'warning' })
-    await confirmSuggestion(row.id)
-    ElMessage.success('建议已落库')
-    load()
+    await ElMessageBox.confirm('确认后建议将写入随访记录，是否继续？', '提示', { type: 'warning' });
+    await confirmSuggestion(row.id);
+    ElMessage.success('建议已落库');
+    load();
   } catch {
     // user cancels or request layer shows error
   }
@@ -86,24 +95,24 @@ async function handleConfirm(row) {
 
 async function handleReject(row) {
   try {
-    await ElMessageBox.confirm('确认驳回该AI建议吗？', '提示', { type: 'warning' })
-    await rejectSuggestion(row.id)
-    ElMessage.success('建议已驳回')
-    load()
+    await ElMessageBox.confirm('确认驳回该AI建议吗？', '提示', { type: 'warning' });
+    await rejectSuggestion(row.id);
+    ElMessage.success('建议已驳回');
+    load();
   } catch {
     // user cancels or request layer shows error
   }
 }
 
 function statusLabel(status) {
-  return { PENDING: '待确认', CONFIRMED: '已确认', REJECTED: '已驳回' }[status] || status
+  return { PENDING: '待确认', CONFIRMED: '已确认', REJECTED: '已驳回' }[status] || status;
 }
 
 function statusType(status) {
-  return { PENDING: 'warning', CONFIRMED: 'success', REJECTED: 'info' }[status] || 'info'
+  return { PENDING: 'warning', CONFIRMED: 'success', REJECTED: 'info' }[status] || 'info';
 }
 
-onMounted(() => load())
+onMounted(() => load());
 </script>
 
 <style scoped>

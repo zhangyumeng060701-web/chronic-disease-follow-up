@@ -15,6 +15,6 @@ export function toPatientPayload(data = {}) {
     drinking: data.drinking,
     allergyHistory: data.allergyHistory,
     medicationHistory: data.medicationHistory,
-    doctorId: data.doctorId
-  }
+    doctorId: data.doctorId,
+  };
 }

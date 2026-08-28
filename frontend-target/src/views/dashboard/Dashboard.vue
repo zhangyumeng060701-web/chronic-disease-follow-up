@@ -28,7 +28,11 @@
           <h3>待处理预警</h3>
           <span>{{ workbench.pendingAlerts.length }} 项</span>
         </header>
-        <el-empty v-if="!workbench.pendingAlerts.length" description="暂无待处理预警" :image-size="50" />
+        <el-empty
+          v-if="!workbench.pendingAlerts.length"
+          description="暂无待处理预警"
+          :image-size="50"
+        />
         <ul v-else class="workbench-list">
           <li v-for="item in workbench.pendingAlerts" :key="item.id">
             <span>{{ item.patientName }}</span>
@@ -42,7 +46,11 @@
           <h3>待确认 AI 建议</h3>
           <span>{{ workbench.pendingSuggestions.length }} 项</span>
         </header>
-        <el-empty v-if="!workbench.pendingSuggestions.length" description="暂无待确认建议" :image-size="50" />
+        <el-empty
+          v-if="!workbench.pendingSuggestions.length"
+          description="暂无待确认建议"
+          :image-size="50"
+        />
         <ul v-else class="workbench-list">
           <li v-for="item in workbench.pendingSuggestions" :key="item.id">
             <span>{{ item.patientName }}</span>
@@ -104,9 +112,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import LineChart from '@/components/LineChart.vue'
-import { getStatsOverview, getBpTrend, getGlucoseTrend, getDoctorComparison, getWorkbench } from '@/api/dashboard'
+import { ref, reactive, onMounted } from 'vue';
+import LineChart from '@/components/LineChart.vue';
+import {
+  getStatsOverview,
+  getBpTrend,
+  getGlucoseTrend,
+  getDoctorComparison,
+  getWorkbench,
+} from '@/api/dashboard';
 
 const cards = reactive([
   { title: '管理患者总数', value: '--', unit: '人', tone: 'accent' },
@@ -115,89 +129,89 @@ const cards = reactive([
   { title: '当前失访患者', value: '--', unit: '人', tone: 'warning' },
   { title: '随访计划完成率', value: '--', unit: '', tone: 'accent' },
   { title: '本月随访任务完成率', value: '--', unit: '', tone: 'success' },
-  { title: '预警平均响应', value: '--', unit: '', tone: 'info' }
-])
+  { title: '预警平均响应', value: '--', unit: '', tone: 'info' },
+]);
 
-const doctorData = ref([])
-const bpData = ref([])
-const glucoseData = ref([])
-const overviewLoading = ref(false)
-const chartLoading = ref(false)
-const doctorLoading = ref(false)
-const workbenchLoading = ref(false)
+const doctorData = ref([]);
+const bpData = ref([]);
+const glucoseData = ref([]);
+const overviewLoading = ref(false);
+const chartLoading = ref(false);
+const doctorLoading = ref(false);
+const workbenchLoading = ref(false);
 const workbench = reactive({
   todayTasks: [],
   pendingAlerts: [],
-  pendingSuggestions: []
-})
+  pendingSuggestions: [],
+});
 
 async function fetchOverview() {
-  overviewLoading.value = true
+  overviewLoading.value = true;
   try {
-    const res = await getStatsOverview()
-    const o = res.data
-    cards[0].value = o.totalPatients ?? '--'
-    cards[1].value = o.completionRate ?? '--'
-    cards[2].value = o.highRiskCount ?? '--'
-    cards[3].value = o.lostFollowUpCount ?? '--'
-    cards[4].value = o.planCompletionRate ?? '--'
-    cards[5].value = o.followUpTaskCompletionRate ?? '--'
-    cards[6].value = o.avgAlertResponseHours ?? '--'
+    const res = await getStatsOverview();
+    const o = res.data;
+    cards[0].value = o.totalPatients ?? '--';
+    cards[1].value = o.completionRate ?? '--';
+    cards[2].value = o.highRiskCount ?? '--';
+    cards[3].value = o.lostFollowUpCount ?? '--';
+    cards[4].value = o.planCompletionRate ?? '--';
+    cards[5].value = o.followUpTaskCompletionRate ?? '--';
+    cards[6].value = o.avgAlertResponseHours ?? '--';
   } catch {
     // 保持默认值
   } finally {
-    overviewLoading.value = false
+    overviewLoading.value = false;
   }
 }
 
 async function fetchCharts() {
-  chartLoading.value = true
+  chartLoading.value = true;
   try {
-    const [bp, glucose] = await Promise.all([getBpTrend(), getGlucoseTrend()])
-    bpData.value = bp.data || []
-    glucoseData.value = glucose.data || []
+    const [bp, glucose] = await Promise.all([getBpTrend(), getGlucoseTrend()]);
+    bpData.value = bp.data || [];
+    glucoseData.value = glucose.data || [];
   } catch {
-    bpData.value = []
-    glucoseData.value = []
+    bpData.value = [];
+    glucoseData.value = [];
   } finally {
-    chartLoading.value = false
+    chartLoading.value = false;
   }
 }
 
 async function fetchDoctors() {
-  doctorLoading.value = true
+  doctorLoading.value = true;
   try {
-    const res = await getDoctorComparison()
-    doctorData.value = res.data || []
+    const res = await getDoctorComparison();
+    doctorData.value = res.data || [];
   } catch {
-    doctorData.value = []
+    doctorData.value = [];
   } finally {
-    doctorLoading.value = false
+    doctorLoading.value = false;
   }
 }
 
 async function fetchWorkbench() {
-  workbenchLoading.value = true
+  workbenchLoading.value = true;
   try {
-    const res = await getWorkbench()
-    workbench.todayTasks = res.data?.todayTasks || []
-    workbench.pendingAlerts = res.data?.pendingAlerts || []
-    workbench.pendingSuggestions = res.data?.pendingSuggestions || []
+    const res = await getWorkbench();
+    workbench.todayTasks = res.data?.todayTasks || [];
+    workbench.pendingAlerts = res.data?.pendingAlerts || [];
+    workbench.pendingSuggestions = res.data?.pendingSuggestions || [];
   } catch {
-    workbench.todayTasks = []
-    workbench.pendingAlerts = []
-    workbench.pendingSuggestions = []
+    workbench.todayTasks = [];
+    workbench.pendingAlerts = [];
+    workbench.pendingSuggestions = [];
   } finally {
-    workbenchLoading.value = false
+    workbenchLoading.value = false;
   }
 }
 
 onMounted(() => {
-  fetchOverview()
-  fetchCharts()
-  fetchDoctors()
-  fetchWorkbench()
-})
+  fetchOverview();
+  fetchCharts();
+  fetchDoctors();
+  fetchWorkbench();
+});
 </script>
 
 <style scoped>
@@ -219,7 +233,6 @@ onMounted(() => {
   color: var(--color-text-primary);
   font-size: 22px;
   font-weight: 600;
-
 }
 
 .dashboard-head p {
@@ -281,7 +294,9 @@ onMounted(() => {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
-  transition: border-color 0.16s ease, transform 0.16s ease;
+  transition:
+    border-color 0.16s ease,
+    transform 0.16s ease;
 }
 
 .metric:hover {
@@ -290,7 +305,7 @@ onMounted(() => {
 }
 
 .metric::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   right: 0;

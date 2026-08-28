@@ -1,5 +1,11 @@
 <template>
-  <el-dialog :title="title" :model-value="visible" width="600px" @update:model-value="close" @closed="emit('closed')">
+  <el-dialog
+    :title="title"
+    :model-value="visible"
+    width="600px"
+    @update:model-value="close"
+    @closed="emit('closed')"
+  >
     <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
       <el-form-item label="姓名" prop="name">
         <el-input v-model="form.name" />
@@ -15,7 +21,12 @@
       </el-form-item>
       <el-form-item label="慢病类型" prop="diseaseType">
         <el-select v-model="form.diseaseType">
-          <el-option v-for="(label, value) in DISEASE_TYPES" :key="value" :label="label" :value="value" />
+          <el-option
+            v-for="(label, value) in DISEASE_TYPES"
+            :key="value"
+            :label="label"
+            :value="value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="手机号">
@@ -68,23 +79,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { DISEASE_TYPES } from '@/constants/domain'
+import { ref } from 'vue';
+import { DISEASE_TYPES } from '@/constants/domain';
 
 defineProps({
   visible: { type: Boolean, default: false },
   title: { type: String, default: '' },
   form: { type: Object, required: true },
   rules: { type: Object, default: () => ({}) },
-  submitting: { type: Boolean, default: false }
-})
+  submitting: { type: Boolean, default: false },
+});
 
-const emit = defineEmits(['update:visible', 'submit', 'closed'])
-const formRef = ref(null)
+const emit = defineEmits(['update:visible', 'submit', 'closed']);
+const formRef = ref(null);
 
 function close() {
-  emit('update:visible', false)
+  emit('update:visible', false);
 }
 
-defineExpose({ formRef })
+defineExpose({ formRef });
 </script>

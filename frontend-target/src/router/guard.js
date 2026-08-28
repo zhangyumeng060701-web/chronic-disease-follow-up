@@ -1,12 +1,12 @@
 export function resolveRoute(to, { token, role }) {
   if (to.path !== '/login' && !token) {
-    return '/login'
+    return '/login';
   }
   if (to.path === '/login' && token) {
-    return '/dashboard'
+    return '/dashboard';
   }
   if (to.meta?.requiresAdmin && role !== 'ADMIN') {
-    return '/dashboard'
+    return '/dashboard';
   }
-  return true
+  return true;
 }
