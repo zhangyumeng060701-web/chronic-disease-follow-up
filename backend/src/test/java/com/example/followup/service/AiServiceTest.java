@@ -1,14 +1,15 @@
 package com.example.followup.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.example.followup.controller.AiController;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AiServiceTest {
 

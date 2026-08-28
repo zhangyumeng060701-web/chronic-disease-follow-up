@@ -17,14 +17,15 @@ import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.StatsService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -203,7 +204,9 @@ public class StatsServiceImpl implements StatsService {
         if (count == 0) {
             return "-";
         }
-        return String.format("%.1f小时", totalMinutes / 60.0 / count);
+        BigDecimal avgHours = BigDecimal.valueOf(totalMinutes)
+                .divide(BigDecimal.valueOf(60L * count), 1, RoundingMode.HALF_UP);
+        return avgHours + "小时";
     }
 
     @Override
@@ -249,7 +252,7 @@ public class StatsServiceImpl implements StatsService {
             long total = latestMap.size();
             long controlled = 0;
 
-            if (type.equals("bp")) {
+            if ("bp".equals(type)) {
                 controlled = latestMap.values().stream()
                         .filter(f -> f.getSystolicBp() != null && f.getSystolicBp() < 140
                                   && f.getDiastolicBp() != null && f.getDiastolicBp() < 90)
@@ -261,7 +264,12 @@ public class StatsServiceImpl implements StatsService {
                         .count();
             }
 
-            double rate = total > 0 ? Math.round(controlled * 10000.0 / total) / 100.0 : 0;
+            double rate = total > 0
+                    ? BigDecimal.valueOf(controlled)
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(BigDecimal.valueOf(total), 1, RoundingMode.HALF_UP)
+                            .doubleValue()
+                    : 0.0;
             result.add(new TrendItem(monthStart.format(fmt), rate));
         }
         return result;
@@ -336,7 +344,11 @@ public class StatsServiceImpl implements StatsService {
             long totalWithPlan = patientCountByDoctor.getOrDefault(doc.getId(), 0L);
             long completed = Math.min(completedByDoctor.getOrDefault(doc.getId(), 0L), totalWithPlan);
             String rate = totalWithPlan > 0
-                    ? Math.round(completed * 10000.0 / totalWithPlan) / 100.0 + "%" : "-";
+                    ? BigDecimal.valueOf(completed)
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(BigDecimal.valueOf(totalWithPlan), 1, RoundingMode.HALF_UP)
+                            + "%"
+                    : "-";
             long highRisk = Math.min(highRiskByDoctor.getOrDefault(doc.getId(), 0L), totalWithPlan);
             return new DoctorStats(doc.getId(), doc.getRealName(), totalWithPlan, rate, highRisk);
         }).collect(Collectors.toList());

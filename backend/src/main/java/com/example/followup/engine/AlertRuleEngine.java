@@ -5,14 +5,17 @@ import com.example.followup.entity.Alert;
 import com.example.followup.entity.AlertRule;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.Patient;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -63,33 +66,40 @@ public class AlertRuleEngine {
     }
 
     private boolean checkIndicator(FollowUp followUp, AlertRule rule) {
-        BigDecimal value = getIndicatorValue(followUp, rule.getIndicator());
-        return value != null && value.compareTo(rule.getThreshold()) >= 0;
+        return getIndicatorValue(followUp, rule.getIndicator())
+                .map(value -> value.compareTo(rule.getThreshold()) >= 0)
+                .orElse(false);
     }
 
     private boolean checkTrend(FollowUp current, FollowUp previous, AlertRule rule) {
-        BigDecimal currentValue = getIndicatorValue(current, rule.getIndicator());
-        BigDecimal previousValue = getIndicatorValue(previous, rule.getIndicator());
-        if (currentValue == null || previousValue == null) return false;
-        BigDecimal delta = parseConditionNumber(rule.getConditionJson(), "delta");
-        if (delta == null) delta = rule.getThreshold();
-        return currentValue.subtract(previousValue).compareTo(delta) >= 0;
+        Optional<BigDecimal> currentValue = getIndicatorValue(current, rule.getIndicator());
+        Optional<BigDecimal> previousValue = getIndicatorValue(previous, rule.getIndicator());
+        if (currentValue.isEmpty() || previousValue.isEmpty()) {
+            return false;
+        }
+        BigDecimal delta = parseConditionNumber(rule.getConditionJson(), "delta")
+                .orElse(rule.getThreshold());
+        return currentValue.get().subtract(previousValue.get()).compareTo(delta) >= 0;
     }
 
     private boolean checkComorbidity(Patient patient, AlertRule rule) {
-        JsonNode node = parseCondition(rule.getConditionJson());
-        if (node == null || !node.has("diseaseTypes")) return false;
+        Optional<JsonNode> node = parseCondition(rule.getConditionJson());
+        if (node.isEmpty() || !node.get().has("diseaseTypes")) {
+            return false;
+        }
         Set<String> expected = new HashSet<>();
-        node.get("diseaseTypes").forEach(item -> expected.add(item.asText()));
+        node.get().get("diseaseTypes").forEach(item -> expected.add(item.asText()));
         return expected.contains(patient.getDiseaseType());
     }
 
     private boolean checkMedication(FollowUp followUp, AlertRule rule) {
-        JsonNode node = parseCondition(rule.getConditionJson());
-        if (node == null || !node.has("adherenceValues")) return false;
+        Optional<JsonNode> node = parseCondition(rule.getConditionJson());
+        if (node.isEmpty() || !node.get().has("adherenceValues")) {
+            return false;
+        }
         String adherence = followUp.getMedicationAdherence();
         if (adherence == null) return false;
-        for (JsonNode item : node.get("adherenceValues")) {
+        for (JsonNode item : node.get().get("adherenceValues")) {
             if (item.asText().equals(adherence)) return true;
         }
         return false;
@@ -113,40 +123,47 @@ public class AlertRuleEngine {
 
     private String buildReason(AlertRule rule, FollowUp current) {
         if (DomainConstants.ALERT_RULE_TYPE_THRESHOLD.equals(rule.getRuleType())) {
-            return "连续2次" + rule.getRuleName() + "：最近值" + getIndicatorValue(current, rule.getIndicator());
+            String latestValue = getIndicatorValue(current, rule.getIndicator())
+                    .map(String::valueOf)
+                    .orElse("-");
+            return "连续2次" + rule.getRuleName() + "：最近值" + latestValue;
         }
         return rule.getRuleName();
     }
 
-    private JsonNode parseCondition(String conditionJson) {
-        if (conditionJson == null || conditionJson.isBlank()) return null;
+    private Optional<JsonNode> parseCondition(String conditionJson) {
+        if (conditionJson == null || conditionJson.isBlank()) {
+            return Optional.empty();
+        }
         try {
-            return objectMapper.readTree(conditionJson);
-        } catch (Exception e) {
-            return null;
+            return Optional.ofNullable(objectMapper.readTree(conditionJson));
+        } catch (JsonProcessingException e) {
+            return Optional.empty();
         }
     }
 
-    private BigDecimal parseConditionNumber(String conditionJson, String field) {
-        JsonNode node = parseCondition(conditionJson);
-        if (node != null && node.has(field)) {
-            return node.get(field).decimalValue();
-        }
-        return null;
+    private Optional<BigDecimal> parseConditionNumber(String conditionJson, String field) {
+        return parseCondition(conditionJson)
+                .filter(node -> node.has(field))
+                .map(node -> node.get(field).decimalValue());
     }
 
-    private BigDecimal getIndicatorValue(FollowUp followUp, String indicator) {
+    private Optional<BigDecimal> getIndicatorValue(FollowUp followUp, String indicator) {
         switch (indicator) {
             case "systolic_bp":
-                return followUp.getSystolicBp() != null ? BigDecimal.valueOf(followUp.getSystolicBp()) : null;
+                return followUp.getSystolicBp() == null
+                        ? Optional.empty()
+                        : Optional.of(BigDecimal.valueOf(followUp.getSystolicBp()));
             case "diastolic_bp":
-                return followUp.getDiastolicBp() != null ? BigDecimal.valueOf(followUp.getDiastolicBp()) : null;
+                return followUp.getDiastolicBp() == null
+                        ? Optional.empty()
+                        : Optional.of(BigDecimal.valueOf(followUp.getDiastolicBp()));
             case "fasting_glucose":
-                return followUp.getFastingGlucose();
+                return Optional.ofNullable(followUp.getFastingGlucose());
             case "postprandial_glucose":
-                return followUp.getPostprandialGlucose();
+                return Optional.ofNullable(followUp.getPostprandialGlucose());
             default:
-                return null;
+                return Optional.empty();
         }
     }
 }

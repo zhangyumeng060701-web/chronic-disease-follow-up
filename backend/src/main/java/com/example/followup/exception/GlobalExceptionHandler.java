@@ -1,7 +1,9 @@
 package com.example.followup.exception;
 
 import com.example.followup.dto.response.Result;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result<Void> handleUnknown(Exception e) {
-        log.error("未知错误", e);
+        log.error("Unknown error", e);
         return Result.error(ErrorCode.INTERNAL_ERROR.getHttpStatus(), ErrorCode.INTERNAL_ERROR.getDefaultMessage());
     }
 }

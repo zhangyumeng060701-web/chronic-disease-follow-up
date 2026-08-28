@@ -1,12 +1,13 @@
 package com.example.followup.dto.response;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class PageResponse<T> {
+public class PageResponse<T extends Object> {
 
     private List<T> records;
     private long total;

@@ -1,11 +1,13 @@
 package com.example.followup.dto.request;
 
 import lombok.Data;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.time.LocalDate;
 
 @Data
 public class FollowUpQuery {

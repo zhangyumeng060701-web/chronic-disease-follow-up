@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.followup.entity.Patient;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.util.SensitiveDataCipher;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,6 +20,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -46,10 +50,8 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
                 .eq(Patient::getStatus, 1));
         Map<String, List<Patient>> groups = new LinkedHashMap<>();
         for (Patient patient : patients) {
-            String key = patientKey(patient);
-            if (key != null) {
-                groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(patient);
-            }
+            patientKey(patient).ifPresent(key ->
+                    groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(patient));
         }
 
         int mergedGroups = 0;
@@ -66,33 +68,33 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
                             keep.getId(), duplicateId);
                 }
                 patientMapper.deleteById(duplicateId);
-                log.info("合并重复患者：{} -> {}", duplicateId, keep.getId());
+                log.info("Merged duplicate patient: {} -> {}", duplicateId, keep.getId());
             }
             mergedGroups++;
         }
 
         addUniqueIndex("uk_patient_phone", "phone");
         addUniqueIndex("uk_patient_id_card", "id_card");
-        log.info("患者去重完成：合并 {} 组，当前患者 {} 条",
+        log.info("Patient deduplication finished: {} group(s) merged, {} patient(s) remaining",
                 mergedGroups, patientMapper.selectCount(new LambdaQueryWrapper<>()));
     }
 
-    private String patientKey(Patient patient) {
+    private Optional<String> patientKey(Patient patient) {
         String phone = sensitiveDataCipher.decrypt(patient.getPhone());
         String idCard = sensitiveDataCipher.decrypt(patient.getIdCard());
         String phonePart = StringUtils.hasText(phone) ? phone : "";
         String idCardPart = StringUtils.hasText(idCard) ? idCard : "";
         if (!StringUtils.hasText(phonePart) && !StringUtils.hasText(idCardPart)) {
-            return null;
+            return Optional.empty();
         }
-        return phonePart + "|" + idCardPart;
+        return Optional.of(phonePart + "|" + idCardPart);
     }
 
     private void addUniqueIndex(String indexName, String column) {
         try {
             jdbcTemplate.execute("ALTER TABLE t_patient ADD UNIQUE KEY " + indexName + " (" + column + ")");
-        } catch (Exception ignored) {
-            log.info("唯一索引 {} 已存在或无需创建", indexName);
+        } catch (DataAccessException ignored) {
+            log.info("Unique index {} already exists or is not required", indexName);
         }
     }
 }

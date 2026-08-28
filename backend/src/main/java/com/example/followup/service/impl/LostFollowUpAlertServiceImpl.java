@@ -7,7 +7,9 @@ import com.example.followup.entity.FollowUp;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.service.LostFollowUpAlertService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

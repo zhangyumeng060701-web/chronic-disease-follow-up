@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.followup.entity.Patient;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.util.SensitiveDataCipher;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -25,7 +27,7 @@ public class LegacySensitiveDataMigration implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         if (!sensitiveDataCipher.isConfigured()) {
-            log.info("DATA_ENCRYPTION_KEY 未配置，跳过历史明文加密迁移");
+            log.info("DATA_ENCRYPTION_KEY is not configured, skip plaintext migration");
             return;
         }
 
@@ -47,6 +49,6 @@ public class LegacySensitiveDataMigration implements ApplicationRunner {
                 migrated++;
             }
         }
-        log.info("历史明文敏感字段迁移完成，共迁移患者 {}", migrated);
+        log.info("Sensitive field migration completed, migrated {} patient(s)", migrated);
     }
 }

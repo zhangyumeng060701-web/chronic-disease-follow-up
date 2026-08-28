@@ -1,16 +1,17 @@
 package com.example.followup.aop;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.example.followup.annotation.OperationLog;
 import com.example.followup.controller.FollowUpController;
 import com.example.followup.controller.PatientController;
 import com.example.followup.controller.UserController;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class OperationLogAnnotationTest {
 

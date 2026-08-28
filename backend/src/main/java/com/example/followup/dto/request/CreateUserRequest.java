@@ -1,6 +1,7 @@
 package com.example.followup.dto.request;
 
 import lombok.Data;
+
 import javax.validation.constraints.NotBlank;
 
 @Data

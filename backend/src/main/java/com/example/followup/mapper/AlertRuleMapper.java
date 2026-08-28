@@ -2,8 +2,10 @@ package com.example.followup.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.followup.entity.AlertRule;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
 import java.util.List;
 
 @Mapper

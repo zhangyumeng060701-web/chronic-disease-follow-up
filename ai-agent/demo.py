@@ -1,12 +1,16 @@
-﻿"""
+"""
 CodeArts 智能体最小 Demo
 输入：一句自然语言需求
 输出：CodeArts Snap 生成的代码片段
 运行：python demo.py
 """
-import requests
 import json
+import logging
 import os
+
+import requests
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # ===== 配置（替换为你的实际值）=====
 API_KEY = os.environ.get("CODEARTS_API_KEY", "你的API Key")
@@ -19,14 +23,14 @@ headers = {
     "X-Auth-Token": API_KEY
 }
 
-requirement = """
+REQUIREMENT = """
 在 Spring Boot 项目中新增一个 GET 接口 /api/patients，
 支持分页查询患者列表，参数有 page、size、name（模糊查询），
 返回 {code, data: {records, total}, message} 格式。
 """
 
 payload = {
-    "prompt": requirement,
+    "prompt": REQUIREMENT,
     "language": "java",
     "max_tokens": 1000
 }
@@ -35,10 +39,10 @@ payload = {
 try:
     response = requests.post(ENDPOINT, headers=headers, json=payload, timeout=30)
     result = response.json()
-    print("=== 返回的代码 ===")
-    print(result.get("generated_code", "无返回内容"))
-    print("\n=== 完整响应 ===")
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    logging.info("=== 返回的代码 ===")
+    logging.info(result.get("generated_code", "No content returned"))
+    logging.info("\n=== 完整响应 ===")
+    logging.info(json.dumps(result, indent=2, ensure_ascii=False))
 except Exception as e:
-    print(f"调用失败: {e}")
-    print("请确认 API_KEY 和 ENDPOINT 配置正确")
+    logging.error("Invocation failed: %s", e)
+    logging.error("Please check API_KEY and ENDPOINT configuration")

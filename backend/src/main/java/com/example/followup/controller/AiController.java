@@ -1,7 +1,9 @@
 package com.example.followup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -51,7 +54,7 @@ public class AiController {
         }
 
         try {
-            log.info("开始拉起真实 AI 链路，需求内容: {}", requirement);
+            log.info("Starting real AI invocation, requirement: {}", requirement);
             File scriptFile = new File("/root/ai-decompose.py");
             if (!scriptFile.exists()) {
                 scriptFile = new File("../ai-agent/scripts/decompose.py");
@@ -83,7 +86,7 @@ public class AiController {
                     .lines()
                     .collect(Collectors.joining("\n"))
                     .trim();
-            log.info("AI 脚本返回原始数据: {}", pythonOutput);
+            log.info("AI script returned raw data: {}", pythonOutput);
 
             if (process.exitValue() != 0 || !pythonOutput.startsWith("{")) {
                 return Map.of("code", 500, "message", "AI 引擎执行异常", "detail", pythonOutput);
@@ -92,8 +95,9 @@ public class AiController {
             Object jsonData = objectMapper.readValue(pythonOutput, Object.class);
             jsonData = normalizeKeys(jsonData);
             return Map.of("code", 200, "message", "success", "data", jsonData);
-        } catch (Exception e) {
-            log.error("后端处理 AI 请求失败", e);
+        } catch (IOException | InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Backend failed to process AI request", e);
             return Map.of("code", 500, "message", "后端解析异常: " + e.getMessage());
         }
     }

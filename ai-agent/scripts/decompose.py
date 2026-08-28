@@ -121,4 +121,4 @@ def call_agent_arts(requirement):
 
 if __name__ == "__main__":
     requirement = sys.argv[1] if len(sys.argv) > 1 else "测试需求"
-    print(json.dumps(call_agent_arts(requirement), ensure_ascii=False))
+    sys.stdout.write(json.dumps(call_agent_arts(requirement), ensure_ascii=False) + "\n")

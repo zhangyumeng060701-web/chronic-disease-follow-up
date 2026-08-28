@@ -8,7 +8,9 @@ import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.OperationLog;
 import com.example.followup.mapper.OperationLogMapper;
 import com.example.followup.service.OperationLogService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -59,10 +61,11 @@ public class OperationLogServiceImpl implements OperationLogService {
     }
 
     private String currentIp() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
+        Object attributesObject = RequestContextHolder.getRequestAttributes();
+        if (!(attributesObject instanceof ServletRequestAttributes)) {
             return "unknown";
         }
+        ServletRequestAttributes attributes = (ServletRequestAttributes) attributesObject;
         HttpServletRequest request = attributes.getRequest();
         String forwarded = request.getHeader("X-Forwarded-For");
         if (StringUtils.hasText(forwarded)) {

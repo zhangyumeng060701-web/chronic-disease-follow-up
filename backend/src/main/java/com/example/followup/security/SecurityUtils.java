@@ -2,6 +2,7 @@ package com.example.followup.security;
 
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

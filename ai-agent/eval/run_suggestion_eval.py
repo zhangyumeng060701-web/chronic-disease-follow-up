@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import json
+import logging
 import pathlib
 import sys
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -93,9 +96,10 @@ def main():
         if problems:
             failures.append({"id": case["id"], "problems": problems})
 
-    print(f"AI建议评测：{len(cases)} 条，通过 {len(cases) - len(failures)} 条，失败 {len(failures)} 条")
+    logging.info("AI建议评测：%s 条，通过 %s 条，失败 %s 条",
+                 len(cases), len(cases) - len(failures), len(failures))
     for failure in failures:
-        print(f"case {failure['id']}: {failure['problems']}")
+        logging.info("case %s: %s", failure["id"], failure["problems"])
     return 1 if failures else 0
 
 

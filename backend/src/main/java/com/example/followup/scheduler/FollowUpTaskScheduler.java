@@ -5,7 +5,9 @@ import com.example.followup.constant.DomainConstants;
 import com.example.followup.entity.FollowUpPlan;
 import com.example.followup.mapper.FollowUpPlanMapper;
 import com.example.followup.service.FollowUpTaskService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

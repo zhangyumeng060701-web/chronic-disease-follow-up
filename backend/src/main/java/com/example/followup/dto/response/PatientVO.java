@@ -2,9 +2,9 @@ package com.example.followup.dto.response;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
 @Data
 public class PatientVO {

@@ -1,23 +1,5 @@
 package com.example.followup.controller;
 
-import com.example.followup.dto.request.PatientQuery;
-import com.example.followup.dto.request.PatientSaveRequest;
-import com.example.followup.dto.request.PatientUpdateRequest;
-import com.example.followup.dto.response.PageResponse;
-import com.example.followup.dto.response.PatientVO;
-import com.example.followup.service.PatientService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -29,6 +11,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.followup.dto.request.PatientQuery;
+import com.example.followup.dto.request.PatientSaveRequest;
+import com.example.followup.dto.request.PatientUpdateRequest;
+import com.example.followup.dto.response.PageResponse;
+import com.example.followup.dto.response.PatientVO;
+import com.example.followup.service.PatientService;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class PatientControllerTest {

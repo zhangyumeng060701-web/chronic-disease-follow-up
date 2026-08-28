@@ -12,8 +12,10 @@ import com.example.followup.mapper.FollowUpSuggestionMapper;
 import com.example.followup.mapper.FollowUpTaskMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.security.SecurityUtils;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

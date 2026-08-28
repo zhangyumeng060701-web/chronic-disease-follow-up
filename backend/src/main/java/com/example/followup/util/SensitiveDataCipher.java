@@ -4,14 +4,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 @Component
 public class SensitiveDataCipher {
@@ -41,7 +43,7 @@ public class SensitiveDataCipher {
             System.arraycopy(iv, 0, payload, 0, iv.length);
             System.arraycopy(cipherText, 0, payload, iv.length, cipherText.length);
             return PREFIX + Base64.getEncoder().encodeToString(payload);
-        } catch (Exception e) {
+        } catch (GeneralSecurityException | IllegalArgumentException e) {
             throw new IllegalStateException("敏感字段加密失败", e);
         }
     }
@@ -60,12 +62,12 @@ public class SensitiveDataCipher {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.DECRYPT_MODE, buildKey(), new GCMParameterSpec(TAG_LENGTH_BITS, iv));
             return new String(cipher.doFinal(cipherText), StandardCharsets.UTF_8);
-        } catch (Exception e) {
+        } catch (GeneralSecurityException | IllegalArgumentException e) {
             return encryptedText;
         }
     }
 
-    private SecretKeySpec buildKey() throws Exception {
+    private SecretKeySpec buildKey() throws GeneralSecurityException {
         byte[] digest = MessageDigest.getInstance("SHA-256")
                 .digest(encryptionKey.getBytes(StandardCharsets.UTF_8));
         return new SecretKeySpec(digest, "AES");

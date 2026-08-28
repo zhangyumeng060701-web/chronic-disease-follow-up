@@ -1,7 +1,11 @@
 package com.example.followup.service;
 
-import com.example.followup.entity.FollowUp;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import com.example.followup.engine.AlertRuleEngine;
+import com.example.followup.entity.FollowUp;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
@@ -9,6 +13,7 @@ import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.security.CurrentUser;
 import com.example.followup.service.impl.FollowUpServiceImpl;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +26,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FollowUpServiceAccessControlTest {

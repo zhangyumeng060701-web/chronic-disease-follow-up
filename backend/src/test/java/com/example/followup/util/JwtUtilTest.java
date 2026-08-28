@@ -1,15 +1,16 @@
 package com.example.followup.util;
 
-import io.jsonwebtoken.Claims;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.jsonwebtoken.Claims;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class JwtUtilTest {
 
@@ -32,7 +33,9 @@ class JwtUtilTest {
         Claims claims = jwtUtil.parseToken(token);
         assertEquals("doctor", claims.getSubject());
         assertEquals("DOCTOR", claims.get("role"));
-        assertEquals(7L, ((Number) claims.get("userId")).longValue());
+        Object userId = claims.get("userId");
+        assertTrue(userId instanceof Number);
+        assertEquals(7L, ((Number) userId).longValue());
     }
 
     @Test

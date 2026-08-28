@@ -5,7 +5,9 @@ import com.example.followup.entity.Patient;
 import com.example.followup.entity.SysUser;
 import com.example.followup.mapper.PatientMapper;
 import com.example.followup.mapper.SysUserMapper;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -42,7 +44,7 @@ public class DataInitializer implements ApplicationRunner {
         user.setPhone("");
         user.setStatus(1);
         sysUserMapper.insert(user);
-        log.info("初始化默认用户: {}", username);
+        log.info("Initialized default user: {}", username);
     }
 
     private void createDefaultPatientIfMissing() {
@@ -63,6 +65,6 @@ public class DataInitializer implements ApplicationRunner {
         patient.setDoctorId(doctorId);
         patient.setStatus(1);
         patientMapper.insert(patient);
-        log.info("初始化默认患者: 王小明");
+        log.info("Initialized default patient: {}", patient.getName());
     }
 }

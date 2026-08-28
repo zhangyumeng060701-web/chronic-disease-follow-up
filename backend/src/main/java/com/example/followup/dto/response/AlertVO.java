@@ -1,6 +1,7 @@
 package com.example.followup.dto.response;
 
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data

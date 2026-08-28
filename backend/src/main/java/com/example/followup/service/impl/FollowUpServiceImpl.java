@@ -17,12 +17,13 @@ import com.example.followup.mapper.AlertMapper;
 import com.example.followup.mapper.AlertRuleMapper;
 import com.example.followup.mapper.FollowUpMapper;
 import com.example.followup.mapper.PatientMapper;
-import com.example.followup.mapper.SysUserMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.FollowUpService;
 import com.example.followup.util.DesensitizationUtil;
 import com.example.followup.util.VoMappers;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -91,7 +93,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         }).collect(Collectors.toList());
 
         log.info("listFollowUps userId={} total={} cost={}ms",
-                currentUserIdSafely(), page.getTotal(), System.currentTimeMillis() - start);
+                currentUserIdSafely().orElse(null), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
@@ -172,11 +174,11 @@ public class FollowUpServiceImpl implements FollowUpService {
         }
     }
 
-    private Long currentUserIdSafely() {
+    private Optional<Long> currentUserIdSafely() {
         try {
-            return SecurityUtils.currentUser().getUserId();
-        } catch (Exception e) {
-            return null;
+            return Optional.ofNullable(SecurityUtils.currentUser().getUserId());
+        } catch (BusinessException e) {
+            return Optional.empty();
         }
     }
 }

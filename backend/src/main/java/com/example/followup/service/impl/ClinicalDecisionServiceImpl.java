@@ -2,12 +2,10 @@ package com.example.followup.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.followup.constant.DomainConstants;
 import com.example.followup.dto.request.AISuggestionRequest;
 import com.example.followup.dto.request.FollowUpInput;
 import com.example.followup.dto.response.PageResponse;
-import com.example.followup.dto.response.PageResponseUtil;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.FollowUpPlan;
@@ -26,7 +24,9 @@ import com.example.followup.mapper.PatientRiskAssessmentMapper;
 import com.example.followup.mapper.PatientVitalMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.ClinicalDecisionService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

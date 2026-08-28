@@ -5,17 +5,17 @@ import com.example.followup.constant.DomainConstants;
 import com.example.followup.dto.request.PatientFollowUpRequest;
 import com.example.followup.dto.request.QuestionnaireSubmitRequest;
 import com.example.followup.dto.request.VitalReportRequest;
-import com.example.followup.dto.response.FollowUpVO;
 import com.example.followup.dto.response.FollowUpPlanVO;
+import com.example.followup.dto.response.FollowUpVO;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
 import com.example.followup.entity.FollowUpPlan;
 import com.example.followup.entity.Message;
 import com.example.followup.entity.Patient;
+import com.example.followup.entity.PatientRiskAssessment;
 import com.example.followup.entity.PatientVital;
 import com.example.followup.entity.Questionnaire;
 import com.example.followup.entity.QuestionnaireSubmission;
-import com.example.followup.entity.PatientRiskAssessment;
 import com.example.followup.exception.BusinessException;
 import com.example.followup.exception.ErrorCode;
 import com.example.followup.mapper.AlertMapper;
@@ -29,8 +29,11 @@ import com.example.followup.mapper.QuestionnaireSubmissionMapper;
 import com.example.followup.security.SecurityUtils;
 import com.example.followup.service.PatientPortalService;
 import com.example.followup.util.VoMappers;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +41,10 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -140,7 +144,7 @@ public class PatientPortalServiceImpl implements PatientPortalService {
             submission.setPatientId(SecurityUtils.patientId());
             submission.setAnswerJson(objectMapper.writeValueAsString(request.getAnswers()));
             submissionMapper.insert(submission);
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "问卷答案格式不正确");
         }
     }
@@ -237,10 +241,11 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     private void generateAlertFromVital(Long patientId, PatientVital vital) {
-        String level = resolveVitalAlertLevel(vital.getMetricType(), vital.getMetricValue());
-        if (level == null) {
+        Optional<String> levelOpt = resolveVitalAlertLevel(vital.getMetricType(), vital.getMetricValue());
+        if (levelOpt.isEmpty()) {
             return;
         }
+        String level = levelOpt.get();
         Alert alert = new Alert();
         alert.setPatientId(patientId);
         alert.setAlertType(DomainConstants.ALERT_TYPE_HIGH_RISK);
@@ -258,29 +263,29 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         alertMapper.insert(alert);
     }
 
-    private String resolveVitalAlertLevel(String metricType, BigDecimal value) {
+    private Optional<String> resolveVitalAlertLevel(String metricType, BigDecimal value) {
         if (value == null) {
-            return null;
+            return Optional.empty();
         }
         switch (metricType) {
             case DomainConstants.METRIC_SYSTOLIC_BP:
-                if (value.compareTo(new BigDecimal("180")) >= 0) return DomainConstants.ALERT_LEVEL_RED;
-                if (value.compareTo(new BigDecimal("140")) >= 0) return DomainConstants.ALERT_LEVEL_YELLOW;
-                return null;
+                if (value.compareTo(new BigDecimal("180")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                if (value.compareTo(new BigDecimal("140")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                return Optional.empty();
             case DomainConstants.METRIC_DIASTOLIC_BP:
-                if (value.compareTo(new BigDecimal("110")) >= 0) return DomainConstants.ALERT_LEVEL_RED;
-                if (value.compareTo(new BigDecimal("90")) >= 0) return DomainConstants.ALERT_LEVEL_YELLOW;
-                return null;
+                if (value.compareTo(new BigDecimal("110")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                if (value.compareTo(new BigDecimal("90")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                return Optional.empty();
             case DomainConstants.METRIC_FASTING_GLUCOSE:
-                if (value.compareTo(new BigDecimal("11.1")) >= 0) return DomainConstants.ALERT_LEVEL_RED;
-                if (value.compareTo(new BigDecimal("7.0")) >= 0) return DomainConstants.ALERT_LEVEL_YELLOW;
-                return null;
+                if (value.compareTo(new BigDecimal("11.1")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                if (value.compareTo(new BigDecimal("7.0")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                return Optional.empty();
             case DomainConstants.METRIC_POSTPRANDIAL_GLUCOSE:
-                if (value.compareTo(new BigDecimal("16.7")) >= 0) return DomainConstants.ALERT_LEVEL_RED;
-                if (value.compareTo(new BigDecimal("11.1")) >= 0) return DomainConstants.ALERT_LEVEL_YELLOW;
-                return null;
+                if (value.compareTo(new BigDecimal("16.7")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                if (value.compareTo(new BigDecimal("11.1")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                return Optional.empty();
             default:
-                return null;
+                return Optional.empty();
         }
     }
 

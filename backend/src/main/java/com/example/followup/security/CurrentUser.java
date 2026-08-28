@@ -1,6 +1,7 @@
 package com.example.followup.security;
 
 import com.example.followup.constant.DomainConstants;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

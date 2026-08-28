@@ -2,8 +2,9 @@ package com.example.followup.dto.request;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class AISuggestionRequest {

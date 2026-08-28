@@ -2,6 +2,7 @@ package com.example.followup.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.followup.entity.Alert;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
