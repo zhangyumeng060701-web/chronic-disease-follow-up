@@ -47,7 +47,9 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
         Map<String, List<Patient>> groups = new LinkedHashMap<>();
         for (Patient patient : patients) {
             String key = patientKey(patient);
-            groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(patient);
+            if (key != null) {
+                groups.computeIfAbsent(key, ignored -> new ArrayList<>()).add(patient);
+            }
         }
 
         int mergedGroups = 0;
@@ -80,6 +82,9 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
         String idCard = sensitiveDataCipher.decrypt(patient.getIdCard());
         String phonePart = StringUtils.hasText(phone) ? phone : "";
         String idCardPart = StringUtils.hasText(idCard) ? idCard : "";
+        if (!StringUtils.hasText(phonePart) && !StringUtils.hasText(idCardPart)) {
+            return null;
+        }
         return phonePart + "|" + idCardPart;
     }
 

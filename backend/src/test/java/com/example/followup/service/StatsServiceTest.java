@@ -3,6 +3,7 @@ package com.example.followup.service;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.example.followup.dto.response.DoctorStats;
 import com.example.followup.dto.response.StatsOverview;
 import com.example.followup.entity.Alert;
 import com.example.followup.entity.FollowUp;
@@ -31,6 +32,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,28 +85,36 @@ class StatsServiceTest {
     }
 
     @Test
-    @DisplayName("管理员总览统计正确")
+    @DisplayName("总览统计按去重患者计算随访完成率")
     void overviewCalculatesCompletionRate() {
-        when(patientMapper.selectCount(any())).thenReturn(4L);
-        when(followUpMapper.selectCount(any())).thenReturn(3L);
+        Patient patient1 = new Patient();
+        patient1.setId(1L);
+        patient1.setStatus(1);
+        Patient patient2 = new Patient();
+        patient2.setId(2L);
+        patient2.setStatus(1);
+
+        FollowUp first = new FollowUp();
+        first.setPatientId(1L);
+        first.setFollowUpDate(LocalDate.now().withDayOfMonth(1));
+        FollowUp second = new FollowUp();
+        second.setPatientId(1L);
+        second.setFollowUpDate(LocalDate.now().withDayOfMonth(2));
+
+        when(patientMapper.selectCount(any())).thenReturn(2L);
+        when(patientMapper.selectList(any())).thenReturn(List.of(patient1, patient2));
+        when(followUpMapper.selectList(any())).thenReturn(List.of(first, second));
         when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
-        Alert redAlert = new Alert();
-        redAlert.setPatientId(1L);
-        redAlert.setAlertLevel("RED");
-        redAlert.setIsResolved(0);
-        Alert lostAlert = new Alert();
-        lostAlert.setPatientId(2L);
-        lostAlert.setAlertType("LOST_FOLLOW_UP");
-        lostAlert.setIsResolved(0);
-        when(alertMapper.selectList(any())).thenReturn(List.of(redAlert, redAlert), List.of(lostAlert));
+        when(alertMapper.selectList(any())).thenReturn(List.of());
 
         StatsOverview result = statsService.getOverview();
 
-        assertEquals(4L, result.getTotalPatients());
-        assertEquals(3, result.getMonthlyCompleted());
-        assertEquals("75.0%", result.getCompletionRate());
-        assertEquals(1L, result.getHighRiskCount());
-        assertEquals(1L, result.getLostFollowUpCount());
+        assertEquals(2L, result.getTotalPatients());
+        assertEquals(1, result.getMonthlyCompleted());
+        assertEquals(2, result.getMonthlyExpected());
+        assertEquals("50.0%", result.getCompletionRate());
+        assertEquals(0L, result.getHighRiskCount());
+        assertEquals(0L, result.getLostFollowUpCount());
     }
 
     @Test
@@ -117,14 +127,10 @@ class StatsServiceTest {
         patient.setStatus(1);
 
         when(patientMapper.selectCount(any())).thenReturn(2L);
-        when(followUpMapper.selectCount(any())).thenReturn(1L);
+        when(patientMapper.selectList(any())).thenReturn(List.of(patient));
+        when(followUpMapper.selectList(any())).thenReturn(List.of());
         when(followUpTaskMapper.selectCount(any())).thenReturn(0L);
-        when(patientMapper.selectList(any())).thenReturn(java.util.List.of(patient));
-        Alert alert = new Alert();
-        alert.setPatientId(1L);
-        alert.setAlertLevel("RED");
-        alert.setIsResolved(0);
-        when(alertMapper.selectList(any())).thenReturn(List.of(alert));
+        when(alertMapper.selectList(any())).thenReturn(List.of());
 
         StatsOverview result = statsService.getOverview();
 
@@ -134,6 +140,46 @@ class StatsServiceTest {
         verify(patientMapper, atLeast(1)).selectCount(captor.capture());
         assertTrue(captor.getAllValues().stream()
                 .anyMatch(wrapper -> wrapper.getSqlSegment().contains("doctor_id")));
+
+        ArgumentCaptor<Wrapper<FollowUpTask>> taskCaptor = ArgumentCaptor.forClass(Wrapper.class);
+        verify(followUpTaskMapper, atLeast(1)).selectCount(taskCaptor.capture());
+        assertTrue(taskCaptor.getAllValues().stream()
+                .anyMatch(wrapper -> wrapper.getSqlSegment().contains("owner_id")));
+    }
+
+    @Test
+    @DisplayName("医生对比高危患者数不超过在管患者数")
+    void doctorComparisonCapsHighRiskToManagedPatients() {
+        SysUser doctor = new SysUser();
+        doctor.setId(2L);
+        doctor.setRealName("李医生");
+        doctor.setRole("DOCTOR");
+        doctor.setStatus(1);
+
+        Patient patient = new Patient();
+        patient.setId(1L);
+        patient.setDoctorId(2L);
+        patient.setStatus(1);
+
+        Alert firstAlert = new Alert();
+        firstAlert.setPatientId(1L);
+        firstAlert.setAlertLevel("RED");
+        firstAlert.setIsResolved(0);
+        Alert secondAlert = new Alert();
+        secondAlert.setPatientId(1L);
+        secondAlert.setAlertLevel("RED");
+        secondAlert.setIsResolved(0);
+
+        when(sysUserMapper.selectList(any())).thenReturn(List.of(doctor));
+        when(patientMapper.selectList(any())).thenReturn(List.of(patient));
+        when(followUpMapper.selectList(any())).thenReturn(List.of());
+        when(alertMapper.selectList(any())).thenReturn(List.of(firstAlert, secondAlert));
+
+        List<DoctorStats> result = statsService.getDoctorComparison();
+
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).getPatientCount());
+        assertEquals(1L, result.get(0).getHighRiskCount());
     }
 
     private void authAsDoctor(Long userId) {

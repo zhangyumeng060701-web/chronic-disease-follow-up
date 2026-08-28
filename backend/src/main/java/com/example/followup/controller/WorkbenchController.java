@@ -46,6 +46,22 @@ public class WorkbenchController {
         boolean admin = SecurityUtils.isAdmin();
         Long currentUserId = admin ? null : SecurityUtils.currentUser().getUserId();
 
+        List<Long> managedPatientIds = currentUserId == null
+                ? List.of()
+                : patientMapper.selectList(new LambdaQueryWrapper<Patient>()
+                        .select(Patient::getId)
+                        .eq(Patient::getStatus, 1)
+                        .eq(Patient::getDoctorId, currentUserId))
+                .stream()
+                .map(Patient::getId)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (currentUserId != null && managedPatientIds.isEmpty()) {
+            return Result.success(emptyWorkbench());
+        }
+
         LambdaQueryWrapper<FollowUpTask> taskWrapper = new LambdaQueryWrapper<>();
         taskWrapper.eq(FollowUpTask::getDueDate, LocalDate.now())
                 .in(FollowUpTask::getStatus,
@@ -61,11 +77,17 @@ public class WorkbenchController {
         alertWrapper.eq(Alert::getIsResolved, 0)
                 .orderByDesc(Alert::getCreateTime)
                 .last("LIMIT 5");
+        if (currentUserId != null) {
+            alertWrapper.in(Alert::getPatientId, managedPatientIds);
+        }
 
         LambdaQueryWrapper<FollowUpSuggestion> suggestionWrapper = new LambdaQueryWrapper<>();
         suggestionWrapper.eq(FollowUpSuggestion::getStatus, DomainConstants.SUGGESTION_STATUS_PENDING)
                 .orderByDesc(FollowUpSuggestion::getCreateTime)
                 .last("LIMIT 5");
+        if (currentUserId != null) {
+            suggestionWrapper.in(FollowUpSuggestion::getPatientId, managedPatientIds);
+        }
 
         List<FollowUpTask> tasks = taskMapper.selectList(taskWrapper);
         List<Alert> alerts = alertMapper.selectList(alertWrapper);
@@ -81,6 +103,14 @@ public class WorkbenchController {
         result.put("pendingAlerts", toAlertItems(alerts, patientNames));
         result.put("pendingSuggestions", toSuggestionItems(suggestions, patientNames));
         return Result.success(result);
+    }
+
+    private Map<String, Object> emptyWorkbench() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("todayTasks", List.of());
+        result.put("pendingAlerts", List.of());
+        result.put("pendingSuggestions", List.of());
+        return result;
     }
 
     private Map<Long, String> loadPatientNames(

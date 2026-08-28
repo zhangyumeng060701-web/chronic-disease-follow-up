@@ -124,7 +124,7 @@ import {
 
 const cards = reactive([
   { title: '管理患者总数', value: '--', unit: '人', tone: 'accent' },
-  { title: '本月随访完成率', value: '--', unit: '%', tone: 'success' },
+  { title: '本月随访完成率', value: '--', unit: '', tone: 'success' },
   { title: '当前高危患者', value: '--', unit: '人', tone: 'danger' },
   { title: '当前失访患者', value: '--', unit: '人', tone: 'warning' },
   { title: '随访计划完成率', value: '--', unit: '', tone: 'accent' },

@@ -25,11 +25,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,27 +54,10 @@ public class StatsServiceImpl implements StatsService {
         boolean admin = SecurityUtils.isAdmin();
         Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
 
-        LambdaQueryWrapper<Patient> patientWrapper = new LambdaQueryWrapper<>();
-        patientWrapper.eq(Patient::getStatus, 1);
-        if (!admin) {
-            patientWrapper.eq(Patient::getDoctorId, currentDoctorId);
-        }
-        Long totalPatients = patientMapper.selectCount(patientWrapper);
-
-        LambdaQueryWrapper<FollowUp> monthlyWrapper = new LambdaQueryWrapper<>();
-        monthlyWrapper.ge(FollowUp::getFollowUpDate, LocalDate.now().withDayOfMonth(1));
-        if (!admin) {
-            monthlyWrapper.eq(FollowUp::getDoctorId, currentDoctorId);
-        }
-        Long monthlyCompleted = followUpMapper.selectCount(monthlyWrapper);
-
-        LambdaQueryWrapper<Patient> patientWithNext = new LambdaQueryWrapper<>();
-        patientWithNext.eq(Patient::getStatus, 1).isNotNull(Patient::getId);
-        if (!admin) {
-            patientWithNext.eq(Patient::getDoctorId, currentDoctorId);
-        }
-        Long totalWithFollowUp = patientMapper.selectCount(patientWithNext);
-        Integer monthlyExpected = totalWithFollowUp != null ? totalWithFollowUp.intValue() : 0;
+        Long totalPatients = patientMapper.selectCount(activePatientWrapper(currentDoctorId));
+        List<Long> activePatientIds = activePatientIds(currentDoctorId);
+        Integer monthlyCompleted = countMonthlyFollowedPatients(activePatientIds);
+        Integer monthlyExpected = totalPatients != null ? totalPatients.intValue() : 0;
 
         String completionRate = "-";
         if (monthlyCompleted != null && monthlyExpected > 0) {
@@ -83,16 +67,14 @@ public class StatsServiceImpl implements StatsService {
             completionRate = rate + "%";
         }
 
-        Long highRiskCount = admin
-                ? countDistinctAlerts(null, DomainConstants.ALERT_LEVEL_RED)
-                : countAlertsForDoctor(currentDoctorId, null, DomainConstants.ALERT_LEVEL_RED);
-        Long lostFollowUpCount = admin
-                ? countDistinctAlerts(DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null)
-                : countAlertsForDoctor(currentDoctorId, DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null);
+        Long highRiskCount = countDistinctAlerts(null, DomainConstants.ALERT_LEVEL_RED, activePatientIds);
+        Long lostFollowUpCount = countDistinctAlerts(
+                DomainConstants.ALERT_TYPE_LOST_FOLLOW_UP, null, activePatientIds);
 
-        String planCompletionRate = formatRate(countCompletedTasks(), countTotalTasks());
-        String followUpTaskCompletionRate = formatRate(countMonthCompletedTasks(), countMonthTasks());
-        String avgAlertResponseHours = calculateAvgAlertResponseHours();
+        String planCompletionRate = formatRate(countCompletedTasks(currentDoctorId), countTotalTasks(currentDoctorId));
+        String followUpTaskCompletionRate = formatRate(
+                countMonthCompletedTasks(currentDoctorId), countMonthTasks(currentDoctorId));
+        String avgAlertResponseHours = calculateAvgAlertResponseHours(activePatientIds);
 
         StatsOverview result = new StatsOverview(
                 totalPatients != null ? totalPatients : 0,
@@ -109,28 +91,78 @@ public class StatsServiceImpl implements StatsService {
         return result;
     }
 
-    private Long countTotalTasks() {
-        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<>());
+    private LambdaQueryWrapper<Patient> activePatientWrapper(Long doctorId) {
+        LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Patient::getStatus, 1);
+        if (doctorId != null) {
+            wrapper.eq(Patient::getDoctorId, doctorId);
+        }
+        return wrapper;
     }
 
-    private Long countCompletedTasks() {
-        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
-                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED));
+    private List<Long> activePatientIds(Long doctorId) {
+        return patientMapper.selectList(activePatientWrapper(doctorId).select(Patient::getId))
+                .stream()
+                .map(Patient::getId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
-    private Long countMonthTasks() {
+    private Integer countMonthlyFollowedPatients(List<Long> activePatientIds) {
+        if (activePatientIds.isEmpty()) {
+            return 0;
+        }
+        LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(FollowUp::getPatientId)
+                .in(FollowUp::getPatientId, activePatientIds)
+                .ge(FollowUp::getFollowUpDate, LocalDate.now().withDayOfMonth(1));
+        long count = followUpMapper.selectList(wrapper).stream()
+                .map(FollowUp::getPatientId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .count();
+        return Math.toIntExact(count);
+    }
+
+    private Long countTotalTasks(Long doctorId) {
+        LambdaQueryWrapper<FollowUpTask> wrapper = new LambdaQueryWrapper<>();
+        if (doctorId != null) {
+            wrapper.eq(FollowUpTask::getOwnerId, doctorId);
+        }
+        return followUpTaskMapper.selectCount(wrapper);
+    }
+
+    private Long countCompletedTasks(Long doctorId) {
+        LambdaQueryWrapper<FollowUpTask> wrapper = new LambdaQueryWrapper<FollowUpTask>()
+                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED);
+        if (doctorId != null) {
+            wrapper.eq(FollowUpTask::getOwnerId, doctorId);
+        }
+        return followUpTaskMapper.selectCount(wrapper);
+    }
+
+    private Long countMonthTasks(Long doctorId) {
         LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
-                .between(FollowUpTask::getDueDate, monthStart, monthEnd));
+        LambdaQueryWrapper<FollowUpTask> wrapper = new LambdaQueryWrapper<FollowUpTask>()
+                .between(FollowUpTask::getDueDate, monthStart, monthEnd);
+        if (doctorId != null) {
+            wrapper.eq(FollowUpTask::getOwnerId, doctorId);
+        }
+        return followUpTaskMapper.selectCount(wrapper);
     }
 
-    private Long countMonthCompletedTasks() {
+    private Long countMonthCompletedTasks(Long doctorId) {
         LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        return followUpTaskMapper.selectCount(new LambdaQueryWrapper<FollowUpTask>()
+        LambdaQueryWrapper<FollowUpTask> wrapper = new LambdaQueryWrapper<FollowUpTask>()
                 .between(FollowUpTask::getDueDate, monthStart, monthEnd)
-                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED));
+                .eq(FollowUpTask::getStatus, DomainConstants.TASK_STATUS_COMPLETED);
+        if (doctorId != null) {
+            wrapper.eq(FollowUpTask::getOwnerId, doctorId);
+        }
+        return followUpTaskMapper.selectCount(wrapper);
     }
 
     private String formatRate(long completed, long total) {
@@ -143,8 +175,12 @@ public class StatsServiceImpl implements StatsService {
         return rate + "%";
     }
 
-    private String calculateAvgAlertResponseHours() {
+    private String calculateAvgAlertResponseHours(List<Long> activePatientIds) {
+        if (activePatientIds.isEmpty()) {
+            return "-";
+        }
         List<Alert> resolvedAlerts = alertMapper.selectList(new LambdaQueryWrapper<Alert>()
+                .in(Alert::getPatientId, activePatientIds)
                 .in(Alert::getAlertStatus,
                         DomainConstants.ALERT_STATUS_RESOLVED,
                         DomainConstants.ALERT_STATUS_REFERRED)
@@ -152,15 +188,18 @@ public class StatsServiceImpl implements StatsService {
         if (resolvedAlerts.isEmpty()) {
             return "-";
         }
-        long totalMinutes = resolvedAlerts.stream()
-                .filter(a -> a.getCreateTime() != null)
-                .mapToLong(a -> ChronoUnit.MINUTES.between(a.getCreateTime(), a.getResolveTime()))
-                .filter(minutes -> minutes >= 0)
-                .sum();
-        long count = resolvedAlerts.stream()
-                .filter(a -> a.getCreateTime() != null)
-                .filter(a -> ChronoUnit.MINUTES.between(a.getCreateTime(), a.getResolveTime()) >= 0)
-                .count();
+        long totalMinutes = 0;
+        long count = 0;
+        for (Alert alert : resolvedAlerts) {
+            if (alert.getCreateTime() == null) {
+                continue;
+            }
+            long minutes = ChronoUnit.MINUTES.between(alert.getCreateTime(), alert.getResolveTime());
+            if (minutes >= 0) {
+                totalMinutes += minutes;
+                count++;
+            }
+        }
         if (count == 0) {
             return "-";
         }
@@ -180,9 +219,18 @@ public class StatsServiceImpl implements StatsService {
     private List<TrendItem> getTrend(String type) {
         boolean admin = SecurityUtils.isAdmin();
         Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
+        List<Long> activePatientIds = activePatientIds(currentDoctorId);
         List<TrendItem> result = new ArrayList<>();
         LocalDate now = LocalDate.now();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM");
+
+        if (activePatientIds.isEmpty()) {
+            for (int i = 11; i >= 0; i--) {
+                LocalDate monthStart = now.minusMonths(i).withDayOfMonth(1);
+                result.add(new TrendItem(monthStart.format(fmt), 0.0));
+            }
+            return result;
+        }
 
         for (int i = 11; i >= 0; i--) {
             LocalDate monthStart = now.minusMonths(i).withDayOfMonth(1);
@@ -190,13 +238,12 @@ public class StatsServiceImpl implements StatsService {
 
             LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
             wrapper.between(FollowUp::getFollowUpDate, monthStart, monthEnd)
+                   .in(FollowUp::getPatientId, activePatientIds)
                    .orderByDesc(FollowUp::getFollowUpDate);
-            if (!admin) {
-                wrapper.eq(FollowUp::getDoctorId, currentDoctorId);
-            }
             List<FollowUp> records = followUpMapper.selectList(wrapper);
 
             Map<Long, FollowUp> latestMap = records.stream()
+                    .filter(f -> f.getPatientId() != null)
                     .collect(Collectors.toMap(FollowUp::getPatientId, f -> f, (a, b) -> a));
 
             long total = latestMap.size();
@@ -287,28 +334,22 @@ public class StatsServiceImpl implements StatsService {
 
         List<DoctorStats> result = doctors.stream().map(doc -> {
             long totalWithPlan = patientCountByDoctor.getOrDefault(doc.getId(), 0L);
-            long completed = completedByDoctor.getOrDefault(doc.getId(), 0L);
+            long completed = Math.min(completedByDoctor.getOrDefault(doc.getId(), 0L), totalWithPlan);
             String rate = totalWithPlan > 0
                     ? Math.round(completed * 10000.0 / totalWithPlan) / 100.0 + "%" : "-";
-            long highRisk = highRiskByDoctor.getOrDefault(doc.getId(), 0L);
+            long highRisk = Math.min(highRiskByDoctor.getOrDefault(doc.getId(), 0L), totalWithPlan);
             return new DoctorStats(doc.getId(), doc.getRealName(), totalWithPlan, rate, highRisk);
         }).collect(Collectors.toList());
         log.info("getDoctorComparison size={} cost={}ms", result.size(), System.currentTimeMillis() - start);
         return result;
     }
 
-    private Long countAlertsForDoctor(Long doctorId, String alertType, String alertLevel) {
-        List<Patient> patients = patientMapper.selectList(
-                new LambdaQueryWrapper<Patient>()
-                        .eq(Patient::getDoctorId, doctorId)
-                        .eq(Patient::getStatus, 1)
-        );
-        if (patients.isEmpty()) {
+    private Long countDistinctAlerts(String alertType, String alertLevel, List<Long> activePatientIds) {
+        if (activePatientIds.isEmpty()) {
             return 0L;
         }
-        List<Long> patientIds = patients.stream().map(Patient::getId).collect(Collectors.toList());
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(Alert::getPatientId, patientIds)
+        wrapper.in(Alert::getPatientId, activePatientIds)
                .eq(Alert::getIsResolved, 0);
         if (alertType != null) {
             wrapper.eq(Alert::getAlertType, alertType);
@@ -318,23 +359,7 @@ public class StatsServiceImpl implements StatsService {
         }
         return alertMapper.selectList(wrapper).stream()
                 .map(Alert::getPatientId)
-                .filter(java.util.Objects::nonNull)
-                .distinct()
-                .count();
-    }
-
-    private Long countDistinctAlerts(String alertType, String alertLevel) {
-        LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Alert::getIsResolved, 0);
-        if (alertType != null) {
-            wrapper.eq(Alert::getAlertType, alertType);
-        }
-        if (alertLevel != null) {
-            wrapper.eq(Alert::getAlertLevel, alertLevel);
-        }
-        return alertMapper.selectList(wrapper).stream()
-                .map(Alert::getPatientId)
-                .filter(java.util.Objects::nonNull)
+                .filter(Objects::nonNull)
                 .distinct()
                 .count();
     }
