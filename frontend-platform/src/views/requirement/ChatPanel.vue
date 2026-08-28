@@ -178,7 +178,7 @@ const safeTasks = computed(() => (Array.isArray(result.value?.tasks) ? result.va
 const tasksByType = computed(() => groupTasksByType(safeTasks.value));
 
 onMounted(() => {
-  historyList.value = parseHistory(localStorage.getItem(HISTORY_STORAGE_KEY));
+  historyList.value = parseHistory(sessionStorage.getItem(HISTORY_STORAGE_KEY));
 });
 
 async function handleSubmit() {
@@ -266,14 +266,14 @@ async function handleClearAllHistory() {
     return;
   }
   historyList.value = [];
-  localStorage.removeItem(HISTORY_STORAGE_KEY);
+  sessionStorage.removeItem(HISTORY_STORAGE_KEY);
   handleNewRequirement();
   ElMessage.success('历史需求已清空');
 }
 
 function saveHistory() {
   try {
-    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList.value));
+    sessionStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList.value));
   } catch {
     ElMessage.warning('历史记录暂时无法保存到本地浏览器');
   }

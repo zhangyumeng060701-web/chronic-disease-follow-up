@@ -62,7 +62,7 @@ public class AiController {
             if (!scriptFile.exists()) {
                 scriptFile = new File("/root/chronic-disease-follow-up/ai-agent/scripts/decompose.py");
             }
-            String scriptPath = scriptFile.getAbsolutePath();
+            String scriptPath = resolveScriptPath(scriptFile);
             ProcessBuilder pb = new ProcessBuilder("python3", scriptPath, requirement);
             Map<String, String> env = pb.environment();
             env.put("AGENT_ARTS_API_KEY", agentArtsApiKey);
@@ -100,6 +100,15 @@ public class AiController {
             log.error("Backend failed to process AI request", e);
             return Map.of("code", 500, "message", "后端解析异常: " + e.getMessage());
         }
+    }
+
+    private String resolveScriptPath(File scriptFile) throws IOException {
+        String canonicalPath = scriptFile.getCanonicalPath();
+        if (!canonicalPath.equals("/root/ai-decompose.py")
+                && !canonicalPath.endsWith("/ai-agent/scripts/decompose.py")) {
+            throw new IllegalStateException("Unsafe AI script path: " + canonicalPath);
+        }
+        return canonicalPath;
     }
 
     private Object normalizeKeys(Object value) {

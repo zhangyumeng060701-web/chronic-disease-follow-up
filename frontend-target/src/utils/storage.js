@@ -1,20 +1,20 @@
 const storage = {
   get(key, fallback = '') {
     try {
-      const value = localStorage.getItem(key);
+      const value = sessionStorage.getItem(key);
       return value === null ? fallback : value;
     } catch {
       return fallback;
     }
   },
   set(key, value) {
-    localStorage.setItem(key, value);
+    sessionStorage.setItem(key, value);
   },
   remove(key) {
-    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
   },
   clear() {
-    localStorage.clear();
+    sessionStorage.clear();
   },
 };
 

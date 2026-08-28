@@ -1,10 +1,10 @@
 const AUTH_STORAGE_KEYS = ['token', 'role', 'username', 'realName'];
 
-export function clearAuthSession(storage = localStorage) {
+export function clearAuthSession(storage = sessionStorage) {
   AUTH_STORAGE_KEYS.forEach((key) => storage.removeItem(key));
 }
 
-export function getCurrentUserName(storage = localStorage) {
+export function getCurrentUserName(storage = sessionStorage) {
   return storage.getItem('realName') || storage.getItem('username') || '开发维护人员';
 }
 

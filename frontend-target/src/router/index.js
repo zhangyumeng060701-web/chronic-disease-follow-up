@@ -89,8 +89,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const decision = resolveRoute(to, {
-    token: localStorage.getItem('token'),
-    role: localStorage.getItem('role'),
+    token: sessionStorage.getItem('token'),
+    role: sessionStorage.getItem('role'),
   });
   if (decision === true) {
     next();

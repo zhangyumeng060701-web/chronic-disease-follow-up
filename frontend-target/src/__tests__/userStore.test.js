@@ -22,7 +22,7 @@ describe('user store', () => {
   const storage = createMockStorage();
 
   beforeAll(() => {
-    globalThis.localStorage = storage;
+    globalThis.sessionStorage = storage;
   });
 
   beforeEach(() => {

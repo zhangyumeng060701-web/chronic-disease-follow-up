@@ -222,8 +222,8 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import request from './api/request';
 import { ElMessage } from 'element-plus';
 
-const token = ref(localStorage.getItem('patient_token') || '');
-const patientName = ref(localStorage.getItem('patient_name') || '');
+const token = ref(sessionStorage.getItem('patient_token') || '');
+const patientName = ref(sessionStorage.getItem('patient_name') || '');
 const activeTab = ref('home');
 const loginLoading = ref(false);
 const vitalLoading = ref(false);
@@ -260,8 +260,8 @@ async function handleLogin() {
   loginLoading.value = true;
   try {
     const res = await request.post('/patient/login', loginForm);
-    localStorage.setItem('patient_token', res.data.token);
-    localStorage.setItem('patient_name', res.data.name);
+    sessionStorage.setItem('patient_token', res.data.token);
+    sessionStorage.setItem('patient_name', res.data.name);
     token.value = res.data.token;
     patientName.value = res.data.name;
     activeTab.value = 'home';
@@ -272,8 +272,8 @@ async function handleLogin() {
 }
 
 function handleLogout() {
-  localStorage.removeItem('patient_token');
-  localStorage.removeItem('patient_name');
+  sessionStorage.removeItem('patient_token');
+  sessionStorage.removeItem('patient_name');
   token.value = '';
 }
 

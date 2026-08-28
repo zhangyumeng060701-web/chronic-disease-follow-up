@@ -7,7 +7,7 @@ const request = axios.create({
 });
 
 request.interceptors.request.use((config) => {
-  const token = localStorage.getItem('patient_token');
+  const token = sessionStorage.getItem('patient_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -24,8 +24,8 @@ request.interceptors.response.use(
   },
   (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('patient_token');
-      localStorage.removeItem('patient_name');
+      sessionStorage.removeItem('patient_token');
+      sessionStorage.removeItem('patient_name');
       window.location.reload();
     }
     ElMessage.error(err.response?.data?.message || '网络异常');
