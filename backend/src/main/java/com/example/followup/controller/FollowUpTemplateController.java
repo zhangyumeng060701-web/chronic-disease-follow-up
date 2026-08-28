@@ -37,7 +37,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/follow-up-templates")
 @Api(tags = "随访模板")
 public class FollowUpTemplateController {
-
     @Autowired
     private FollowUpTemplateService templateService;
 

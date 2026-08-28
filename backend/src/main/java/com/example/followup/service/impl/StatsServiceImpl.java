@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class StatsServiceImpl implements StatsService {
-
     @Autowired
     private PatientMapper patientMapper;
     @Autowired

@@ -19,7 +19,6 @@ import java.util.List;
  */
 @Mapper
 public interface FollowUpMapper extends BaseMapper<FollowUp> {
-
     @Select("SELECT DISTINCT f.patient_id FROM t_follow_up f " +
             "JOIN t_patient p ON f.patient_id = p.id " +
             "WHERE p.status = 1 AND f.next_follow_up_date < CURDATE() " +

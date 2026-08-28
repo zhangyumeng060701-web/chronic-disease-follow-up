@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class FollowUpServiceImpl implements FollowUpService {
-
     @Autowired
     private FollowUpMapper followUpMapper;
     @Autowired
@@ -186,7 +185,9 @@ public class FollowUpServiceImpl implements FollowUpService {
                .orderByDesc(FollowUp::getFollowUpDate)
                .last("LIMIT 1");
         FollowUp previous = followUpMapper.selectList(wrapper).stream().findFirst().orElse(null);
-        if (previous == null) return;
+        if (previous == null) {
+            return;
+        }
 
         List<AlertRule> rules = alertRuleMapper.findActiveRules();
         Patient patient = patientMapper.selectById(patientId);

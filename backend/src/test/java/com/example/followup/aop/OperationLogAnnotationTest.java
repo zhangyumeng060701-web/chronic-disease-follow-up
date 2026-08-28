@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 
 class OperationLogAnnotationTest {
-
     @Test
     @DisplayName("随访新增/编辑/删除接口已配置自动日志注解")
     void followUpMethodsAreAnnotated() throws Exception {

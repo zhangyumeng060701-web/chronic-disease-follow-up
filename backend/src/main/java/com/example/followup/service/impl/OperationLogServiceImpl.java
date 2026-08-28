@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Service
 public class OperationLogServiceImpl implements OperationLogService {
-
     @Autowired
     private OperationLogMapper operationLogMapper;
 

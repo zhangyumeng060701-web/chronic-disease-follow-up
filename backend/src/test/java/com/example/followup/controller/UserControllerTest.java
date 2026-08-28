@@ -34,7 +34,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-
     @Mock
     private SysUserService sysUserService;
     @InjectMocks

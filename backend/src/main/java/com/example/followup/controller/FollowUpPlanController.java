@@ -35,7 +35,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/plans")
 @Api(tags = "随访计划")
 public class FollowUpPlanController {
-
     @Autowired
     private FollowUpPlanService planService;
 

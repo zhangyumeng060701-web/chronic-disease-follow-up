@@ -34,7 +34,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/messages")
 @Api(tags = "消息中心")
 public class MessageController {
-
     @Autowired
     private MessageService messageService;
 

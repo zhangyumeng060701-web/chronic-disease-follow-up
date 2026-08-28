@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class FollowUpPlanServiceImpl implements FollowUpPlanService {
-
     @Autowired
     private FollowUpPlanMapper planMapper;
     @Autowired

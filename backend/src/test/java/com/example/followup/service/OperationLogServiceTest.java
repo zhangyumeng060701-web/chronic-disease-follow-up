@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OperationLogServiceTest {
-
     @Mock
     private OperationLogMapper operationLogMapper;
     @InjectMocks

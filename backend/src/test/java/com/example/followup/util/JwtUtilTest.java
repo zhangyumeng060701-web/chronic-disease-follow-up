@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class JwtUtilTest {
-
     private JwtUtil jwtUtil;
 
     @BeforeEach

@@ -48,7 +48,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class StatsServiceTest {
-
     @Mock
     private PatientMapper patientMapper;
     @Mock

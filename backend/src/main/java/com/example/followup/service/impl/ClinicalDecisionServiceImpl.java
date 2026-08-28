@@ -50,7 +50,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
-
     @Autowired
     private PatientMapper patientMapper;
     @Autowired
@@ -77,8 +76,12 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
         int score = 0;
-        if (patient.getAge() != null && patient.getAge() >= 65) score += 2;
-        if (DomainConstants.DISEASE_BOTH.equals(patient.getDiseaseType())) score += 3;
+        if (patient.getAge() != null && patient.getAge() >= 65) {
+            score += 2;
+        }
+        if (DomainConstants.DISEASE_BOTH.equals(patient.getDiseaseType())) {
+            score += 3;
+        }
 
         List<Alert> unresolved = alertMapper.selectList(new LambdaQueryWrapper<Alert>()
                 .eq(Alert::getPatientId, patientId)
@@ -95,8 +98,12 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                 .orderByDesc(PatientVital::getMeasuredAt)
                 .last("LIMIT 4"));
         for (PatientVital vital : latestVitals) {
-            if (isSevereVital(vital)) score += 3;
-            else if (isModerateVital(vital)) score += 1;
+            if (isSevereVital(vital)) {
+                score += 3;
+            }
+            else if (isModerateVital(vital)) {
+                score += 1;
+            }
         }
 
         String riskLevel = score >= 5 ? DomainConstants.RISK_HIGH
@@ -324,15 +331,21 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                 evidence.add("用药依从性异常");
             }
         }
-        if (severe) return DomainConstants.RISK_HIGH;
-        if (moderate) return DomainConstants.RISK_MEDIUM;
+        if (severe) {
+            return DomainConstants.RISK_HIGH;
+        }
+        if (moderate) {
+            return DomainConstants.RISK_MEDIUM;
+        }
         evidence.add("近期随访指标处于目标范围");
         return StringUtils.hasText(fallback) ? fallback : DomainConstants.RISK_STABLE;
     }
 
     private boolean isSevereVital(PatientVital vital) {
         BigDecimal value = vital.getMetricValue();
-        if (value == null) return false;
+        if (value == null) {
+            return false;
+        }
         switch (vital.getMetricType()) {
             case DomainConstants.METRIC_SYSTOLIC_BP:
                 return value.compareTo(new BigDecimal("180")) >= 0;
@@ -349,7 +362,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
 
     private boolean isModerateVital(PatientVital vital) {
         BigDecimal value = vital.getMetricValue();
-        if (value == null) return false;
+        if (value == null) {
+            return false;
+        }
         switch (vital.getMetricType()) {
             case DomainConstants.METRIC_SYSTOLIC_BP:
                 return value.compareTo(new BigDecimal("140")) >= 0;

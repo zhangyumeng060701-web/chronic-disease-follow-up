@@ -29,7 +29,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/logs")
 @Api(tags = "操作日志")
 public class LogController {
-
     @Autowired
     private OperationLogService operationLogService;
 

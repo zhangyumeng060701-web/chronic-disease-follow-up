@@ -21,7 +21,6 @@ import javax.validation.constraints.Size;
  */
 @Data
 public class PatientUpdateRequest {
-
     @NotBlank(message = "姓名不能为空")
     private String name;
 

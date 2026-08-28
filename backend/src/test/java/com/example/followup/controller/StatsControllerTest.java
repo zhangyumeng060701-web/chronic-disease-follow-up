@@ -25,7 +25,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class StatsControllerTest {
-
     @Mock
     private StatsService statsService;
     @InjectMocks

@@ -13,7 +13,6 @@ import com.example.followup.entity.SysUser;
 import org.springframework.beans.BeanUtils;
 
 public final class VoMappers {
-
     private VoMappers() {
     }
 

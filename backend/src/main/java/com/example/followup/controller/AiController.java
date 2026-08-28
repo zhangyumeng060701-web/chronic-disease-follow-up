@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/ai")
 @CrossOrigin
 public class AiController {
-
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Map<String, String> FIELD_RENAMES = Map.of(
             "files_to_modify", "filesToModify",

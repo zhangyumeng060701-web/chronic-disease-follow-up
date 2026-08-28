@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.util.List;
 
 public final class PageResponseUtil {
-
     private PageResponseUtil() {
     }
 

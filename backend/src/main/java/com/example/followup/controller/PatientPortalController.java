@@ -41,7 +41,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/patient")
 @Api(tags = "患者端")
 public class PatientPortalController {
-
     @Autowired
     private PatientPortalService patientPortalService;
 

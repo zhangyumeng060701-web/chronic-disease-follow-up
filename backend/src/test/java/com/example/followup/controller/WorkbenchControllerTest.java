@@ -43,7 +43,6 @@ import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 class WorkbenchControllerTest {
-
     @Mock
     private FollowUpTaskMapper taskMapper;
     @Mock

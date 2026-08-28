@@ -17,7 +17,6 @@ import java.util.List;
  */
 @Data
 public class PageResponse<T extends Object> {
-
     private List<T> records;
     private long total;
     private long page;

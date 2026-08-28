@@ -35,7 +35,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 @Api(tags = "认证管理")
 public class AuthController {
-
     @Autowired
     private JwtUtil jwtUtil;
 

@@ -36,7 +36,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class SysUserServiceTest {
-
     @Mock
     private SysUserMapper sysUserMapper;
     @Mock

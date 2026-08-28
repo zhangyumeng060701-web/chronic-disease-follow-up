@@ -42,7 +42,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class PatientServiceAccessControlTest {
-
     @Mock
     private PatientMapper patientMapper;
     @Mock

@@ -16,7 +16,6 @@ import javax.validation.constraints.Pattern;
  */
 @Data
 public class UpdateUserRequest {
-
     @NotBlank(message = "真实姓名不能为空")
     private String realName;
 

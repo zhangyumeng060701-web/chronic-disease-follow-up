@@ -32,7 +32,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class FollowUpControllerTest {
-
     @Mock
     private FollowUpService followUpService;
     @InjectMocks

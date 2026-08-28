@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class PatientServiceImpl implements PatientService {
-
     @Autowired
     private PatientMapper patientMapper;
     @Autowired
@@ -262,7 +261,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private String csvCell(String value) {
-        if (value == null) return "";
+        if (value == null) {
+            return "";
+        }
         return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
@@ -319,5 +320,4 @@ public class PatientServiceImpl implements PatientService {
         vo.setIdCard(DesensitizationUtil.maskIdCard(vo.getIdCard()));
         vo.setAddress(DesensitizationUtil.maskAddress(vo.getAddress()));
     }
-
 }

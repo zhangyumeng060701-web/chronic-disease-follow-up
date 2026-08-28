@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
-
     private static final long YELLOW_THRESHOLD_DAYS = 7L;
     private static final long RED_THRESHOLD_DAYS = 30L;
 

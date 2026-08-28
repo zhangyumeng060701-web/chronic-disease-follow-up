@@ -29,7 +29,6 @@ import java.util.List;
 @RequestMapping("/api/dictionaries")
 @Api(tags = "数据字典")
 public class DictionaryController {
-
     @Autowired
     private DictionaryMapper dictionaryMapper;
 

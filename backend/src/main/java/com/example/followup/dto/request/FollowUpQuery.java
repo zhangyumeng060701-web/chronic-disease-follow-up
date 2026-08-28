@@ -20,7 +20,6 @@ import javax.validation.constraints.Min;
  */
 @Data
 public class FollowUpQuery {
-
     private Long patientId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

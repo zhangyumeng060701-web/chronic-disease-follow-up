@@ -31,7 +31,6 @@ import java.util.List;
 @RequestMapping("/api/vitals")
 @Api(tags = "指标趋势")
 public class VitalTrendController {
-
     @Autowired
     private PatientVitalMapper vitalMapper;
 

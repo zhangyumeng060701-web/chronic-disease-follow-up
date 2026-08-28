@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class DesensitizationUtilTest {
-
     @Test
     @DisplayName("姓名脱敏保留首字")
     void maskName() {

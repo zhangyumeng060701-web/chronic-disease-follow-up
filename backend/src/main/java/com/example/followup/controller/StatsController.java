@@ -29,7 +29,6 @@ import java.util.List;
 @RequestMapping("/api/stats")
 @Api(tags = "数据统计")
 public class StatsController {
-
     @Autowired
     private StatsService statsService;
 

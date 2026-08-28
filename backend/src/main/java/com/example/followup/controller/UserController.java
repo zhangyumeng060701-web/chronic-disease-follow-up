@@ -36,7 +36,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/users")
 @Api(tags = "用户管理")
 public class UserController {
-
     @Autowired
     private SysUserService sysUserService;
 

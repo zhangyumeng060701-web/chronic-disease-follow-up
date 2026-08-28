@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class DataInitializer implements ApplicationRunner {
-
     @Autowired
     private SysUserMapper sysUserMapper;
     @Autowired

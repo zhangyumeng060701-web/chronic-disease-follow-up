@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class HealthControllerTest {
-
     private final MockMvc mockMvc = MockMvcBuilders
             .standaloneSetup(new HealthController())
             .build();

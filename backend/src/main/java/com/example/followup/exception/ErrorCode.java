@@ -7,7 +7,6 @@ package com.example.followup.exception;
  * 业务异常码枚举，统一管理 HTTP 状态码与业务含义。
  */
 public enum ErrorCode {
-
     // ---- 通用 ----
     BAD_REQUEST(400, "请求参数错误"),
     UNAUTHORIZED(401, "未登录或登录已过期"),

@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/dashboard")
 @Api(tags = "医生工作台")
 public class WorkbenchController {
-
     @Autowired
     private FollowUpTaskMapper taskMapper;
     @Autowired

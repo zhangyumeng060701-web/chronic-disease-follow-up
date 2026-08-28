@@ -26,7 +26,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class LogControllerTest {
-
     @Mock
     private OperationLogService operationLogService;
     @InjectMocks

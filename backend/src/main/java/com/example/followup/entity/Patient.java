@@ -27,7 +27,6 @@ import javax.validation.constraints.Size;
 @Data
 @TableName("t_patient")
 public class Patient {
-
     @TableId(type = IdType.AUTO)
     private Long id;
 

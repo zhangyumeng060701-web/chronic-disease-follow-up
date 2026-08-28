@@ -36,7 +36,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/questionnaires")
 @Api(tags = "问卷管理")
 public class QuestionnaireController {
-
     @Autowired
     private QuestionnaireService questionnaireService;
 

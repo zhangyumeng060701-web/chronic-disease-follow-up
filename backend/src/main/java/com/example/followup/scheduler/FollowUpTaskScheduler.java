@@ -27,7 +27,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class FollowUpTaskScheduler {
-
     @Autowired
     private FollowUpPlanMapper planMapper;
     @Autowired

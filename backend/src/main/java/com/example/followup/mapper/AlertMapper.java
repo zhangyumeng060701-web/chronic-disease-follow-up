@@ -21,7 +21,6 @@ import java.util.List;
  */
 @Mapper
 public interface AlertMapper extends BaseMapper<Alert> {
-
     @Select("SELECT COUNT(*) FROM t_alert WHERE is_resolved = 0 AND alert_level = 'RED'")
     Long countHighRisk();
 

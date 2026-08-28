@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
-
     @Mock
     private JwtUtil jwtUtil;
     @Mock

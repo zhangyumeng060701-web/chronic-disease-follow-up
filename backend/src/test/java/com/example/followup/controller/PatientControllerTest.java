@@ -36,7 +36,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class PatientControllerTest {
-
     @Mock
     private PatientService patientService;
 

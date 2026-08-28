@@ -15,7 +15,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Map;
 
 class AiServiceTest {
-
     private AiController aiController;
 
     @BeforeEach

@@ -37,7 +37,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/patient")
 @Api(tags = "患者端认证")
 public class PatientAuthController {
-
     @Autowired
     private PatientMapper patientMapper;
     @Autowired

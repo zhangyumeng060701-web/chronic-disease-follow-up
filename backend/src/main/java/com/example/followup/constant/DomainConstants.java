@@ -4,7 +4,6 @@
 package com.example.followup.constant;
 
 public final class DomainConstants {
-
     private DomainConstants() {
     }
 

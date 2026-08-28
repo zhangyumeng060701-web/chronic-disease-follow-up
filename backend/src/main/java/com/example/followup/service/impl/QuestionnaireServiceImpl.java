@@ -29,7 +29,6 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
-
     @Autowired
     private QuestionnaireMapper questionnaireMapper;
 

@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class PatientPortalServiceImpl implements PatientPortalService {
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -299,20 +298,36 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         }
         switch (metricType) {
             case DomainConstants.METRIC_SYSTOLIC_BP:
-                if (value.compareTo(new BigDecimal("180")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
-                if (value.compareTo(new BigDecimal("140")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                if (value.compareTo(new BigDecimal("180")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                }
+                if (value.compareTo(new BigDecimal("140")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                }
                 return Optional.empty();
             case DomainConstants.METRIC_DIASTOLIC_BP:
-                if (value.compareTo(new BigDecimal("110")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
-                if (value.compareTo(new BigDecimal("90")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                if (value.compareTo(new BigDecimal("110")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                }
+                if (value.compareTo(new BigDecimal("90")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                }
                 return Optional.empty();
             case DomainConstants.METRIC_FASTING_GLUCOSE:
-                if (value.compareTo(new BigDecimal("11.1")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
-                if (value.compareTo(new BigDecimal("7.0")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                if (value.compareTo(new BigDecimal("11.1")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                }
+                if (value.compareTo(new BigDecimal("7.0")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                }
                 return Optional.empty();
             case DomainConstants.METRIC_POSTPRANDIAL_GLUCOSE:
-                if (value.compareTo(new BigDecimal("16.7")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_RED);
-                if (value.compareTo(new BigDecimal("11.1")) >= 0) return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                if (value.compareTo(new BigDecimal("16.7")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_RED);
+                }
+                if (value.compareTo(new BigDecimal("11.1")) >= 0) {
+                    return Optional.of(DomainConstants.ALERT_LEVEL_YELLOW);
+                }
                 return Optional.empty();
             default:
                 return Optional.empty();

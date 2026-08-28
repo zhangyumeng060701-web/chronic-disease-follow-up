@@ -34,7 +34,6 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class DuplicatePatientCleanup implements ApplicationRunner {
-
     private static final List<String> REFERENCED_TABLES = List.of(
             "t_follow_up",
             "t_alert",

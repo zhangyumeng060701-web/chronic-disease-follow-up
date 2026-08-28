@@ -26,7 +26,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 @Component
 public class SensitiveDataCipher {
-
     private static final String PREFIX = "enc:";
     private static final int IV_LENGTH = 12;
     private static final int TAG_LENGTH_BITS = 128;

@@ -41,7 +41,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class FollowUpServiceTest {
-
     @Mock
     private FollowUpMapper followUpMapper;
     @Mock

@@ -29,7 +29,6 @@ import java.util.Set;
  */
 @Component
 public class AlertRuleEngine {
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -49,7 +48,9 @@ public class AlertRuleEngine {
         }
 
         for (AlertRule rule : rules) {
-            if (!isRuleTriggered(rule, current, previous, patient)) continue;
+            if (!isRuleTriggered(rule, current, previous, patient)) {
+                continue;
+            }
             Alert alert = buildAlert(current.getPatientId(), rule, current);
             alerts.add(alert);
         }
@@ -107,9 +108,13 @@ public class AlertRuleEngine {
             return false;
         }
         String adherence = followUp.getMedicationAdherence();
-        if (adherence == null) return false;
+        if (adherence == null) {
+            return false;
+        }
         for (JsonNode item : node.get().get("adherenceValues")) {
-            if (item.asText().equals(adherence)) return true;
+            if (item.asText().equals(adherence)) {
+                return true;
+            }
         }
         return false;
     }

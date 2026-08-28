@@ -33,7 +33,6 @@ import java.util.OptionalLong;
 @Aspect
 @Component
 public class OperationLogAspect {
-
     @Autowired
     private OperationLogService operationLogService;
 

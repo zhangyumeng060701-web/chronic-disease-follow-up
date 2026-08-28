@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
 class SecurityUtilsTest {
-
     @AfterEach
     void clearContext() {
         SecurityContextHolder.clearContext();

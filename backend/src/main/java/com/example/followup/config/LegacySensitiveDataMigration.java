@@ -27,7 +27,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class LegacySensitiveDataMigration implements ApplicationRunner {
-
     @Autowired
     private PatientMapper patientMapper;
     @Autowired

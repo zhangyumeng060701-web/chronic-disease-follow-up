@@ -31,7 +31,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/follow-up-tasks")
 @Api(tags = "随访任务")
 public class FollowUpTaskController {
-
     @Autowired
     private FollowUpTaskService taskService;
 

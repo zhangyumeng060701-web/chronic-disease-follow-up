@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class AlertServiceImpl implements AlertService {
-
     @Autowired
     private AlertMapper alertMapper;
     @Autowired

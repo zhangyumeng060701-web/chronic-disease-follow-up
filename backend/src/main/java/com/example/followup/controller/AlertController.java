@@ -33,7 +33,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/alerts")
 @Api(tags = "预警管理")
 public class AlertController {
-
     @Autowired
     private AlertService alertService;
 

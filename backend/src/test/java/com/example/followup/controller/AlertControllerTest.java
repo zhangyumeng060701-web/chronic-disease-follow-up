@@ -28,7 +28,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class AlertControllerTest {
-
     @Mock
     private AlertService alertService;
     @InjectMocks

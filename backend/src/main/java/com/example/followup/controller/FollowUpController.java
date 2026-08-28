@@ -36,7 +36,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/follow-ups")
 @Api(tags = "随访记录管理")
 public class FollowUpController {
-
     @Autowired
     private FollowUpService followUpService;
 

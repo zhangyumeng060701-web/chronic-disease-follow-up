@@ -36,7 +36,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/clinical")
 @Api(tags = "临床决策支持")
 public class ClinicalDecisionController {
-
     @Autowired
     private ClinicalDecisionService clinicalDecisionService;
 
