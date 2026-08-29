@@ -81,9 +81,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     @Autowired
     private com.example.followup.mapper.PatientRiskAssessmentMapper riskAssessmentMapper;
 
-/**
- * 执行 myPlans 操作。
- */
+    /**
+     * 执行 myPlans 操作。
+     */
     @Override
     public List<FollowUpPlanVO> myPlans() {
         Long patientId = SecurityUtils.patientId();
@@ -110,9 +110,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         }).collect(Collectors.toList());
     }
 
-/**
- * 执行 myVitals 操作。
- */
+    /**
+     * 执行 myVitals 操作。
+     */
     @Override
     public List<PatientVital> myVitals() {
         Long patientId = SecurityUtils.patientId();
@@ -139,9 +139,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         return vital;
     }
 
-/**
- * 执行 activeQuestionnaires 操作。
- */
+    /**
+     * 执行 activeQuestionnaires 操作。
+     */
     @Override
     public List<Questionnaire> activeQuestionnaires() {
         return questionnaireMapper.selectList(new LambdaQueryWrapper<Questionnaire>()
@@ -167,9 +167,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         }
     }
 
-/**
- * 执行 myMessages 操作。
- */
+    /**
+     * 执行 myMessages 操作。
+     */
     @Override
     public List<Message> myMessages() {
         Long patientId = SecurityUtils.patientId();
@@ -188,9 +188,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
                 .eq(Message::getStatus, DomainConstants.MESSAGE_STATUS_PENDING));
     }
 
-/**
- * 执行 markMessageRead 操作。
- */
+    /**
+     * 执行 markMessageRead 操作。
+     */
     @Override
     public void markMessageRead(Long id) {
         Message message = messageMapper.selectById(id);
@@ -203,9 +203,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         messageMapper.updateById(message);
     }
 
-/**
- * 执行 myFollowUps 操作。
- */
+    /**
+     * 执行 myFollowUps 操作。
+     */
     @Override
     public List<FollowUpVO> myFollowUps() {
         Long patientId = SecurityUtils.patientId();
@@ -242,9 +242,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         return VoMappers.toFollowUpVO(followUp);
     }
 
-/**
- * 执行 myRiskLevel 操作。
- */
+    /**
+     * 执行 myRiskLevel 操作。
+     */
     @Override
     public Map<String, Object> myRiskLevel() {
         Long patientId = SecurityUtils.patientId();

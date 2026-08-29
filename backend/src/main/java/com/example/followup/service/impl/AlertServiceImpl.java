@@ -102,9 +102,9 @@ public class AlertServiceImpl implements AlertService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
-/**
- * 执行 contactAlert 操作。
- */
+    /**
+     * 执行 contactAlert 操作。
+     */
     @Override
     public void contactAlert(Long id) {
         Alert alert = getAlertOrThrow(id);
@@ -124,9 +124,9 @@ public class AlertServiceImpl implements AlertService {
         log.info("resolveAlert id={}", id);
     }
 
-/**
- * 执行 referAlert 操作。
- */
+    /**
+     * 执行 referAlert 操作。
+     */
     @Override
     public void referAlert(Long id, String referralReason) {
         Alert alert = getAlertOrThrow(id);

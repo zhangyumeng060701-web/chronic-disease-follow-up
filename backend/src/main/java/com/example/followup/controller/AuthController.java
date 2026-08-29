@@ -49,8 +49,8 @@ public class AuthController {
     @ApiOperation(value = "用户登录",
             notes = "请求体包含 username/password。错误码：400 参数错误，401 用户名或密码错误，403 账号禁用。")
     /**
-    * 执行 login 操作。
-    */
+     * 执行 login 操作。
+     */
     public Result<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
         SysUser user = sysUserMapper.findByUsername(request.getUsername());
         if (user == null) {

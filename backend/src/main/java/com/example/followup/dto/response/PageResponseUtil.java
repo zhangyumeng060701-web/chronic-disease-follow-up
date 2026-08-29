@@ -18,8 +18,8 @@ public final class PageResponseUtil {
     }
 
     /**
-    * 执行 of 操作。
-    */
+     * 执行 of 操作。
+     */
     public static <T, R> PageResponse<R> of(Page<T> page, List<R> records, long pageNum, long pageSize) {
         PageResponse<R> response = new PageResponse<>();
         response.setRecords(records);

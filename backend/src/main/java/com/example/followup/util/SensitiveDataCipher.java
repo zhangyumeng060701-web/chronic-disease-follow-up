@@ -35,8 +35,8 @@ public class SensitiveDataCipher {
     private String encryptionKey;
 
     /**
-    * 执行 isConfigured 操作。
-    */
+     * 执行 isConfigured 操作。
+     */
     public boolean isConfigured() {
         return StringUtils.hasText(encryptionKey);
     }
@@ -61,8 +61,8 @@ public class SensitiveDataCipher {
     }
 
     /**
-    * 执行 decrypt 操作。
-    */
+     * 执行 decrypt 操作。
+     */
     public String decrypt(String encryptedText) {
         if (!StringUtils.hasText(encryptedText) || !encryptedText.startsWith(PREFIX)) {
             return encryptedText;

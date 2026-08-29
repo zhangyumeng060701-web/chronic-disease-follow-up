@@ -6,6 +6,7 @@ package com.example.followup.exception;
 
 /**
  * 业务异常码枚举，统一管理 HTTP 状态码与业务含义。
+ *
  * @since 2026-08-28
  */
 public enum ErrorCode {
@@ -33,8 +34,8 @@ public enum ErrorCode {
     }
 
     /**
-    * 执行 getHttpStatus 操作。
-    */
+     * 执行 getHttpStatus 操作。
+     */
     public int getHttpStatus() {
         return httpStatus;
     }

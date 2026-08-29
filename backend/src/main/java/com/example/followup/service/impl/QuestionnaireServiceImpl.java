@@ -45,9 +45,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
-/**
- * 执行 createQuestionnaire 操作。
- */
+    /**
+     * 执行 createQuestionnaire 操作。
+     */
     @Override
     public Questionnaire createQuestionnaire(Questionnaire questionnaire) {
         if (!StringUtils.hasText(questionnaire.getCode())) {
@@ -60,9 +60,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return questionnaire;
     }
 
-/**
- * 执行 updateQuestionnaire 操作。
- */
+    /**
+     * 执行 updateQuestionnaire 操作。
+     */
     @Override
     public Questionnaire updateQuestionnaire(Long id, Questionnaire questionnaire) {
         Questionnaire existing = getOrThrow(id);
@@ -77,9 +77,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return existing;
     }
 
-/**
- * 执行 toggleQuestionnaire 操作。
- */
+    /**
+     * 执行 toggleQuestionnaire 操作。
+     */
     @Override
     public void toggleQuestionnaire(Long id) {
         Questionnaire questionnaire = getOrThrow(id);

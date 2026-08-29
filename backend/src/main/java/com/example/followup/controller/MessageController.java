@@ -50,9 +50,9 @@ public class MessageController {
         return Result.success(messageService.listMessages(query));
     }
 
-/**
- * 执行 create 操作。
- */
+    /**
+     * 执行 create 操作。
+     */
     @PostMapping
     @ApiOperation(value = "发送消息")
     public Result<Message> create(@Valid @RequestBody MessageCreateRequest request) {

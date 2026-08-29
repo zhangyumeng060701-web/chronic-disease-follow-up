@@ -43,9 +43,9 @@ public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
     @Autowired
     private AlertMapper alertMapper;
 
-/**
- * 执行 generateLostFollowUpAlerts 操作。
- */
+    /**
+     * 执行 generateLostFollowUpAlerts 操作。
+     */
     @Override
     @Scheduled(cron = "0 0 2 * * ?")
     @Transactional

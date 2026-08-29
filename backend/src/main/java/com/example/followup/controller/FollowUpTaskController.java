@@ -47,9 +47,9 @@ public class FollowUpTaskController {
         return Result.success(taskService.listTasks(query));
     }
 
-/**
- * 执行 complete 操作。
- */
+    /**
+     * 执行 complete 操作。
+     */
     @PutMapping("/{id}/complete")
     @ApiOperation(value = "完成任务")
     public Result<Void> complete(@PathVariable Long id) {

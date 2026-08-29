@@ -52,9 +52,9 @@ public class QuestionnaireController {
         return Result.success(questionnaireService.listQuestionnaires(query));
     }
 
-/**
- * 执行 create 操作。
- */
+    /**
+     * 执行 create 操作。
+     */
     @PostMapping
     @ApiOperation(value = "新增问卷")
     public Result<Questionnaire> create(@RequestBody Questionnaire questionnaire) {
@@ -69,9 +69,9 @@ public class QuestionnaireController {
         return Result.success(questionnaireService.updateQuestionnaire(id, questionnaire));
     }
 
-/**
- * 执行 toggle 操作。
- */
+    /**
+     * 执行 toggle 操作。
+     */
     @PutMapping("/{id}/toggle")
     @ApiOperation(value = "启用/停用问卷")
     public Result<Void> toggle(@PathVariable Long id) {

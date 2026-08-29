@@ -64,9 +64,9 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private OperationLogService operationLogService;
 
-/**
- * 执行 listPatients 操作。
- */
+    /**
+     * 执行 listPatients 操作。
+     */
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
         long start = System.currentTimeMillis();
@@ -102,9 +102,9 @@ public class PatientServiceImpl implements PatientService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
-/**
- * 执行 getPatientById 操作。
- */
+    /**
+     * 执行 getPatientById 操作。
+     */
     @Override
     public PatientVO getPatientById(Long id) {
         long start = System.currentTimeMillis();
@@ -126,9 +126,9 @@ public class PatientServiceImpl implements PatientService {
         return vo;
     }
 
-/**
- * 执行 addPatient 操作。
- */
+    /**
+     * 执行 addPatient 操作。
+     */
     @Override
     public void addPatient(PatientSaveRequest request) {
         long start = System.currentTimeMillis();
@@ -145,9 +145,9 @@ public class PatientServiceImpl implements PatientService {
         log.info("addPatient id={} cost={}ms", patient.getId(), System.currentTimeMillis() - start);
     }
 
-/**
- * 执行 updatePatient 操作。
- */
+    /**
+     * 执行 updatePatient 操作。
+     */
     @Override
     @Transactional
     public void updatePatient(Long id, PatientUpdateRequest request) {
@@ -164,9 +164,9 @@ public class PatientServiceImpl implements PatientService {
         log.info("updatePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
-/**
- * 执行 deletePatient 操作。
- */
+    /**
+     * 执行 deletePatient 操作。
+     */
     @Override
     @Transactional
     public void deletePatient(Long id) {
@@ -221,9 +221,9 @@ public class PatientServiceImpl implements PatientService {
         vo.setIdCard(sensitiveDataCipher.decrypt(vo.getIdCard()));
     }
 
-/**
- * 执行 exportPatientsCsv 操作。
- */
+    /**
+     * 执行 exportPatientsCsv 操作。
+     */
     @Override
     public String exportPatientsCsv() {
         LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();

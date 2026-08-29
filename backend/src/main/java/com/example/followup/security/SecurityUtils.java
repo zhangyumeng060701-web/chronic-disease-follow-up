@@ -20,8 +20,8 @@ public final class SecurityUtils {
     }
 
     /**
-    * 执行 currentUser 操作。
-    */
+     * 执行 currentUser 操作。
+     */
     public static CurrentUser currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()
@@ -36,8 +36,8 @@ public final class SecurityUtils {
     }
 
     /**
-    * 执行 isPatient 操作。
-    */
+     * 执行 isPatient 操作。
+     */
     public static boolean isPatient() {
         return currentUser().isPatient();
     }

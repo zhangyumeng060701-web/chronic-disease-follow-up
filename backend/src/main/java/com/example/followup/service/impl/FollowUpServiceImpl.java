@@ -59,9 +59,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Autowired
     private AlertRuleEngine alertRuleEngine;
 
-/**
- * 执行 listFollowUps 操作。
- */
+    /**
+     * 执行 listFollowUps 操作。
+     */
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
         long start = System.currentTimeMillis();
@@ -109,9 +109,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
-/**
- * 执行 getFollowUpById 操作。
- */
+    /**
+     * 执行 getFollowUpById 操作。
+     */
     @Override
     public FollowUp getFollowUpById(Long id) {
         long start = System.currentTimeMillis();
@@ -127,9 +127,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         return followUp;
     }
 
-/**
- * 执行 addFollowUp 操作。
- */
+    /**
+     * 执行 addFollowUp 操作。
+     */
     @Override
     @Transactional
     public void addFollowUp(FollowUp followUp) {
@@ -140,9 +140,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("addFollowUp id={} cost={}ms", followUp.getId(), System.currentTimeMillis() - start);
     }
 
-/**
- * 执行 updateFollowUp 操作。
- */
+    /**
+     * 执行 updateFollowUp 操作。
+     */
     @Override
     @Transactional
     public void updateFollowUp(FollowUp followUp) {
@@ -161,9 +161,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("deleteFollowUp id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
-/**
- * 执行 listOverdueFollowUps 操作。
- */
+    /**
+     * 执行 listOverdueFollowUps 操作。
+     */
     @Override
     public List<FollowUpVO> listOverdueFollowUps() {
         FollowUpQuery query = new FollowUpQuery();

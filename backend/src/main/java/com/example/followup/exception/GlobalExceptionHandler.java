@@ -42,9 +42,9 @@ public class GlobalExceptionHandler {
         return Result.error(ErrorCode.BAD_REQUEST.getHttpStatus(), msg);
     }
 
-/**
- * 执行 handleUnknown 操作。
- */
+    /**
+     * 执行 handleUnknown 操作。
+     */
     @ExceptionHandler(Exception.class)
     public Result<Void> handleUnknown(Exception e) {
         log.error("Unknown error", e);

@@ -33,8 +33,8 @@ public class Result<T extends Object> {
     }
 
     /**
-    * 执行 success 操作。
-    */
+     * 执行 success 操作。
+     */
     public static <T> Result<T> success() {
         return new Result<>(200, null, "success");
     }

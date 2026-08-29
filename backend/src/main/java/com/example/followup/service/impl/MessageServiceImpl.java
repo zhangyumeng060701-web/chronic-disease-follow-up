@@ -55,9 +55,9 @@ public class MessageServiceImpl implements MessageService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
-/**
- * 执行 createMessage 操作。
- */
+    /**
+     * 执行 createMessage 操作。
+     */
     @Override
     public Message createMessage(MessageCreateRequest request) {
         Message message = new Message();
@@ -74,9 +74,9 @@ public class MessageServiceImpl implements MessageService {
         return message;
     }
 
-/**
- * 执行 markRead 操作。
- */
+    /**
+     * 执行 markRead 操作。
+     */
     @Override
     public void markRead(Long id) {
         Message message = messageMapper.selectById(id);

@@ -58,9 +58,9 @@ public class StatsServiceImpl implements StatsService {
     @Autowired
     private FollowUpTaskMapper followUpTaskMapper;
 
-/**
- * 执行 getOverview 操作。
- */
+    /**
+     * 执行 getOverview 操作。
+     */
     @Override
     public StatsOverview getOverview() {
         long start = System.currentTimeMillis();
@@ -221,9 +221,9 @@ public class StatsServiceImpl implements StatsService {
         return avgHours + "小时";
     }
 
-/**
- * 执行 getBpTrend 操作。
- */
+    /**
+     * 执行 getBpTrend 操作。
+     */
     @Override
     public List<TrendItem> getBpTrend() {
         return getTrend("bp");
@@ -290,9 +290,9 @@ public class StatsServiceImpl implements StatsService {
         return result;
     }
 
-/**
- * 执行 getDoctorComparison 操作。
- */
+    /**
+     * 执行 getDoctorComparison 操作。
+     */
     @Override
     public List<DoctorStats> getDoctorComparison() {
         long start = System.currentTimeMillis();

@@ -54,9 +54,9 @@ public class OperationLogServiceImpl implements OperationLogService {
         return PageResponseUtil.of(page, page.getRecords(), query.getPage(), query.getSize());
     }
 
-/**
- * 执行 log 操作。
- */
+    /**
+     * 执行 log 操作。
+     */
     @Override
     public void log(Long userId, String username, String operation, String targetType, Long targetId, String detail) {
         long start = System.currentTimeMillis();

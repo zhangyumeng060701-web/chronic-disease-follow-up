@@ -35,8 +35,8 @@ public class CurrentUser {
     }
 
     /**
-    * 执行 isAdmin 操作。
-    */
+     * 执行 isAdmin 操作。
+     */
     public boolean isAdmin() {
         return DomainConstants.ROLE_ADMIN.equals(role);
     }

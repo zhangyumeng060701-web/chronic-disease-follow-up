@@ -59,9 +59,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
 
-/**
- * 执行 createTemplate 操作。
- */
+    /**
+     * 执行 createTemplate 操作。
+     */
     @Override
     public FollowUpTemplateVO createTemplate(FollowUpTemplate template) {
         if (StringUtils.hasText(template.getTemplateCode())) {
@@ -79,9 +79,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return toVO(template);
     }
 
-/**
- * 执行 updateTemplate 操作。
- */
+    /**
+     * 执行 updateTemplate 操作。
+     */
     @Override
     public FollowUpTemplateVO updateTemplate(Long id, FollowUpTemplate template) {
         FollowUpTemplate existing = getTemplateOrThrow(id);
@@ -99,9 +99,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
         return toVO(existing);
     }
 
-/**
- * 执行 toggleTemplate 操作。
- */
+    /**
+     * 执行 toggleTemplate 操作。
+     */
     @Override
     public void toggleTemplate(Long id) {
         FollowUpTemplate template = getTemplateOrThrow(id);

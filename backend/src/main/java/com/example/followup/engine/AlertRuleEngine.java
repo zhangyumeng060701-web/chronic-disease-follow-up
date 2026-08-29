@@ -33,8 +33,8 @@ public class AlertRuleEngine {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-    * 兼容旧调用：仅执行阈值规则。
-    */
+     * 兼容旧调用：仅执行阈值规则。
+     */
     public List<Alert> evaluate(FollowUp current, FollowUp previous, List<AlertRule> rules) {
         return evaluate(current, previous, null, rules);
     }

@@ -34,9 +34,9 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-/**
- * 执行 run 操作。
- */
+    /**
+     * 执行 run 操作。
+     */
     @Override
     public void run(ApplicationArguments args) {
         createDefaultUserIfMissing("admin", "管理员", DomainConstants.ROLE_ADMIN);

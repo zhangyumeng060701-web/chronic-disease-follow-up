@@ -45,9 +45,9 @@ public class PatientAuthController {
     @Autowired
     private SensitiveDataCipher sensitiveDataCipher;
 
-/**
- * 执行 login 操作。
- */
+    /**
+     * 执行 login 操作。
+     */
     @PostMapping("/login")
     @ApiOperation(value = "患者端登录")
     public Result<Map<String, String>> login(@Valid @RequestBody PatientLoginRequest request) {

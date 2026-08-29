@@ -52,9 +52,9 @@ public class AiController {
     @Value("${agent.arts.session-id:}")
     private String agentArtsSessionId;
 
-/**
- * 执行 decompose 操作。
- */
+    /**
+     * 执行 decompose 操作。
+     */
     @PostMapping("/decompose")
     public Map<String, Object> decompose(@RequestBody Map<String, String> request) {
         String requirement = request.get("requirement");

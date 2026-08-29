@@ -53,9 +53,9 @@ public class DuplicatePatientCleanup implements ApplicationRunner {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-/**
- * 执行 run 操作。
- */
+    /**
+     * 执行 run 操作。
+     */
     @Override
     public void run(ApplicationArguments args) {
         List<Patient> patients = patientMapper.selectList(new LambdaQueryWrapper<Patient>()

@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * 数据脱敏工具：非管理员访问患者数据时统一脱敏。
+ *
  * @since 2026-08-28
  */
 public final class DesensitizationUtil {

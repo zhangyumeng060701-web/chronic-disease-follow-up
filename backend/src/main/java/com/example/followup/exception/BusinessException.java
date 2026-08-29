@@ -19,8 +19,8 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-    * 执行 BusinessException 操作。
-    */
+     * 执行 BusinessException 操作。
+     */
     public BusinessException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;

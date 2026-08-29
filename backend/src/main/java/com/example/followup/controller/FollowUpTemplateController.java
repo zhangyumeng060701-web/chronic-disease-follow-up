@@ -53,9 +53,9 @@ public class FollowUpTemplateController {
         return Result.success(templateService.listTemplates(query));
     }
 
-/**
- * 执行 create 操作。
- */
+    /**
+     * 执行 create 操作。
+     */
     @PostMapping
     @ApiOperation(value = "新增随访模板")
     public Result<FollowUpTemplateVO> create(@RequestBody FollowUpTemplate template) {
@@ -70,9 +70,9 @@ public class FollowUpTemplateController {
         return Result.success(templateService.updateTemplate(id, template));
     }
 
-/**
- * 执行 toggle 操作。
- */
+    /**
+     * 执行 toggle 操作。
+     */
     @PutMapping("/{id}/toggle")
     @ApiOperation(value = "启用/停用随访模板")
     public Result<Void> toggle(@PathVariable Long id) {

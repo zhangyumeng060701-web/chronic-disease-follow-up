@@ -52,9 +52,9 @@ public class ClinicalDecisionController {
         return Result.success(clinicalDecisionService.assessPatientRisk(patientId));
     }
 
-/**
- * 执行 generate 操作。
- */
+    /**
+     * 执行 generate 操作。
+     */
     @PostMapping("/patients/{patientId}/suggestions")
     @ApiOperation(value = "生成AI随访建议（待医生确认）")
     public Result<FollowUpSuggestion> generate(@PathVariable Long patientId) {
@@ -67,9 +67,9 @@ public class ClinicalDecisionController {
         return Result.success(clinicalDecisionService.generateAISuggestion(request));
     }
 
-/**
- * 执行 suggestions 操作。
- */
+    /**
+     * 执行 suggestions 操作。
+     */
     @GetMapping("/suggestions")
     @ApiOperation(value = "分页查询随访建议")
     public Result<PageResponse<FollowUpSuggestion>> suggestions(@RequestParam(defaultValue = "1") Integer page,
@@ -86,9 +86,9 @@ public class ClinicalDecisionController {
         return Result.success();
     }
 
-/**
- * 执行 reject 操作。
- */
+    /**
+     * 执行 reject 操作。
+     */
     @PutMapping("/suggestions/{id}/reject")
     @ApiOperation(value = "医生驳回AI建议")
     @OperationLog(operation = "驳回AI随访建议", targetType = "FollowUpSuggestion")
