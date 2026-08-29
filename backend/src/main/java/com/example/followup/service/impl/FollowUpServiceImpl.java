@@ -67,7 +67,6 @@ public class FollowUpServiceImpl implements FollowUpService {
      */
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
-        long start = System.currentTimeMillis();
         if (query.getStartDate() != null && query.getEndDate() != null
                 && query.getStartDate().isAfter(query.getEndDate())) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "开始日期不能晚于结束日期");
@@ -96,8 +95,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 
         List<Long> patientIds = page.getRecords().stream()
                 .map(FollowUp::getPatientId).distinct().collect(Collectors.toList());
-        Map<Long, String> nameMap = patientIds.isEmpty() ? Map.of() :
-                patientMapper.selectBatchIds(patientIds).stream()
+        Map<Long, String> nameMap = patientIds.isEmpty()
+                ? Map.of()
+                : patientMapper.selectBatchIds(patientIds).stream()
                         .collect(Collectors.toMap(Patient::getId, Patient::getName));
 
         List<FollowUpVO> vos = page.getRecords().stream().map(f -> {
@@ -107,6 +107,7 @@ public class FollowUpServiceImpl implements FollowUpService {
             return vo;
         }).collect(Collectors.toList());
 
+        long start = System.currentTimeMillis();
         log.info("listFollowUps userId={} total={} cost={}ms",
                 currentUserIdSafely().orElse(-1L), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
@@ -120,7 +121,6 @@ public class FollowUpServiceImpl implements FollowUpService {
      */
     @Override
     public FollowUp getFollowUpById(Long id) {
-        long start = System.currentTimeMillis();
         FollowUp followUp = followUpMapper.selectById(id);
         if (followUp == null) {
             throw new BusinessException(ErrorCode.FOLLOWUP_NOT_FOUND);
@@ -129,6 +129,7 @@ public class FollowUpServiceImpl implements FollowUpService {
                 && !Objects.equals(followUp.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
+        long start = System.currentTimeMillis();
         log.info("getFollowUpById id={} cost={}ms", id, System.currentTimeMillis() - start);
         return followUp;
     }
@@ -141,10 +142,10 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Override
     @Transactional
     public void addFollowUp(FollowUp followUp) {
-        long start = System.currentTimeMillis();
         followUp.setId(null);
         followUpMapper.insert(followUp);
         checkAndGenerateAlerts(followUp);
+        long start = System.currentTimeMillis();
         log.info("addFollowUp id={} cost={}ms", followUp.getId(), System.currentTimeMillis() - start);
     }
 
@@ -156,9 +157,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Override
     @Transactional
     public void updateFollowUp(FollowUp followUp) {
-        long start = System.currentTimeMillis();
         getFollowUpById(followUp.getId());
         followUpMapper.updateById(followUp);
+        long start = System.currentTimeMillis();
         log.info("updateFollowUp id={} cost={}ms", followUp.getId(), System.currentTimeMillis() - start);
     }
 
@@ -170,9 +171,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     @Override
     @Transactional
     public void deleteFollowUp(Long id) {
-        long start = System.currentTimeMillis();
         getFollowUpById(id);
         followUpMapper.deleteById(id);
+        long start = System.currentTimeMillis();
         log.info("deleteFollowUp id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 

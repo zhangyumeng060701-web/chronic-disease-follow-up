@@ -22,6 +22,11 @@ import java.util.List;
  */
 @Mapper
 public interface AlertMapper extends BaseMapper<Alert> {
+    /**
+     * 查询未处理高危预警数量。
+     *
+     * @return 高危预警数量
+     */
     @Select("SELECT COUNT(*) FROM t_alert WHERE is_resolved = 0 AND alert_level = 'RED'")
     Long countHighRisk();
 
@@ -39,11 +44,11 @@ public interface AlertMapper extends BaseMapper<Alert> {
      * @param alerts 参数说明
      * @return 返回值
      */
-    @Insert("<script>" +
-            "INSERT INTO t_alert (patient_id, alert_type, alert_level, alert_reason, is_resolved) VALUES " +
-            "<foreach collection='list' item='item' separator=','>" +
-            "(#{item.patientId}, #{item.alertType}, #{item.alertLevel}, #{item.alertReason}, #{item.isResolved})" +
-            "</foreach>" +
-            "</script>")
+    @Insert("<script>"
+            + "INSERT INTO t_alert (patient_id, alert_type, alert_level, alert_reason, is_resolved) VALUES "
+            + "<foreach collection='list' item='item' separator=','>"
+            + "(#{item.patientId}, #{item.alertType}, #{item.alertLevel}, #{item.alertReason}, #{item.isResolved})"
+            + "</foreach>"
+            + "</script>")
     int batchInsert(@Param("list") List<Alert> alerts);
 }

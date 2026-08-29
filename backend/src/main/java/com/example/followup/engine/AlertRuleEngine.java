@@ -44,9 +44,6 @@ public class AlertRuleEngine {
         return evaluate(current, previous, null, rules);
     }
 
-    /**
-    * 按阈值、趋势、合并症、用药四类规则生成预警，并携带建议与证据来源。
-    */
 
     /**
      * 执行evaluate操作。

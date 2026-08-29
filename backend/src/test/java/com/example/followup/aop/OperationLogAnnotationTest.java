@@ -37,9 +37,11 @@ class OperationLogAnnotationTest {
     @Test
     @DisplayName("患者新增/编辑/删除接口已配置自动日志注解")
     void patientMethodsAreAnnotated() throws Exception {
-        assertLog(PatientController.class.getMethod("add", com.example.followup.dto.request.PatientSaveRequest.class),
+        assertLog(PatientController.class.getMethod(
+                        "add", com.example.followup.dto.request.PatientSaveRequest.class),
                 "新增患者", "Patient");
-        assertLog(PatientController.class.getMethod("update", Long.class, com.example.followup.dto.request.PatientUpdateRequest.class),
+        assertLog(PatientController.class.getMethod(
+                        "update", Long.class, com.example.followup.dto.request.PatientUpdateRequest.class),
                 "编辑患者", "Patient");
         assertLog(PatientController.class.getMethod("delete", Long.class),
                 "删除患者", "Patient");
@@ -48,9 +50,11 @@ class OperationLogAnnotationTest {
     @Test
     @DisplayName("用户新增/编辑/状态切换接口已配置自动日志注解")
     void userMethodsAreAnnotated() throws Exception {
-        assertLog(UserController.class.getMethod("create", com.example.followup.dto.request.CreateUserRequest.class),
+        assertLog(UserController.class.getMethod(
+                        "create", com.example.followup.dto.request.CreateUserRequest.class),
                 "新增用户", "User");
-        assertLog(UserController.class.getMethod("update", Long.class, com.example.followup.dto.request.UpdateUserRequest.class),
+        assertLog(UserController.class.getMethod(
+                        "update", Long.class, com.example.followup.dto.request.UpdateUserRequest.class),
                 "编辑用户", "User");
         assertLog(UserController.class.getMethod("toggleStatus", Long.class),
                 "切换用户状态", "User");

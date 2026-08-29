@@ -67,7 +67,8 @@ class UserControllerTest {
     void createCallsService() throws Exception {
         mockMvc().perform(post("/api/users")
                         .contentType("application/json")
-                        .content("{\"username\":\"doctor\",\"password\":\"123456\",\"realName\":\"李医生\",\"role\":\"DOCTOR\"}"))
+                        .content("{\"username\":\"doctor\",\"password\":\"123456\","
+                                + "\"realName\":\"李医生\",\"role\":\"DOCTOR\"}"))
                 .andExpect(status().isOk());
 
         ArgumentCaptor<CreateUserRequest> captor = ArgumentCaptor.forClass(CreateUserRequest.class);

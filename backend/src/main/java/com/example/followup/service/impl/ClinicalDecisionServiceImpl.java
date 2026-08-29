@@ -92,8 +92,12 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                 .eq(Alert::getIsResolved, 0)
                 .orderByDesc(Alert::getCreateTime)
                 .last("LIMIT 5"));
-        long redCount = unresolved.stream().filter(a -> DomainConstants.ALERT_LEVEL_RED.equals(a.getAlertLevel())).count();
-        long yellowCount = unresolved.stream().filter(a -> DomainConstants.ALERT_LEVEL_YELLOW.equals(a.getAlertLevel())).count();
+        long redCount = unresolved.stream()
+                .filter(a -> DomainConstants.ALERT_LEVEL_RED.equals(a.getAlertLevel()))
+                .count();
+        long yellowCount = unresolved.stream()
+                .filter(a -> DomainConstants.ALERT_LEVEL_YELLOW.equals(a.getAlertLevel()))
+                .count();
         score += redCount * 4;
         score += yellowCount * 2;
 
@@ -104,11 +108,10 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
         for (PatientVital vital : latestVitals) {
             if (isSevereVital(vital)) {
                 score += 3;
-            }
-            else if (isModerateVital(vital)) {
+            } else if (isModerateVital(vital)) {
                 score += 1;
             } else {
-                // 当前指标不参与风险评分
+                score += 0;
             }
         }
 
@@ -262,7 +265,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             FollowUp followUp = followUpMapper.selectById(suggestion.getFollowUpId());
             if (followUp != null) {
                 String advice = followUp.getAdvice() == null ? "" : followUp.getAdvice();
-                followUp.setAdvice(StringUtils.hasText(advice) ? advice + "；" + suggestion.getContent() : suggestion.getContent());
+                followUp.setAdvice(StringUtils.hasText(advice)
+                        ? advice + "；" + suggestion.getContent()
+                        : suggestion.getContent());
                 followUpMapper.updateById(followUp);
             }
         }
@@ -340,7 +345,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                     isModerate = true;
                     evidence.add("收缩压≥140");
                 } else {
-                    // 无需额外分级证据
+                    if (!evidence.contains("指标处于目标范围")) {
+                        evidence.add("指标处于目标范围");
+                    }
                 }
             }
             if (input.getDiastolicBp() != null) {
@@ -351,7 +358,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                     isModerate = true;
                     evidence.add("舒张压≥90");
                 } else {
-                    // 无需额外分级证据
+                    if (!evidence.contains("指标处于目标范围")) {
+                        evidence.add("指标处于目标范围");
+                    }
                 }
             }
             if (input.getFastingGlucose() != null) {
@@ -362,7 +371,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                     isModerate = true;
                     evidence.add("空腹血糖≥7.0");
                 } else {
-                    // 无需额外分级证据
+                    if (!evidence.contains("指标处于目标范围")) {
+                        evidence.add("指标处于目标范围");
+                    }
                 }
             }
             if (input.getPostprandialGlucose() != null) {
@@ -373,7 +384,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
                     isModerate = true;
                     evidence.add("餐后血糖≥11.1");
                 } else {
-                    // 无需额外分级证据
+                    if (!evidence.contains("指标处于目标范围")) {
+                        evidence.add("指标处于目标范围");
+                    }
                 }
             }
             if ("间断".equals(input.getMedicationAdherence()) || "不服药".equals(input.getMedicationAdherence())) {

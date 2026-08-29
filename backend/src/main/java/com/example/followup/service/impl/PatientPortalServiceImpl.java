@@ -145,7 +145,8 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         vitalMapper.insert(vital);
 
         generateAlertFromVital(patientId, vital);
-        log.info("reportVital patientId={} metric={} value={}", patientId, vital.getMetricType(), vital.getMetricValue());
+        log.info("reportVital patientId={} metric={} value={}",
+                patientId, vital.getMetricType(), vital.getMetricValue());
         return vital;
     }
 

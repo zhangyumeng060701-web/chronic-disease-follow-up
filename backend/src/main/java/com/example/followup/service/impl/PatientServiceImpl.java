@@ -72,7 +72,6 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
-        long start = System.currentTimeMillis();
         LambdaQueryWrapper<Patient> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Patient::getStatus, 1);
         if (StringUtils.hasText(query.getName())) {
@@ -100,6 +99,7 @@ public class PatientServiceImpl implements PatientService {
             vos.forEach(this::desensitize);
         }
 
+        long start = System.currentTimeMillis();
         log.info("listPatients userId={} total={} cost={}ms",
                 currentUserIdSafely().orElse(-1L), page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
@@ -113,12 +113,12 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public PatientVO getPatientById(Long id) {
-        long start = System.currentTimeMillis();
         Patient patient = patientMapper.selectById(id);
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
-        if (!SecurityUtils.isAdmin() && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
+        if (!SecurityUtils.isAdmin()
+                && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
 
@@ -128,6 +128,7 @@ public class PatientServiceImpl implements PatientService {
         if (!SecurityUtils.isAdmin()) {
             desensitize(vo);
         }
+        long start = System.currentTimeMillis();
         log.info("getPatientById id={} cost={}ms", id, System.currentTimeMillis() - start);
         return vo;
     }
@@ -139,7 +140,6 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public void addPatient(PatientSaveRequest request) {
-        long start = System.currentTimeMillis();
         Patient patient = new Patient();
         BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime");
         patient.setId(null);
@@ -150,6 +150,7 @@ public class PatientServiceImpl implements PatientService {
         }
         applyBmi(patient);
         patientMapper.insert(patient);
+        long start = System.currentTimeMillis();
         log.info("addPatient id={} cost={}ms", patient.getId(), System.currentTimeMillis() - start);
     }
 
@@ -162,7 +163,6 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public void updatePatient(Long id, PatientUpdateRequest request) {
-        long start = System.currentTimeMillis();
         Patient patient = getExistingPatient(id);
         assertNotMasked(request);
         BeanUtils.copyProperties(request, patient, "id", "status", "createTime", "updateTime", "doctorId");
@@ -172,6 +172,7 @@ public class PatientServiceImpl implements PatientService {
         encryptSensitive(patient);
         applyBmi(patient);
         patientMapper.updateById(patient);
+        long start = System.currentTimeMillis();
         log.info("updatePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
@@ -183,10 +184,10 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public void deletePatient(Long id) {
-        long start = System.currentTimeMillis();
         Patient patient = getExistingPatient(id);
         patient.setStatus(0);
         patientMapper.updateById(patient);
+        long start = System.currentTimeMillis();
         log.info("deletePatient id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
@@ -195,7 +196,8 @@ public class PatientServiceImpl implements PatientService {
         if (patient == null || patient.getStatus() == 0) {
             throw new BusinessException(ErrorCode.PATIENT_NOT_FOUND);
         }
-        if (!SecurityUtils.isAdmin() && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
+        if (!SecurityUtils.isAdmin()
+                && !Objects.equals(patient.getDoctorId(), SecurityUtils.currentUser().getUserId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
         }
         return patient;
@@ -252,9 +254,14 @@ public class PatientServiceImpl implements PatientService {
         vos.forEach(this::decryptSensitive);
         vos.forEach(this::desensitize);
         StringBuilder csv = new StringBuilder("姓名,性别,年龄,手机号,慢病类型,责任医生\n");
-        List<Long> doctorIds = vos.stream().map(PatientVO::getDoctorId).filter(Objects::nonNull).distinct().collect(Collectors.toList());
-        Map<Long, String> doctorNames = doctorIds.isEmpty() ? Map.of() :
-                sysUserMapper.selectBatchIds(doctorIds).stream()
+        List<Long> doctorIds = vos.stream()
+                .map(PatientVO::getDoctorId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        Map<Long, String> doctorNames = doctorIds.isEmpty()
+                ? Map.of()
+                : sysUserMapper.selectBatchIds(doctorIds).stream()
                         .collect(Collectors.toMap(SysUser::getId, SysUser::getRealName, (a, b) -> a));
         for (PatientVO vo : vos) {
             csv.append(csvCell(vo.getName())).append(',')

@@ -19,13 +19,12 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
-    @Select("SELECT * FROM t_user WHERE username = #{username} AND status = 1")
-
     /**
      * 查询findByUsername。
      *
      * @param username 参数说明
      * @return 返回值
      */
+    @Select("SELECT * FROM t_user WHERE username = #{username} AND status = 1")
     SysUser findByUsername(@Param("username") String username);
 }

@@ -39,11 +39,11 @@ public class FollowUpTaskScheduler {
      */
     @Scheduled(cron = "0 30 1 * * ?")
     public void generateDueTasks() {
-        long start = System.currentTimeMillis();
         List<FollowUpPlan> duePlans = planMapper.selectList(new LambdaQueryWrapper<FollowUpPlan>()
                 .eq(FollowUpPlan::getStatus, DomainConstants.PLAN_STATUS_ACTIVE)
                 .le(FollowUpPlan::getNextFollowUpDate, LocalDate.now()));
         duePlans.forEach(taskService::createTaskFromPlan);
+        long start = System.currentTimeMillis();
         log.info("generateDueTasks plans={} cost={}ms", duePlans.size(), System.currentTimeMillis() - start);
     }
 }

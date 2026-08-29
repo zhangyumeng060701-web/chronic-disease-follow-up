@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class HealthController {
+    /**
+     * 健康检查。
+     *
+     * @return 健康检查结果
+     */
     @GetMapping("/health")
     public Result<String> health() {
         return Result.success("ok");

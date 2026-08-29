@@ -64,7 +64,6 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
      */
     @Override
     public PageResponse<FollowUpTaskVO> listTasks(FollowUpTaskQuery query) {
-        long start = System.currentTimeMillis();
         boolean isAdmin = SecurityUtils.isAdmin();
         Long currentUserId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
@@ -90,6 +89,7 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
         taskMapper.selectPage(page, wrapper);
         List<FollowUpTaskVO> vos = toVOs(page.getRecords());
 
+        long start = System.currentTimeMillis();
         log.info("listTasks total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
@@ -186,8 +186,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
                 .filter(Objects::nonNull).distinct().collect(Collectors.toList());
         Map<Long, String> patientNames = patientMapper.selectBatchIds(patientIds).stream()
                 .collect(Collectors.toMap(Patient::getId, Patient::getName, (a, b) -> a));
-        Map<Long, String> ownerNames = ownerIds.isEmpty() ? Map.of() :
-                sysUserMapper.selectBatchIds(ownerIds).stream()
+        Map<Long, String> ownerNames = ownerIds.isEmpty()
+                ? Map.of()
+                : sysUserMapper.selectBatchIds(ownerIds).stream()
                         .collect(Collectors.toMap(SysUser::getId, SysUser::getRealName, (a, b) -> a));
         return tasks.stream().map(task -> {
             FollowUpTaskVO vo = new FollowUpTaskVO();

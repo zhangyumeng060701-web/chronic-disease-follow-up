@@ -50,7 +50,6 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public PageResponse<UserVO> listUsers(UserQuery query) {
-        long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getUsername())) {
             wrapper.like(SysUser::getUsername, query.getUsername());
@@ -78,7 +77,6 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public void createUser(CreateUserRequest request) {
-        long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.findByUsername(request.getUsername());
         if (existing != null) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "用户名已存在");
@@ -91,6 +89,7 @@ public class SysUserServiceImpl implements SysUserService {
         user.setPhone(request.getPhone());
         user.setStatus(1);
         sysUserMapper.insert(user);
+        long start = System.currentTimeMillis();
         log.info("createUser username={} cost={}ms", request.getUsername(), System.currentTimeMillis() - start);
     }
 
@@ -102,7 +101,6 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public void updateUser(Long id, UpdateUserRequest request) {
-        long start = System.currentTimeMillis();
         SysUser existing = sysUserMapper.selectById(id);
         if (existing == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
@@ -114,6 +112,7 @@ public class SysUserServiceImpl implements SysUserService {
             existing.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         sysUserMapper.updateById(existing);
+        long start = System.currentTimeMillis();
         log.info("updateUser id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 
@@ -124,13 +123,13 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public void toggleUserStatus(Long id) {
-        long start = System.currentTimeMillis();
         SysUser user = sysUserMapper.selectById(id);
         if (user == null) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         user.setStatus(user.getStatus() == 1 ? 0 : 1);
         sysUserMapper.updateById(user);
+        long start = System.currentTimeMillis();
         log.info("toggleUserStatus id={} cost={}ms", id, System.currentTimeMillis() - start);
     }
 }

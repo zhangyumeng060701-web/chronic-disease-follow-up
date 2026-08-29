@@ -13,19 +13,19 @@ export function maskName(value = '') {
 }
 
 export function maskPhone(value = '') {
-  return value.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+  return value.replace(/^(?<prefix>\d{3})\d{4}(?<suffix>\d{4})$/, '$<prefix>****$<suffix>');
 }
 
 export function maskIdCard(value = '') {
-  return value.replace(/^(.{6}).{8}(.{4})$/, '$1********$2');
+  return value.replace(/^(?<prefix>.{6}).{8}(?<suffix>.{4})$/, '$<prefix>********$<suffix>');
 }
 
 export function maskAddress(value = '') {
   if (!value) {
     return '';
   }
-  const match = value.match(/^(.+?[\u533a\u53bf])/);
-  return match ? `${match[1]}****` : '****';
+  const match = value.match(/^(?<prefix>.+?[\u533a\u53bf])/);
+  return match?.groups?.prefix ? `${match.groups.prefix}****` : '****';
 }
 
 export function maskSensitiveText(value = '', type = '') {

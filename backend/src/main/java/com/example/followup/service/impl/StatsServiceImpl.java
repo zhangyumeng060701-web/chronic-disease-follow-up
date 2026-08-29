@@ -65,7 +65,6 @@ public class StatsServiceImpl implements StatsService {
      */
     @Override
     public StatsOverview getOverview() {
-        long start = System.currentTimeMillis();
         boolean isAdmin = SecurityUtils.isAdmin();
         Long currentDoctorId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
@@ -102,6 +101,7 @@ public class StatsServiceImpl implements StatsService {
                 followUpTaskCompletionRate,
                 avgAlertResponseHours
         );
+        long start = System.currentTimeMillis();
         log.info("getOverview isAdmin={} cost={}ms", isAdmin, System.currentTimeMillis() - start);
         return result;
     }
@@ -306,7 +306,6 @@ public class StatsServiceImpl implements StatsService {
      */
     @Override
     public List<DoctorStats> getDoctorComparison() {
-        long start = System.currentTimeMillis();
         LambdaQueryWrapper<SysUser> userWrapper = new LambdaQueryWrapper<>();
         userWrapper.eq(SysUser::getRole, DomainConstants.ROLE_DOCTOR).eq(SysUser::getStatus, 1);
         if (!SecurityUtils.isAdmin()) {
@@ -381,6 +380,7 @@ public class StatsServiceImpl implements StatsService {
             long highRisk = Math.min(highRiskByDoctor.getOrDefault(doc.getId(), 0L), totalWithPlan);
             return new DoctorStats(doc.getId(), doc.getRealName(), totalWithPlan, rate, highRisk);
         }).collect(Collectors.toList());
+        long start = System.currentTimeMillis();
         log.info("getDoctorComparison size={} cost={}ms", result.size(), System.currentTimeMillis() - start);
         return result;
     }

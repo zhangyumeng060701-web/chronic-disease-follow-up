@@ -23,6 +23,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 处理业务异常。
+     *
+     * @param e 业务异常
+     * @return 统一错误响应
+     */
     @ExceptionHandler(BusinessException.class)
     public Result<Void> handleBusiness(BusinessException e) {
         return Result.error(e.getHttpStatus(), e.getMessage());

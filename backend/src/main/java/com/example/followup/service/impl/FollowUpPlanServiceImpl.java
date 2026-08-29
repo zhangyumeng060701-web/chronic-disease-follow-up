@@ -66,7 +66,6 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
      */
     @Override
     public PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query) {
-        long start = System.currentTimeMillis();
         boolean isAdmin = SecurityUtils.isAdmin();
         Long currentUserId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
@@ -89,6 +88,7 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
         planMapper.selectPage(page, wrapper);
         List<FollowUpPlanVO> vos = toVOs(page.getRecords());
 
+        long start = System.currentTimeMillis();
         log.info("listPlans total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }
@@ -197,8 +197,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
                 .filter(Objects::nonNull).distinct().collect(Collectors.toList());
         Map<Long, String> patientNames = patientMapper.selectBatchIds(patientIds).stream()
                 .collect(Collectors.toMap(Patient::getId, Patient::getName, (a, b) -> a));
-        Map<Long, String> doctorNames = doctorIds.isEmpty() ? Map.of() :
-                sysUserMapper.selectBatchIds(doctorIds).stream()
+        Map<Long, String> doctorNames = doctorIds.isEmpty()
+                ? Map.of()
+                : sysUserMapper.selectBatchIds(doctorIds).stream()
                         .collect(Collectors.toMap(SysUser::getId, SysUser::getRealName, (a, b) -> a));
         return plans.stream().map(plan -> {
             FollowUpPlanVO vo = toVO(plan);

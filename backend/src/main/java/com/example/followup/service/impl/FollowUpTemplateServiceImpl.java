@@ -45,7 +45,6 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
      */
     @Override
     public PageResponse<FollowUpTemplateVO> listTemplates(FollowUpTemplateQuery query) {
-        long start = System.currentTimeMillis();
         LambdaQueryWrapper<FollowUpTemplate> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.hasText(query.getTemplateCode())) {
             wrapper.like(FollowUpTemplate::getTemplateCode, query.getTemplateCode());
@@ -61,6 +60,7 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
                 .map(this::toVO)
                 .collect(Collectors.toList());
 
+        long start = System.currentTimeMillis();
         log.info("listTemplates total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }

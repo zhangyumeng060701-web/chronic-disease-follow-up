@@ -20,12 +20,11 @@ import java.util.List;
  */
 @Mapper
 public interface AlertRuleMapper extends BaseMapper<AlertRule> {
-    @Select("SELECT * FROM t_alert_rule WHERE is_active = 1 ORDER BY threshold DESC")
-
     /**
      * 查询findActiveRules。
      *
      * @return 返回值
      */
+    @Select("SELECT * FROM t_alert_rule WHERE is_active = 1 ORDER BY threshold DESC")
     List<AlertRule> findActiveRules();
 }

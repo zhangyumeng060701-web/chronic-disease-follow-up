@@ -51,9 +51,9 @@ public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
     @Scheduled(cron = "0 0 2 * * ?")
     @Transactional
     public void generateLostFollowUpAlerts() {
-        long start = System.currentTimeMillis();
         List<Long> patientIds = followUpMapper.findOverduePatientIds();
         if (patientIds.isEmpty()) {
+            long start = System.currentTimeMillis();
             log.info("generateLostFollowUpAlerts: no overdue patients, cost={}ms",
                     System.currentTimeMillis() - start);
             return;
@@ -112,6 +112,7 @@ public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
         }
         upgradedAlerts.forEach(alertMapper::updateById);
 
+        long start = System.currentTimeMillis();
         log.info("generateLostFollowUpAlerts: patients={} new={} upgraded={} cost={}ms",
                 patientIds.size(), newAlerts.size(), upgradedAlerts.size(),
                 System.currentTimeMillis() - start);

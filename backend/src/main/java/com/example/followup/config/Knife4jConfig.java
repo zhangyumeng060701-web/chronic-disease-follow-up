@@ -23,6 +23,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableSwagger2WebMvc
 public class Knife4jConfig {
+    /**
+     * Swagger Docket 配置。
+     *
+     * @return Swagger Docket
+     */
     @Bean
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)

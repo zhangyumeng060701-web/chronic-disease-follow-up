@@ -38,6 +38,11 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    /**
+     * 密码加密器。
+     *
+     * @return BCrypt 密码编码器
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -67,7 +72,10 @@ public class SecurityConfig {
 
     static class JwtAuthFilter extends OncePerRequestFilter {
         private final JwtUtil jwtUtil;
-        JwtAuthFilter(JwtUtil jwtUtil) { this.jwtUtil = jwtUtil; }
+
+        JwtAuthFilter(JwtUtil jwtUtil) {
+            this.jwtUtil = jwtUtil;
+        }
 
         /**
          * 执行doFilterInternal操作。
@@ -75,6 +83,8 @@ public class SecurityConfig {
          * @param request 参数说明
          * @param response 参数说明
          * @param chain 参数说明
+         * @throws ServletException 过滤器处理异常
+         * @throws IOException 输入输出异常
          */
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,

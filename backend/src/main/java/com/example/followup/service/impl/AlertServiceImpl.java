@@ -51,7 +51,6 @@ public class AlertServiceImpl implements AlertService {
      */
     @Override
     public PageResponse<AlertVO> listAlerts(AlertQuery query) {
-        long start = System.currentTimeMillis();
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
         if (query.getAlertType() != null && !query.getAlertType().isEmpty()) {
             wrapper.eq(Alert::getAlertType, query.getAlertType());
@@ -72,8 +71,9 @@ public class AlertServiceImpl implements AlertService {
 
         List<Long> patientIds = page.getRecords().stream()
                 .map(Alert::getPatientId).distinct().collect(Collectors.toList());
-        Map<Long, String> nameMap = patientIds.isEmpty() ? Map.of() :
-                patientMapper.selectBatchIds(patientIds).stream()
+        Map<Long, String> nameMap = patientIds.isEmpty()
+                ? Map.of()
+                : patientMapper.selectBatchIds(patientIds).stream()
                         .collect(Collectors.toMap(Patient::getId, Patient::getName));
 
         List<AlertVO> vos = page.getRecords().stream().map(a -> {
@@ -98,6 +98,7 @@ public class AlertServiceImpl implements AlertService {
             return vo;
         }).collect(Collectors.toList());
 
+        long start = System.currentTimeMillis();
         log.info("listAlerts total={} cost={}ms", page.getTotal(), System.currentTimeMillis() - start);
         return PageResponseUtil.of(page, vos, query.getPage(), query.getSize());
     }

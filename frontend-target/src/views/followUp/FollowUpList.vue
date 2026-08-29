@@ -240,8 +240,9 @@ function queryParams() {
     params.patientId = searchForm.patientId;
   }
   if (dateRange.value && dateRange.value.length === 2) {
-    params.startDate = dateRange.value[0];
-    params.endDate = dateRange.value[1];
+    const [startDate, endDate] = dateRange.value;
+    params.startDate = startDate;
+    params.endDate = endDate;
   }
   return params;
 }

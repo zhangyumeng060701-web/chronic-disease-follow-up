@@ -15,9 +15,6 @@ public final class DesensitizationUtil {
     private DesensitizationUtil() {
     }
 
-    /**
-    * 姓名：保留首位，其余替换为 *。
-    */
 
     /**
      * 执行maskName操作。
@@ -35,9 +32,6 @@ public final class DesensitizationUtil {
         return name.charAt(0) + repeat('*', name.length() - 1);
     }
 
-    /**
-    * 手机号：保留前 3 位和后 4 位。
-    */
 
     /**
      * 执行maskPhone操作。
@@ -56,9 +50,6 @@ public final class DesensitizationUtil {
         return digits.substring(0, 3) + "****" + digits.substring(digits.length() - 4);
     }
 
-    /**
-    * 身份证号：保留前 3 位和后 4 位，中间按原长度隐藏。
-    */
 
     /**
      * 执行maskIdCard操作。
@@ -77,9 +68,6 @@ public final class DesensitizationUtil {
         return value.substring(0, 3) + repeat('*', value.length() - 7) + value.substring(value.length() - 4);
     }
 
-    /**
-    * 住址：保留前 6 个字符，其余隐藏。
-    */
 
     /**
      * 执行maskAddress操作。

@@ -48,7 +48,8 @@ public class FollowUpController {
      */
     @GetMapping
     @ApiOperation(value = "分页查询随访记录",
-            notes = "示例：GET /api/follow-ups?page=1&size=20&startDate=2026-08-01&endDate=2026-08-31。错误码：400 参数错误，401 未登录，403 无权限。")
+            notes = "示例：GET /api/follow-ups?page=1&size=20&startDate=2026-08-01"
+                    + "&endDate=2026-08-31。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<FollowUpVO>> list(@Valid FollowUpQuery query) {
         return Result.success(followUpService.listFollowUps(query));
     }
