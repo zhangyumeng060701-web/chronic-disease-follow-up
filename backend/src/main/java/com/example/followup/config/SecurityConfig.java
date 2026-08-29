@@ -43,7 +43,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
     /**
      * 执行filterChain操作。
      *
@@ -51,6 +50,7 @@ public class SecurityConfig {
      * @param jwtUtil 参数说明
      * @return 返回值
      */
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http.csrf().disable()
             .cors().and()

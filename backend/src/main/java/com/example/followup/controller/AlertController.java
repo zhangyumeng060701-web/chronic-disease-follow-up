@@ -37,12 +37,12 @@ public class AlertController {
     @Autowired
     private AlertService alertService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询预警列表",
-            notes = "示例：GET /api/alerts?page=1&size=20&alertLevel=RED。错误码：400 参数错误，401 未登录，403 无权限。")
     /**
      * 执行 list 操作。
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询预警列表",
+            notes = "示例：GET /api/alerts?page=1&size=20&alertLevel=RED。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<AlertVO>> list(@Valid AlertQuery query) {
         return Result.success(alertService.listAlerts(query));
     }
@@ -55,12 +55,12 @@ public class AlertController {
         return Result.success();
     }
 
-    @PutMapping("/{id}/contact")
-    @ApiOperation(value = "标记预警为已联系",
-            notes = "示例：PUT /api/alerts/1/contact。错误码：401 未登录，403 无权限，404 不存在。")
     /**
      * 执行 contact 操作。
      */
+    @PutMapping("/{id}/contact")
+    @ApiOperation(value = "标记预警为已联系",
+            notes = "示例：PUT /api/alerts/1/contact。错误码：401 未登录，403 无权限，404 不存在。")
     public Result<Void> contact(@PathVariable Long id) {
         alertService.contactAlert(id);
         return Result.success();

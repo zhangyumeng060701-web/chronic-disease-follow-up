@@ -41,14 +41,14 @@ public class FollowUpTemplateController {
     @Autowired
     private FollowUpTemplateService templateService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询随访模板")
     /**
      * 分页查询随访模板
      *
      * @param query 参数说明
      * @return 返回值
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询随访模板")
     public Result<PageResponse<FollowUpTemplateVO>> list(@Valid FollowUpTemplateQuery query) {
         return Result.success(templateService.listTemplates(query));
     }

@@ -40,12 +40,12 @@ public class UserController {
     @Autowired
     private SysUserService sysUserService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询用户列表",
-            notes = "示例：GET /api/users?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限。")
     /**
      * 执行 list 操作。
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询用户列表",
+            notes = "示例：GET /api/users?page=1&size=20。错误码：400 参数错误，401 未登录，403 无权限。")
     public Result<PageResponse<UserVO>> list(@Valid UserQuery query) {
         return Result.success(sysUserService.listUsers(query));
     }
@@ -59,12 +59,12 @@ public class UserController {
         return Result.success();
     }
 
-    @PutMapping("/{id}")
-    @ApiOperation(value = "编辑用户",
-            notes = "密码留空表示不修改。错误码：400 参数错误，401 未登录，403 无权限，404 不存在。")
     /**
      * 执行 update 操作。
      */
+    @PutMapping("/{id}")
+    @ApiOperation(value = "编辑用户",
+            notes = "密码留空表示不修改。错误码：400 参数错误，401 未登录，403 无权限，404 不存在。")
     @OperationLog(operation = "编辑用户", targetType = "User")
     public Result<Void> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
         sysUserService.updateUser(id, request);

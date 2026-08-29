@@ -35,14 +35,14 @@ public class FollowUpTaskController {
     @Autowired
     private FollowUpTaskService taskService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询随访任务")
     /**
      * 分页查询随访任务
      *
      * @param query 参数说明
      * @return 返回值
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询随访任务")
     public Result<PageResponse<FollowUpTaskVO>> list(@Valid FollowUpTaskQuery query) {
         return Result.success(taskService.listTasks(query));
     }

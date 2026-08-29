@@ -33,11 +33,11 @@ public class FollowUpTaskScheduler {
     @Autowired
     private FollowUpTaskService taskService;
 
-    @Scheduled(cron = "0 30 1 * * ?")
     /**
      * 执行generateDueTasks操作。
      *
      */
+    @Scheduled(cron = "0 30 1 * * ?")
     public void generateDueTasks() {
         long start = System.currentTimeMillis();
         List<FollowUpPlan> duePlans = planMapper.selectList(new LambdaQueryWrapper<FollowUpPlan>()

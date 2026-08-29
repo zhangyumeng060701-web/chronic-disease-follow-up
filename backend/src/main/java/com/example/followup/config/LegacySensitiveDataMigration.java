@@ -33,12 +33,12 @@ public class LegacySensitiveDataMigration implements ApplicationRunner {
     @Autowired
     private SensitiveDataCipher sensitiveDataCipher;
 
-    @Override
     /**
      * 执行run操作。
      *
      * @param args 参数说明
      */
+    @Override
     public void run(ApplicationArguments args) {
         if (!sensitiveDataCipher.isConfigured()) {
             log.info("DATA_ENCRYPTION_KEY is not configured, skip plaintext migration");

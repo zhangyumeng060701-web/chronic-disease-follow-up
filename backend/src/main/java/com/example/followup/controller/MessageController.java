@@ -38,14 +38,14 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询消息")
     /**
      * 分页查询消息
      *
      * @param query 参数说明
      * @return 返回值
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询消息")
     public Result<PageResponse<Message>> list(@Valid MessageQuery query) {
         return Result.success(messageService.listMessages(query));
     }

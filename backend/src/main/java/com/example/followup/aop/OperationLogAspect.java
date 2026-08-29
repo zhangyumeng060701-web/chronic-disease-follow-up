@@ -37,13 +37,13 @@ public class OperationLogAspect {
     @Autowired
     private OperationLogService operationLogService;
 
+    /**
+     * 执行 afterReturning 操作。
+     */
     @AfterReturning(
             pointcut = "@annotation(operationLog)",
             returning = "result"
     )
-    /**
-     * 执行 afterReturning 操作。
-     */
     public void afterReturning(JoinPoint joinPoint, OperationLog operationLog, Object result) {
         try {
             CurrentUser currentUser = SecurityUtils.currentUser();

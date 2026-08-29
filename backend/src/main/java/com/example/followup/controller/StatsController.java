@@ -33,12 +33,12 @@ public class StatsController {
     @Autowired
     private StatsService statsService;
 
-    @GetMapping("/overview")
-    @ApiOperation(value = "获取总览数据",
-            notes = "返回患者总数、随访完成率、高危数、失访数。错误码：401 未登录，403 无权限。")
     /**
      * 执行 overview 操作。
      */
+    @GetMapping("/overview")
+    @ApiOperation(value = "获取总览数据",
+            notes = "返回患者总数、随访完成率、高危数、失访数。错误码：401 未登录，403 无权限。")
     public Result<StatsOverview> overview() {
         return Result.success(statsService.getOverview());
     }
@@ -50,12 +50,12 @@ public class StatsController {
         return Result.success(statsService.getBpTrend());
     }
 
-    @GetMapping("/glucose-trend")
-    @ApiOperation(value = "血糖控制率趋势",
-            notes = "返回近 12 个月血糖控制率。错误码：401 未登录，403 无权限。")
     /**
      * 执行 glucoseTrend 操作。
      */
+    @GetMapping("/glucose-trend")
+    @ApiOperation(value = "血糖控制率趋势",
+            notes = "返回近 12 个月血糖控制率。错误码：401 未登录，403 无权限。")
     public Result<List<TrendItem>> glucoseTrend() {
         return Result.success(statsService.getGlucoseTrend());
     }

@@ -40,14 +40,14 @@ public class QuestionnaireController {
     @Autowired
     private QuestionnaireService questionnaireService;
 
-    @GetMapping
-    @ApiOperation(value = "分页查询问卷")
     /**
      * 分页查询问卷
      *
      * @param query 参数说明
      * @return 返回值
      */
+    @GetMapping
+    @ApiOperation(value = "分页查询问卷")
     public Result<PageResponse<Questionnaire>> list(@Valid QuestionnaireQuery query) {
         return Result.success(questionnaireService.listQuestionnaires(query));
     }

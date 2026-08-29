@@ -33,14 +33,14 @@ public class DictionaryController {
     @Autowired
     private DictionaryMapper dictionaryMapper;
 
-    @GetMapping
-    @ApiOperation(value = "按类型查询字典")
     /**
      * 按类型查询字典
      *
      * @param type 参数说明
      * @return 返回值
      */
+    @GetMapping
+    @ApiOperation(value = "按类型查询字典")
     public Result<List<Dictionary>> list(@RequestParam String type) {
         return Result.success(dictionaryMapper.selectList(new LambdaQueryWrapper<Dictionary>()
                 .eq(Dictionary::getDictType, type)

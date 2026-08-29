@@ -35,8 +35,6 @@ public class VitalTrendController {
     @Autowired
     private PatientVitalMapper vitalMapper;
 
-    @GetMapping("/trend")
-    @ApiOperation(value = "查询患者指标长期趋势")
     /**
      * 查询患者指标长期趋势
      *
@@ -45,6 +43,8 @@ public class VitalTrendController {
      * @param days 参数说明
      * @return 返回值
      */
+    @GetMapping("/trend")
+    @ApiOperation(value = "查询患者指标长期趋势")
     public Result<List<PatientVital>> trend(@RequestParam Long patientId,
                                             @RequestParam(required = false) String metricType,
                                             @RequestParam(defaultValue = "90") Integer days) {
