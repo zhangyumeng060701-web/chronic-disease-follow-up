@@ -17,8 +17,28 @@ import java.util.List;
  * @version 1.0.0
  */
 public interface StatsService {
+    /**
+     * 查询getOverview。
+     *
+     * @return 返回值
+     */
     StatsOverview getOverview();
+    /**
+     * 查询getBpTrend。
+     *
+     * @return 返回值
+     */
     List<TrendItem> getBpTrend();
+    /**
+     * 查询getGlucoseTrend。
+     *
+     * @return 返回值
+     */
     List<TrendItem> getGlucoseTrend();
+    /**
+     * 查询getDoctorComparison。
+     *
+     * @return 返回值
+     */
     List<DoctorStats> getDoctorComparison();
 }

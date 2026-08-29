@@ -43,7 +43,10 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 执行 handleUnknown 操作。
+     * 执行handleUnknown操作。
+     *
+     * @param e 参数说明
+     * @return 返回值
      */
     @ExceptionHandler(Exception.class)
     public Result<Void> handleUnknown(Exception e) {

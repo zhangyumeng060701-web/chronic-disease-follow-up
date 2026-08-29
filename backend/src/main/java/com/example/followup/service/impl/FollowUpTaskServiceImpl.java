@@ -57,7 +57,10 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     private SysUserMapper sysUserMapper;
 
     /**
-     * 执行 listTasks 操作。
+     * 查询listTasks。
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @Override
     public PageResponse<FollowUpTaskVO> listTasks(FollowUpTaskQuery query) {
@@ -92,7 +95,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     }
 
     /**
-     * 执行 completeTask 操作。
+     * 执行completeTask操作。
+     *
+     * @param id 参数说明
      */
     @Override
     @Transactional
@@ -113,7 +118,9 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     }
 
     /**
-     * 执行 cancelTask 操作。
+     * 判断cancelTask。
+     *
+     * @param id 参数说明
      */
     @Override
     @Transactional
@@ -124,6 +131,11 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
         log.info("cancelTask id={}", id);
     }
 
+    /**
+     * 新增createTaskFromPlan。
+     *
+     * @param plan 参数说明
+     */
     @Override
     @Transactional
     public void createTaskFromPlan(FollowUpPlan plan) {

@@ -59,7 +59,9 @@ public class StatsServiceImpl implements StatsService {
     private FollowUpTaskMapper followUpTaskMapper;
 
     /**
-     * 执行 getOverview 操作。
+     * 查询getOverview。
+     *
+     * @return 返回值
      */
     @Override
     public StatsOverview getOverview() {
@@ -222,13 +224,20 @@ public class StatsServiceImpl implements StatsService {
     }
 
     /**
-     * 执行 getBpTrend 操作。
+     * 查询getBpTrend。
+     *
+     * @return 返回值
      */
     @Override
     public List<TrendItem> getBpTrend() {
         return getTrend("bp");
     }
 
+    /**
+     * 查询getGlucoseTrend。
+     *
+     * @return 返回值
+     */
     @Override
     public List<TrendItem> getGlucoseTrend() {
         return getTrend("glucose");
@@ -291,7 +300,9 @@ public class StatsServiceImpl implements StatsService {
     }
 
     /**
-     * 执行 getDoctorComparison 操作。
+     * 查询getDoctorComparison。
+     *
+     * @return 返回值
      */
     @Override
     public List<DoctorStats> getDoctorComparison() {

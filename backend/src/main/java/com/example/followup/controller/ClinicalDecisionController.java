@@ -53,7 +53,10 @@ public class ClinicalDecisionController {
     }
 
     /**
-     * 执行 generate 操作。
+     * 生成AI随访建议（待医生确认）
+     *
+     * @param patientId 参数说明
+     * @return 返回值
      */
     @PostMapping("/patients/{patientId}/suggestions")
     @ApiOperation(value = "生成AI随访建议（待医生确认）")
@@ -61,6 +64,12 @@ public class ClinicalDecisionController {
         return Result.success(clinicalDecisionService.generateSuggestion(patientId));
     }
 
+    /**
+     * AI随访建议接口：输入最近随访记录，输出风险判断与建议
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PostMapping("/ai-suggestion")
     @ApiOperation(value = "AI随访建议接口：输入最近随访记录，输出风险判断与建议")
     public Result<FollowUpSuggestion> aiSuggestion(@Valid @RequestBody AISuggestionRequest request) {
@@ -68,7 +77,12 @@ public class ClinicalDecisionController {
     }
 
     /**
-     * 执行 suggestions 操作。
+     * 分页查询随访建议
+     *
+     * @param page 参数说明
+     * @param size 参数说明
+     * @param status 参数说明
+     * @return 返回值
      */
     @GetMapping("/suggestions")
     @ApiOperation(value = "分页查询随访建议")
@@ -78,6 +92,12 @@ public class ClinicalDecisionController {
         return Result.success(clinicalDecisionService.listSuggestions(page, size, status));
     }
 
+    /**
+     * 医生确认AI建议并落库
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/suggestions/{id}/confirm")
     @ApiOperation(value = "医生确认AI建议并落库")
     @OperationLog(operation = "确认AI随访建议", targetType = "FollowUpSuggestion")
@@ -87,7 +107,10 @@ public class ClinicalDecisionController {
     }
 
     /**
-     * 执行 reject 操作。
+     * 医生驳回AI建议
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @PutMapping("/suggestions/{id}/reject")
     @ApiOperation(value = "医生驳回AI建议")

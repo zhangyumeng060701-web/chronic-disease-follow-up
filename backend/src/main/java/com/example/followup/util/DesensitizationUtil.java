@@ -18,6 +18,12 @@ public final class DesensitizationUtil {
     /**
     * 姓名：保留首位，其余替换为 *。
     */
+    /**
+     * 执行maskName操作。
+     *
+     * @param name 参数说明
+     * @return 返回值
+     */
     public static String maskName(String name) {
         if (!StringUtils.hasText(name)) {
             return name;
@@ -31,6 +37,12 @@ public final class DesensitizationUtil {
     /**
     * 手机号：保留前 3 位和后 4 位。
     */
+    /**
+     * 执行maskPhone操作。
+     *
+     * @param phone 参数说明
+     * @return 返回值
+     */
     public static String maskPhone(String phone) {
         if (!StringUtils.hasText(phone)) {
             return phone;
@@ -45,6 +57,12 @@ public final class DesensitizationUtil {
     /**
     * 身份证号：保留前 3 位和后 4 位，中间按原长度隐藏。
     */
+    /**
+     * 执行maskIdCard操作。
+     *
+     * @param idCard 参数说明
+     * @return 返回值
+     */
     public static String maskIdCard(String idCard) {
         if (!StringUtils.hasText(idCard)) {
             return idCard;
@@ -59,6 +77,12 @@ public final class DesensitizationUtil {
     /**
     * 住址：保留前 6 个字符，其余隐藏。
     */
+    /**
+     * 执行maskAddress操作。
+     *
+     * @param address 参数说明
+     * @return 返回值
+     */
     public static String maskAddress(String address) {
         if (!StringUtils.hasText(address)) {
             return address;

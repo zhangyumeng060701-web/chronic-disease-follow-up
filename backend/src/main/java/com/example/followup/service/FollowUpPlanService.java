@@ -16,8 +16,32 @@ import com.example.followup.dto.response.PageResponse;
  * @version 1.0.0
  */
 public interface FollowUpPlanService {
+    /**
+     * 查询listPlans。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query);
+    /**
+     * 新增createPlan。
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     FollowUpPlanVO createPlan(FollowUpPlanSaveRequest request);
+    /**
+     * 更新updatePlan。
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
+     */
     FollowUpPlanVO updatePlan(Long id, FollowUpPlanSaveRequest request);
+    /**
+     * 删除deletePlan。
+     *
+     * @param id 参数说明
+     */
     void deletePlan(Long id);
 }

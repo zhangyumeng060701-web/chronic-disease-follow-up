@@ -34,12 +34,19 @@ public enum ErrorCode {
     }
 
     /**
-     * 执行 getHttpStatus 操作。
+     * 查询getHttpStatus。
+     *
+     * @return 返回值
      */
     public int getHttpStatus() {
         return httpStatus;
     }
 
+    /**
+     * 查询getDefaultMessage。
+     *
+     * @return 返回值
+     */
     public String getDefaultMessage() {
         return defaultMessage;
     }

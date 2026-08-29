@@ -35,12 +35,20 @@ public class SensitiveDataCipher {
     private String encryptionKey;
 
     /**
-     * 执行 isConfigured 操作。
+     * 判断isConfigured。
+     *
+     * @return 返回值
      */
     public boolean isConfigured() {
         return StringUtils.hasText(encryptionKey);
     }
 
+    /**
+     * 执行encrypt操作。
+     *
+     * @param plainText 参数说明
+     * @return 返回值
+     */
     public String encrypt(String plainText) {
         if (!StringUtils.hasText(plainText) || !StringUtils.hasText(encryptionKey)) {
             return plainText;
@@ -61,7 +69,10 @@ public class SensitiveDataCipher {
     }
 
     /**
-     * 执行 decrypt 操作。
+     * 执行decrypt操作。
+     *
+     * @param encryptedText 参数说明
+     * @return 返回值
      */
     public String decrypt(String encryptedText) {
         if (!StringUtils.hasText(encryptedText) || !encryptedText.startsWith(PREFIX)) {

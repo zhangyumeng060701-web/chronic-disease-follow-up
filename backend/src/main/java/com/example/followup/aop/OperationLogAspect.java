@@ -38,7 +38,11 @@ public class OperationLogAspect {
     private OperationLogService operationLogService;
 
     /**
-     * 执行 afterReturning 操作。
+     * 执行afterReturning操作。
+     *
+     * @param joinPoint 参数说明
+     * @param operationLog 参数说明
+     * @param result 参数说明
      */
     @AfterReturning(
             pointcut = "@annotation(operationLog)",

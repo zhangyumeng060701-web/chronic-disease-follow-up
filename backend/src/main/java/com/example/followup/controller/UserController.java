@@ -41,7 +41,10 @@ public class UserController {
     private SysUserService sysUserService;
 
     /**
-     * 执行 list 操作。
+     * 分页查询用户列表
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @GetMapping
     @ApiOperation(value = "分页查询用户列表",
@@ -50,6 +53,12 @@ public class UserController {
         return Result.success(sysUserService.listUsers(query));
     }
 
+    /**
+     * 新增用户
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PostMapping
     @ApiOperation(value = "新增用户",
             notes = "请求体包含 username/password/realName/role。错误码：400 参数错误，401 未登录，403 无权限。")
@@ -60,7 +69,11 @@ public class UserController {
     }
 
     /**
-     * 执行 update 操作。
+     * 编辑用户
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
      */
     @PutMapping("/{id}")
     @ApiOperation(value = "编辑用户",
@@ -71,6 +84,12 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 启用/禁用用户
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}/toggle-status")
     @ApiOperation(value = "启用/禁用用户",
             notes = "示例：PUT /api/users/1/toggle-status。错误码：401 未登录，403 无权限，404 不存在。")

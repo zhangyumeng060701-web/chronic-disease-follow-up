@@ -42,7 +42,10 @@ public class PatientController {
     private PatientService patientService;
 
     /**
-     * 执行 list 操作。
+     * 分页查询患者列表
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @GetMapping
     @ApiOperation(value = "分页查询患者列表",
@@ -51,6 +54,11 @@ public class PatientController {
         return Result.success(patientService.listPatients(query));
     }
 
+    /**
+     * 导出患者（自动脱敏并记录审计日志）
+     *
+     * @return 返回值
+     */
     @GetMapping(value = "/export", produces = "text/csv;charset=UTF-8")
     @ApiOperation(value = "导出患者（自动脱敏并记录审计日志）")
     public String export() {
@@ -58,7 +66,10 @@ public class PatientController {
     }
 
     /**
-     * 执行 getById 操作。
+     * 获取患者详情
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "获取患者详情",
@@ -67,6 +78,12 @@ public class PatientController {
         return Result.success(patientService.getPatientById(id));
     }
 
+    /**
+     * 新增患者
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PostMapping
     @ApiOperation(value = "新增患者",
             notes = "请求体包含 name/gender/age/phone/idCard/address/diseaseType 等字段。错误码：400 参数错误，401 未登录，403 无权限。")
@@ -77,7 +94,11 @@ public class PatientController {
     }
 
     /**
-     * 执行 update 操作。
+     * 编辑患者
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
      */
     @PutMapping("/{id}")
     @ApiOperation(value = "编辑患者",
@@ -88,6 +109,12 @@ public class PatientController {
         return Result.success();
     }
 
+    /**
+     * 删除患者（软删除）
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除患者（软删除）",
             notes = "示例：DELETE /api/patients/1。错误码：401 未登录，403 无权限，404 不存在。")

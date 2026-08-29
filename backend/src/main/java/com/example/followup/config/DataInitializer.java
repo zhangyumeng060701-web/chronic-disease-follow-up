@@ -35,7 +35,9 @@ public class DataInitializer implements ApplicationRunner {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * 执行 run 操作。
+     * 执行run操作。
+     *
+     * @param args 参数说明
      */
     @Override
     public void run(ApplicationArguments args) {

@@ -41,7 +41,10 @@ public class FollowUpController {
     private FollowUpService followUpService;
 
     /**
-     * 执行 list 操作。
+     * 分页查询随访记录
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @GetMapping
     @ApiOperation(value = "分页查询随访记录",
@@ -50,6 +53,12 @@ public class FollowUpController {
         return Result.success(followUpService.listFollowUps(query));
     }
 
+    /**
+     * 获取随访记录详情
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @GetMapping("/{id}")
     @ApiOperation(value = "获取随访记录详情",
             notes = "示例：GET /api/follow-ups/1。错误码：401 未登录，403 无权限，404 不存在。")
@@ -58,7 +67,10 @@ public class FollowUpController {
     }
 
     /**
-     * 执行 add 操作。
+     * 新增随访记录
+     *
+     * @param followUp 参数说明
+     * @return 返回值
      */
     @PostMapping
     @ApiOperation(value = "新增随访记录",
@@ -69,6 +81,13 @@ public class FollowUpController {
         return Result.success();
     }
 
+    /**
+     * 编辑随访记录
+     *
+     * @param id 参数说明
+     * @param followUp 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}")
     @ApiOperation(value = "编辑随访记录",
             notes = "请求体与新增一致，路径 id 必填。错误码：400 参数错误，403 无权限，404 不存在。")
@@ -80,7 +99,10 @@ public class FollowUpController {
     }
 
     /**
-     * 执行 delete 操作。
+     * 删除随访记录
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除随访记录",
@@ -91,6 +113,11 @@ public class FollowUpController {
         return Result.success();
     }
 
+    /**
+     * 查询逾期未随访的患者
+     *
+     * @return 返回值
+     */
     @GetMapping("/overdue")
     @ApiOperation(value = "查询逾期未随访的患者",
             notes = "返回超期 7 天以上记录。错误码：401 未登录，403 无权限。")

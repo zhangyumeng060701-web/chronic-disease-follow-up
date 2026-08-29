@@ -37,6 +37,12 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
+    /**
+     * 查询listMessages。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     @Override
     public PageResponse<Message> listMessages(MessageQuery query) {
         LambdaQueryWrapper<Message> wrapper = new LambdaQueryWrapper<>();
@@ -56,7 +62,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 执行 createMessage 操作。
+     * 新增createMessage。
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @Override
     public Message createMessage(MessageCreateRequest request) {
@@ -75,7 +84,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 执行 markRead 操作。
+     * 执行markRead操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void markRead(Long id) {

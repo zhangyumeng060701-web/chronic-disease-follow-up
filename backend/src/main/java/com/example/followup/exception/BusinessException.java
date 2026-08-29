@@ -13,23 +13,41 @@ package com.example.followup.exception;
 public class BusinessException extends RuntimeException {
     private final ErrorCode errorCode;
 
+    /**
+     * 执行BusinessException操作。
+     *
+     * @param errorCode 参数说明
+     */
     public BusinessException(ErrorCode errorCode) {
         super(errorCode.getDefaultMessage());
         this.errorCode = errorCode;
     }
 
     /**
-     * 执行 BusinessException 操作。
+     * 执行BusinessException操作。
+     *
+     * @param errorCode 参数说明
+     * @param message 参数说明
      */
     public BusinessException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
+    /**
+     * 查询getErrorCode。
+     *
+     * @return 返回值
+     */
     public ErrorCode getErrorCode() {
         return errorCode;
     }
 
+    /**
+     * 查询getHttpStatus。
+     *
+     * @return 返回值
+     */
     public int getHttpStatus() {
         return errorCode.getHttpStatus();
     }

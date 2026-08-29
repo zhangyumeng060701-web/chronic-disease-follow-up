@@ -34,7 +34,9 @@ public class StatsController {
     private StatsService statsService;
 
     /**
-     * 执行 overview 操作。
+     * 获取总览数据
+     *
+     * @return 返回值
      */
     @GetMapping("/overview")
     @ApiOperation(value = "获取总览数据",
@@ -43,6 +45,11 @@ public class StatsController {
         return Result.success(statsService.getOverview());
     }
 
+    /**
+     * 血压控制率趋势
+     *
+     * @return 返回值
+     */
     @GetMapping("/bp-trend")
     @ApiOperation(value = "血压控制率趋势",
             notes = "返回近 12 个月血压控制率。错误码：401 未登录，403 无权限。")
@@ -51,7 +58,9 @@ public class StatsController {
     }
 
     /**
-     * 执行 glucoseTrend 操作。
+     * 血糖控制率趋势
+     *
+     * @return 返回值
      */
     @GetMapping("/glucose-trend")
     @ApiOperation(value = "血糖控制率趋势",
@@ -60,6 +69,11 @@ public class StatsController {
         return Result.success(statsService.getGlucoseTrend());
     }
 
+    /**
+     * 医生对比数据
+     *
+     * @return 返回值
+     */
     @GetMapping("/doctor-comparison")
     @ApiOperation(value = "医生对比数据",
             notes = "医生角色只返回自己数据，管理员返回全部医生。错误码：401 未登录，403 无权限。")

@@ -82,7 +82,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     private com.example.followup.mapper.PatientRiskAssessmentMapper riskAssessmentMapper;
 
     /**
-     * 执行 myPlans 操作。
+     * 执行myPlans操作。
+     *
+     * @return 返回值
      */
     @Override
     public List<FollowUpPlanVO> myPlans() {
@@ -111,7 +113,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 myVitals 操作。
+     * 执行myVitals操作。
+     *
+     * @return 返回值
      */
     @Override
     public List<PatientVital> myVitals() {
@@ -121,6 +125,12 @@ public class PatientPortalServiceImpl implements PatientPortalService {
                 .orderByDesc(PatientVital::getMeasuredAt));
     }
 
+    /**
+     * 执行reportVital操作。
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @Override
     @Transactional
     public PatientVital reportVital(VitalReportRequest request) {
@@ -140,7 +150,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 activeQuestionnaires 操作。
+     * 执行activeQuestionnaires操作。
+     *
+     * @return 返回值
      */
     @Override
     public List<Questionnaire> activeQuestionnaires() {
@@ -149,6 +161,12 @@ public class PatientPortalServiceImpl implements PatientPortalService {
                 .orderByDesc(Questionnaire::getCreateTime));
     }
 
+    /**
+     * 提交submitQuestionnaire。
+     *
+     * @param questionnaireId 参数说明
+     * @param request 参数说明
+     */
     @Override
     @Transactional
     public void submitQuestionnaire(Long questionnaireId, QuestionnaireSubmitRequest request) {
@@ -168,7 +186,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 myMessages 操作。
+     * 执行myMessages操作。
+     *
+     * @return 返回值
      */
     @Override
     public List<Message> myMessages() {
@@ -179,6 +199,11 @@ public class PatientPortalServiceImpl implements PatientPortalService {
                 .orderByDesc(Message::getCreateTime));
     }
 
+    /**
+     * 执行unreadMessageCount操作。
+     *
+     * @return 返回值
+     */
     @Override
     public long unreadMessageCount() {
         Long patientId = SecurityUtils.patientId();
@@ -189,7 +214,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 markMessageRead 操作。
+     * 执行markMessageRead操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void markMessageRead(Long id) {
@@ -204,7 +231,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 myFollowUps 操作。
+     * 执行myFollowUps操作。
+     *
+     * @return 返回值
      */
     @Override
     public List<FollowUpVO> myFollowUps() {
@@ -215,6 +244,12 @@ public class PatientPortalServiceImpl implements PatientPortalService {
         return records.stream().map(VoMappers::toFollowUpVO).collect(Collectors.toList());
     }
 
+    /**
+     * 新增createPatientFollowUp。
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @Override
     @Transactional
     public FollowUpVO createPatientFollowUp(PatientFollowUpRequest request) {
@@ -243,7 +278,9 @@ public class PatientPortalServiceImpl implements PatientPortalService {
     }
 
     /**
-     * 执行 myRiskLevel 操作。
+     * 执行myRiskLevel操作。
+     *
+     * @return 返回值
      */
     @Override
     public Map<String, Object> myRiskLevel() {

@@ -52,7 +52,9 @@ public class WorkbenchController {
     private PatientMapper patientMapper;
 
     /**
-     * 执行 workbench 操作。
+     * 医生工作台：今日任务、待处理预警、待确认AI建议
+     *
+     * @return 返回值
      */
     @GetMapping("/workbench")
     @ApiOperation(value = "医生工作台：今日任务、待处理预警、待确认AI建议")

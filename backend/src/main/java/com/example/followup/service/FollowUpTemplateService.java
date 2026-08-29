@@ -16,8 +16,32 @@ import com.example.followup.entity.FollowUpTemplate;
  * @version 1.0.0
  */
 public interface FollowUpTemplateService {
+    /**
+     * 查询listTemplates。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     PageResponse<FollowUpTemplateVO> listTemplates(FollowUpTemplateQuery query);
+    /**
+     * 新增createTemplate。
+     *
+     * @param template 参数说明
+     * @return 返回值
+     */
     FollowUpTemplateVO createTemplate(FollowUpTemplate template);
+    /**
+     * 更新updateTemplate。
+     *
+     * @param id 参数说明
+     * @param template 参数说明
+     * @return 返回值
+     */
     FollowUpTemplateVO updateTemplate(Long id, FollowUpTemplate template);
+    /**
+     * 执行toggleTemplate操作。
+     *
+     * @param id 参数说明
+     */
     void toggleTemplate(Long id);
 }

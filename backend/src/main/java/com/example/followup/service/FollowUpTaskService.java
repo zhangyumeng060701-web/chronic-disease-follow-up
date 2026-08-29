@@ -16,8 +16,29 @@ import com.example.followup.entity.FollowUpPlan;
  * @version 1.0.0
  */
 public interface FollowUpTaskService {
+    /**
+     * 查询listTasks。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     PageResponse<FollowUpTaskVO> listTasks(FollowUpTaskQuery query);
+    /**
+     * 执行completeTask操作。
+     *
+     * @param id 参数说明
+     */
     void completeTask(Long id);
+    /**
+     * 判断cancelTask。
+     *
+     * @param id 参数说明
+     */
     void cancelTask(Long id);
+    /**
+     * 新增createTaskFromPlan。
+     *
+     * @param plan 参数说明
+     */
     void createTaskFromPlan(FollowUpPlan plan);
 }

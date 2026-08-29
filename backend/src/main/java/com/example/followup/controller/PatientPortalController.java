@@ -57,7 +57,9 @@ public class PatientPortalController {
     }
 
     /**
-     * 执行 riskLevel 操作。
+     * 查看我的风险等级
+     *
+     * @return 返回值
      */
     @GetMapping("/risk-level")
     @ApiOperation(value = "查看我的风险等级")
@@ -65,6 +67,11 @@ public class PatientPortalController {
         return Result.success(patientPortalService.myRiskLevel());
     }
 
+    /**
+     * 查看我的指标记录
+     *
+     * @return 返回值
+     */
     @GetMapping("/vitals")
     @ApiOperation(value = "查看我的指标记录")
     public Result<List<PatientVital>> vitals() {
@@ -72,7 +79,10 @@ public class PatientPortalController {
     }
 
     /**
-     * 执行 reportVital 操作。
+     * 上报血压血糖
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping("/vitals")
     @ApiOperation(value = "上报血压血糖")
@@ -80,6 +90,11 @@ public class PatientPortalController {
         return Result.success(patientPortalService.reportVital(request));
     }
 
+    /**
+     * 获取可用问卷
+     *
+     * @return 返回值
+     */
     @GetMapping("/questionnaires")
     @ApiOperation(value = "获取可用问卷")
     public Result<List<Questionnaire>> questionnaires() {
@@ -87,7 +102,11 @@ public class PatientPortalController {
     }
 
     /**
-     * 执行 submitQuestionnaire 操作。
+     * 提交问卷
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping("/questionnaires/{id}/submit")
     @ApiOperation(value = "提交问卷")
@@ -97,6 +116,11 @@ public class PatientPortalController {
         return Result.success();
     }
 
+    /**
+     * 获取我的消息
+     *
+     * @return 返回值
+     */
     @GetMapping("/messages")
     @ApiOperation(value = "获取我的消息")
     public Result<List<Message>> messages() {
@@ -104,7 +128,9 @@ public class PatientPortalController {
     }
 
     /**
-     * 执行 unreadCount 操作。
+     * 未读消息数
+     *
+     * @return 返回值
      */
     @GetMapping("/messages/unread-count")
     @ApiOperation(value = "未读消息数")
@@ -112,6 +138,12 @@ public class PatientPortalController {
         return Result.success(Map.of("count", patientPortalService.unreadMessageCount()));
     }
 
+    /**
+     * 标记消息已读
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/messages/{id}/read")
     @ApiOperation(value = "标记消息已读")
     public Result<Void> markRead(@PathVariable Long id) {
@@ -120,7 +152,9 @@ public class PatientPortalController {
     }
 
     /**
-     * 执行 followUps 操作。
+     * 查看我的随访记录
+     *
+     * @return 返回值
      */
     @GetMapping("/follow-ups")
     @ApiOperation(value = "查看我的随访记录")
@@ -128,6 +162,12 @@ public class PatientPortalController {
         return Result.success(patientPortalService.myFollowUps());
     }
 
+    /**
+     * 患者端自报随访
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PostMapping("/follow-ups")
     @ApiOperation(value = "患者端自报随访")
     public Result<FollowUpVO> createFollowUp(@Valid @RequestBody PatientFollowUpRequest request) {

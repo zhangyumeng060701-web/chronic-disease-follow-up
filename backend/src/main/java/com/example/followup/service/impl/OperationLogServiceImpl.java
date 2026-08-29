@@ -35,6 +35,12 @@ public class OperationLogServiceImpl implements OperationLogService {
     @Autowired
     private OperationLogMapper operationLogMapper;
 
+    /**
+     * 查询listLogs。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     @Override
     public PageResponse<OperationLog> listLogs(LogQuery query) {
         long start = System.currentTimeMillis();
@@ -55,7 +61,14 @@ public class OperationLogServiceImpl implements OperationLogService {
     }
 
     /**
-     * 执行 log 操作。
+     * 执行log操作。
+     *
+     * @param userId 参数说明
+     * @param username 参数说明
+     * @param operation 参数说明
+     * @param targetType 参数说明
+     * @param targetId 参数说明
+     * @param detail 参数说明
      */
     @Override
     public void log(Long userId, String username, String operation, String targetType, Long targetId, String detail) {

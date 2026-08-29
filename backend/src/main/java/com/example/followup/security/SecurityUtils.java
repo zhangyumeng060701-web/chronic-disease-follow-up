@@ -20,7 +20,9 @@ public final class SecurityUtils {
     }
 
     /**
-     * 执行 currentUser 操作。
+     * 执行currentUser操作。
+     *
+     * @return 返回值
      */
     public static CurrentUser currentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,17 +33,29 @@ public final class SecurityUtils {
         return (CurrentUser) authentication.getPrincipal();
     }
 
+    /**
+     * 判断isAdmin。
+     *
+     * @return 返回值
+     */
     public static boolean isAdmin() {
         return currentUser().isAdmin();
     }
 
     /**
-     * 执行 isPatient 操作。
+     * 判断isPatient。
+     *
+     * @return 返回值
      */
     public static boolean isPatient() {
         return currentUser().isPatient();
     }
 
+    /**
+     * 执行patientId操作。
+     *
+     * @return 返回值
+     */
     public static Long patientId() {
         CurrentUser currentUser = currentUser();
         if (!currentUser.isPatient() || currentUser.getPatientId() == null) {

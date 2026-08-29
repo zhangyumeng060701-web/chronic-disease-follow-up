@@ -46,7 +46,10 @@ public class PatientAuthController {
     private SensitiveDataCipher sensitiveDataCipher;
 
     /**
-     * 执行 login 操作。
+     * 患者端登录
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping("/login")
     @ApiOperation(value = "患者端登录")

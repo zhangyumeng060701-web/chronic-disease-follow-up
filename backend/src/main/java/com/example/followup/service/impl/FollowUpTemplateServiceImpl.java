@@ -37,6 +37,12 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
     @Autowired
     private FollowUpTemplateMapper templateMapper;
 
+    /**
+     * 查询listTemplates。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     @Override
     public PageResponse<FollowUpTemplateVO> listTemplates(FollowUpTemplateQuery query) {
         long start = System.currentTimeMillis();
@@ -60,7 +66,10 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
     }
 
     /**
-     * 执行 createTemplate 操作。
+     * 新增createTemplate。
+     *
+     * @param template 参数说明
+     * @return 返回值
      */
     @Override
     public FollowUpTemplateVO createTemplate(FollowUpTemplate template) {
@@ -80,7 +89,11 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
     }
 
     /**
-     * 执行 updateTemplate 操作。
+     * 更新updateTemplate。
+     *
+     * @param id 参数说明
+     * @param template 参数说明
+     * @return 返回值
      */
     @Override
     public FollowUpTemplateVO updateTemplate(Long id, FollowUpTemplate template) {
@@ -100,7 +113,9 @@ public class FollowUpTemplateServiceImpl implements FollowUpTemplateService {
     }
 
     /**
-     * 执行 toggleTemplate 操作。
+     * 执行toggleTemplate操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void toggleTemplate(Long id) {

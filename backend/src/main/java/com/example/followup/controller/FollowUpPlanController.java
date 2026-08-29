@@ -52,7 +52,10 @@ public class FollowUpPlanController {
     }
 
     /**
-     * 执行 create 操作。
+     * 新增随访计划
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping
     @ApiOperation(value = "新增随访计划")
@@ -60,6 +63,13 @@ public class FollowUpPlanController {
         return Result.success(planService.createPlan(request));
     }
 
+    /**
+     * 更新随访计划
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}")
     @ApiOperation(value = "更新随访计划")
     public Result<FollowUpPlanVO> update(@PathVariable Long id,
@@ -68,7 +78,10 @@ public class FollowUpPlanController {
     }
 
     /**
-     * 执行 delete 操作。
+     * 删除随访计划
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除随访计划")

@@ -26,6 +26,11 @@ public class CorsConfig {
     @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173}")
     private String allowedOrigins;
 
+    /**
+     * 执行corsFilter操作。
+     *
+     * @return 返回值
+     */
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();

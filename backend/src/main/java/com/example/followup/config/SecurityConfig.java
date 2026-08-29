@@ -70,7 +70,11 @@ public class SecurityConfig {
         JwtAuthFilter(JwtUtil jwtUtil) { this.jwtUtil = jwtUtil; }
 
         /**
-         * 执行 doFilterInternal 操作。
+         * 执行doFilterInternal操作。
+         *
+         * @param request 参数说明
+         * @param response 参数说明
+         * @param chain 参数说明
          */
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,

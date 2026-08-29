@@ -72,7 +72,9 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
-     * 执行 createUser 操作。
+     * 新增createUser。
+     *
+     * @param request 参数说明
      */
     @Override
     public void createUser(CreateUserRequest request) {
@@ -93,7 +95,10 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
-     * 执行 updateUser 操作。
+     * 更新updateUser。
+     *
+     * @param id 参数说明
+     * @param request 参数说明
      */
     @Override
     public void updateUser(Long id, UpdateUserRequest request) {
@@ -113,7 +118,9 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
-     * 执行 toggleUserStatus 操作。
+     * 执行toggleUserStatus操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void toggleUserStatus(Long id) {

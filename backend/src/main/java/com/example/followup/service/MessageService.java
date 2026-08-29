@@ -16,7 +16,24 @@ import com.example.followup.entity.Message;
  * @version 1.0.0
  */
 public interface MessageService {
+    /**
+     * 查询listMessages。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     PageResponse<Message> listMessages(MessageQuery query);
+    /**
+     * 新增createMessage。
+     *
+     * @param request 参数说明
+     * @return 返回值
+     */
     Message createMessage(MessageCreateRequest request);
+    /**
+     * 执行markRead操作。
+     *
+     * @param id 参数说明
+     */
     void markRead(Long id);
 }

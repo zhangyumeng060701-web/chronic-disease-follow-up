@@ -23,7 +23,10 @@ public final class VoMappers {
     }
 
     /**
-     * 执行 toPatientVO 操作。
+     * 执行toPatientVO操作。
+     *
+     * @param patient 参数说明
+     * @return 返回值
      */
     public static PatientVO toPatientVO(Patient patient) {
         PatientVO vo = new PatientVO();
@@ -31,6 +34,12 @@ public final class VoMappers {
         return vo;
     }
 
+    /**
+     * 执行toUserVO操作。
+     *
+     * @param user 参数说明
+     * @return 返回值
+     */
     public static UserVO toUserVO(SysUser user) {
         UserVO vo = new UserVO();
         vo.setId(user.getId());
@@ -44,7 +53,10 @@ public final class VoMappers {
     }
 
     /**
-     * 执行 toFollowUpVO 操作。
+     * 执行toFollowUpVO操作。
+     *
+     * @param followUp 参数说明
+     * @return 返回值
      */
     public static FollowUpVO toFollowUpVO(FollowUp followUp) {
         FollowUpVO vo = new FollowUpVO();

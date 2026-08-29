@@ -26,6 +26,11 @@ public interface FollowUpMapper extends BaseMapper<FollowUp> {
             "AND f.patient_id NOT IN (SELECT patient_id FROM t_follow_up WHERE follow_up_date > f.next_follow_up_date)")
     List<Long> findOverduePatientIds();
 
+    /**
+     * 执行countMonthlyCompleted操作。
+     *
+     * @return 返回值
+     */
     @Select("SELECT COUNT(*) FROM t_follow_up WHERE follow_up_date >= DATE_FORMAT(CURDATE(),'%Y-%m-01')")
     Integer countMonthlyCompleted();
 }

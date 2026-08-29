@@ -65,7 +65,10 @@ public class PatientServiceImpl implements PatientService {
     private OperationLogService operationLogService;
 
     /**
-     * 执行 listPatients 操作。
+     * 查询listPatients。
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @Override
     public PageResponse<PatientVO> listPatients(PatientQuery query) {
@@ -103,7 +106,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * 执行 getPatientById 操作。
+     * 查询getPatientById。
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @Override
     public PatientVO getPatientById(Long id) {
@@ -127,7 +133,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * 执行 addPatient 操作。
+     * 新增addPatient。
+     *
+     * @param request 参数说明
      */
     @Override
     public void addPatient(PatientSaveRequest request) {
@@ -146,7 +154,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * 执行 updatePatient 操作。
+     * 更新updatePatient。
+     *
+     * @param id 参数说明
+     * @param request 参数说明
      */
     @Override
     @Transactional
@@ -165,7 +176,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * 执行 deletePatient 操作。
+     * 删除deletePatient。
+     *
+     * @param id 参数说明
      */
     @Override
     @Transactional
@@ -222,7 +235,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * 执行 exportPatientsCsv 操作。
+     * 导出exportPatientsCsv。
+     *
+     * @return 返回值
      */
     @Override
     public String exportPatientsCsv() {

@@ -17,8 +17,30 @@ import com.example.followup.dto.response.UserVO;
  * @version 1.0.0
  */
 public interface SysUserService {
+    /**
+     * 查询listUsers。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     PageResponse<UserVO> listUsers(UserQuery query);
+    /**
+     * 新增createUser。
+     *
+     * @param request 参数说明
+     */
     void createUser(CreateUserRequest request);
+    /**
+     * 更新updateUser。
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     */
     void updateUser(Long id, UpdateUserRequest request);
+    /**
+     * 执行toggleUserStatus操作。
+     *
+     * @param id 参数说明
+     */
     void toggleUserStatus(Long id);
 }

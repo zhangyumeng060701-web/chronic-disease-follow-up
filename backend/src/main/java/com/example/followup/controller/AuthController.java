@@ -46,7 +46,10 @@ public class AuthController {
     private SysUserMapper sysUserMapper;
 
     /**
-     * 执行 login 操作。
+     * 用户登录
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping("/login")
     @ApiOperation(value = "用户登录",

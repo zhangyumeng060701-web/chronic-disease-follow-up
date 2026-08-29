@@ -53,7 +53,10 @@ public class QuestionnaireController {
     }
 
     /**
-     * 执行 create 操作。
+     * 新增问卷
+     *
+     * @param questionnaire 参数说明
+     * @return 返回值
      */
     @PostMapping
     @ApiOperation(value = "新增问卷")
@@ -62,6 +65,13 @@ public class QuestionnaireController {
         return Result.success(questionnaireService.createQuestionnaire(questionnaire));
     }
 
+    /**
+     * 更新问卷
+     *
+     * @param id 参数说明
+     * @param questionnaire 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}")
     @ApiOperation(value = "更新问卷")
     public Result<Questionnaire> update(@PathVariable Long id, @RequestBody Questionnaire questionnaire) {
@@ -70,7 +80,10 @@ public class QuestionnaireController {
     }
 
     /**
-     * 执行 toggle 操作。
+     * 启用/停用问卷
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @PutMapping("/{id}/toggle")
     @ApiOperation(value = "启用/停用问卷")

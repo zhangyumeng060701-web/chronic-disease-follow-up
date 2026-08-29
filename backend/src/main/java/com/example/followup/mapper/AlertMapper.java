@@ -25,9 +25,20 @@ public interface AlertMapper extends BaseMapper<Alert> {
     @Select("SELECT COUNT(*) FROM t_alert WHERE is_resolved = 0 AND alert_level = 'RED'")
     Long countHighRisk();
 
+    /**
+     * 执行countLostFollowUp操作。
+     *
+     * @return 返回值
+     */
     @Select("SELECT COUNT(*) FROM t_alert WHERE is_resolved = 0 AND alert_type = 'LOST_FOLLOW_UP'")
     Long countLostFollowUp();
 
+    /**
+     * 执行batchInsert操作。
+     *
+     * @param alerts 参数说明
+     * @return 返回值
+     */
     @Insert("<script>" +
             "INSERT INTO t_alert (patient_id, alert_type, alert_level, alert_reason, is_resolved) VALUES " +
             "<foreach collection='list' item='item' separator=','>" +

@@ -51,7 +51,10 @@ public class MessageController {
     }
 
     /**
-     * 执行 create 操作。
+     * 发送消息
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping
     @ApiOperation(value = "发送消息")
@@ -59,6 +62,12 @@ public class MessageController {
         return Result.success(messageService.createMessage(request));
     }
 
+    /**
+     * 标记消息已读
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}/read")
     @ApiOperation(value = "标记消息已读")
     public Result<Void> markRead(@PathVariable Long id) {

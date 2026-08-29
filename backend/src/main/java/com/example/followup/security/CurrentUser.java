@@ -35,12 +35,19 @@ public class CurrentUser {
     }
 
     /**
-     * 执行 isAdmin 操作。
+     * 判断isAdmin。
+     *
+     * @return 返回值
      */
     public boolean isAdmin() {
         return DomainConstants.ROLE_ADMIN.equals(role);
     }
 
+    /**
+     * 判断isPatient。
+     *
+     * @return 返回值
+     */
     public boolean isPatient() {
         return DomainConstants.ROLE_PATIENT.equals(role);
     }

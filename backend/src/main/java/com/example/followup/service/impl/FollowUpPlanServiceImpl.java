@@ -59,7 +59,10 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     private SysUserMapper sysUserMapper;
 
     /**
-     * 执行 listPlans 操作。
+     * 查询listPlans。
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @Override
     public PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query) {
@@ -91,7 +94,10 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     }
 
     /**
-     * 执行 createPlan 操作。
+     * 新增createPlan。
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @Override
     @Transactional
@@ -114,7 +120,11 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     }
 
     /**
-     * 执行 updatePlan 操作。
+     * 更新updatePlan。
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
      */
     @Override
     @Transactional
@@ -130,7 +140,9 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     }
 
     /**
-     * 执行 deletePlan 操作。
+     * 删除deletePlan。
+     *
+     * @param id 参数说明
      */
     @Override
     @Transactional

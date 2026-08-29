@@ -67,7 +67,10 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     private FollowUpSuggestionMapper suggestionMapper;
 
     /**
-     * 执行 assessPatientRisk 操作。
+     * 执行assessPatientRisk操作。
+     *
+     * @param patientId 参数说明
+     * @return 返回值
      */
     @Override
     @Transactional
@@ -128,7 +131,10 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 generateSuggestion 操作。
+     * 执行generateSuggestion操作。
+     *
+     * @param patientId 参数说明
+     * @return 返回值
      */
     @Override
     @Transactional
@@ -161,7 +167,10 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 generateAISuggestion 操作。
+     * 执行generateAISuggestion操作。
+     *
+     * @param request 参数说明
+     * @return 返回值
      */
     @Override
     @Transactional
@@ -208,7 +217,12 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 listSuggestions 操作。
+     * 查询listSuggestions。
+     *
+     * @param page 参数说明
+     * @param size 参数说明
+     * @param status 参数说明
+     * @return 返回值
      */
     @Override
     public PageResponse<FollowUpSuggestion> listSuggestions(Integer page, Integer size, String status) {
@@ -230,7 +244,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 confirmSuggestion 操作。
+     * 执行confirmSuggestion操作。
+     *
+     * @param id 参数说明
      */
     @Override
     @Transactional
@@ -252,7 +268,9 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 rejectSuggestion 操作。
+     * 执行rejectSuggestion操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void rejectSuggestion(Long id) {
@@ -265,7 +283,8 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
     }
 
     /**
-     * 执行 assessAllPatientsDaily 操作。
+     * 执行assessAllPatientsDaily操作。
+     *
      */
     @Scheduled(cron = "0 10 2 * * ?")
     public void assessAllPatientsDaily() {

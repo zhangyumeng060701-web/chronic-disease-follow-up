@@ -38,7 +38,10 @@ public class AlertController {
     private AlertService alertService;
 
     /**
-     * 执行 list 操作。
+     * 分页查询预警列表
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @GetMapping
     @ApiOperation(value = "分页查询预警列表",
@@ -47,6 +50,12 @@ public class AlertController {
         return Result.success(alertService.listAlerts(query));
     }
 
+    /**
+     * 处理预警
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}/resolve")
     @ApiOperation(value = "处理预警",
             notes = "示例：PUT /api/alerts/1/resolve。错误码：401 未登录，403 无权限，404 不存在。")
@@ -56,7 +65,10 @@ public class AlertController {
     }
 
     /**
-     * 执行 contact 操作。
+     * 标记预警为已联系
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @PutMapping("/{id}/contact")
     @ApiOperation(value = "标记预警为已联系",
@@ -66,6 +78,13 @@ public class AlertController {
         return Result.success();
     }
 
+    /**
+     * 预警转门诊
+     *
+     * @param id 参数说明
+     * @param request 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}/refer")
     @ApiOperation(value = "预警转门诊",
             notes = "示例：PUT /api/alerts/1/refer，body 传入 referralReason。")

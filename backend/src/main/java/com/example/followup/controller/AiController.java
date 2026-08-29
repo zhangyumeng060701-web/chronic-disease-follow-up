@@ -53,7 +53,11 @@ public class AiController {
     private String agentArtsSessionId;
 
     /**
-     * 执行 decompose 操作。
+     * 执行decompose操作。
+     *
+     * @param Map<String 参数说明
+     * @param request 参数说明
+     * @return 返回值
      */
     @PostMapping("/decompose")
     public Map<String, Object> decompose(@RequestBody Map<String, String> request) {

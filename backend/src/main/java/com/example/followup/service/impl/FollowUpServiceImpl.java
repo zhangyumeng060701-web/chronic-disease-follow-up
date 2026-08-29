@@ -60,7 +60,10 @@ public class FollowUpServiceImpl implements FollowUpService {
     private AlertRuleEngine alertRuleEngine;
 
     /**
-     * 执行 listFollowUps 操作。
+     * 查询listFollowUps。
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @Override
     public PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query) {
@@ -110,7 +113,10 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     /**
-     * 执行 getFollowUpById 操作。
+     * 查询getFollowUpById。
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @Override
     public FollowUp getFollowUpById(Long id) {
@@ -128,7 +134,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     /**
-     * 执行 addFollowUp 操作。
+     * 新增addFollowUp。
+     *
+     * @param followUp 参数说明
      */
     @Override
     @Transactional
@@ -141,7 +149,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     /**
-     * 执行 updateFollowUp 操作。
+     * 更新updateFollowUp。
+     *
+     * @param followUp 参数说明
      */
     @Override
     @Transactional
@@ -152,6 +162,11 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("updateFollowUp id={} cost={}ms", followUp.getId(), System.currentTimeMillis() - start);
     }
 
+    /**
+     * 删除deleteFollowUp。
+     *
+     * @param id 参数说明
+     */
     @Override
     @Transactional
     public void deleteFollowUp(Long id) {
@@ -162,7 +177,9 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     /**
-     * 执行 listOverdueFollowUps 操作。
+     * 查询listOverdueFollowUps。
+     *
+     * @return 返回值
      */
     @Override
     public List<FollowUpVO> listOverdueFollowUps() {

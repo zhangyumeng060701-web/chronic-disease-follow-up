@@ -34,7 +34,10 @@ public class LogController {
     private OperationLogService operationLogService;
 
     /**
-     * 执行 list 操作。
+     * 分页查询操作日志
+     *
+     * @param query 参数说明
+     * @return 返回值
      */
     @GetMapping
     @ApiOperation(value = "分页查询操作日志",

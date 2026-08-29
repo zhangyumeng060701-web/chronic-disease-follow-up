@@ -37,12 +37,26 @@ public class JwtUtil {
     }
 
     /**
-     * 执行 generateToken 操作。
+     * 执行generateToken操作。
+     *
+     * @param username 参数说明
+     * @param role 参数说明
+     * @param userId 参数说明
+     * @return 返回值
      */
     public String generateToken(String username, String role, Long userId) {
         return generateToken(username, role, userId, null);
     }
 
+    /**
+     * 执行generateToken操作。
+     *
+     * @param username 参数说明
+     * @param role 参数说明
+     * @param userId 参数说明
+     * @param patientId 参数说明
+     * @return 返回值
+     */
     public String generateToken(String username, String role, Long userId, Long patientId) {
         return Jwts.builder()
                 .setSubject(username)
@@ -56,7 +70,10 @@ public class JwtUtil {
     }
 
     /**
-     * 执行 parseToken 操作。
+     * 解析parseToken。
+     *
+     * @param token 参数说明
+     * @return 返回值
      */
     public Claims parseToken(String token) {
         return Jwts.parserBuilder()
@@ -66,6 +83,12 @@ public class JwtUtil {
                 .getBody();
     }
 
+    /**
+     * 执行validateToken操作。
+     *
+     * @param token 参数说明
+     * @return 返回值
+     */
     public boolean validateToken(String token) {
         try {
             parseToken(token);

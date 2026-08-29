@@ -44,7 +44,8 @@ public class LostFollowUpAlertServiceImpl implements LostFollowUpAlertService {
     private AlertMapper alertMapper;
 
     /**
-     * 执行 generateLostFollowUpAlerts 操作。
+     * 执行generateLostFollowUpAlerts操作。
+     *
      */
     @Override
     @Scheduled(cron = "0 0 2 * * ?")

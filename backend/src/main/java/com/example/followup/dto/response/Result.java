@@ -33,12 +33,21 @@ public class Result<T extends Object> {
     }
 
     /**
-     * 执行 success 操作。
+     * 执行success操作。
+     *
+     * @return 返回值
      */
     public static <T> Result<T> success() {
         return new Result<>(200, null, "success");
     }
 
+    /**
+     * 执行error操作。
+     *
+     * @param code 参数说明
+     * @param message 参数说明
+     * @return 返回值
+     */
     public static <T> Result<T> error(Integer code, String message) {
         return new Result<>(code, null, message);
     }

@@ -18,7 +18,13 @@ public final class PageResponseUtil {
     }
 
     /**
-     * 执行 of 操作。
+     * 执行of操作。
+     *
+     * @param page 参数说明
+     * @param records 参数说明
+     * @param pageNum 参数说明
+     * @param pageSize 参数说明
+     * @return 返回值
      */
     public static <T, R> PageResponse<R> of(Page<T> page, List<R> records, long pageNum, long pageSize) {
         PageResponse<R> response = new PageResponse<>();

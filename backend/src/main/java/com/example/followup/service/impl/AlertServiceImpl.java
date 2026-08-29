@@ -103,7 +103,9 @@ public class AlertServiceImpl implements AlertService {
     }
 
     /**
-     * 执行 contactAlert 操作。
+     * 执行contactAlert操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void contactAlert(Long id) {
@@ -114,6 +116,11 @@ public class AlertServiceImpl implements AlertService {
         log.info("contactAlert id={}", id);
     }
 
+    /**
+     * 解析resolveAlert。
+     *
+     * @param id 参数说明
+     */
     @Override
     public void resolveAlert(Long id) {
         Alert alert = getAlertOrThrow(id);
@@ -125,7 +132,10 @@ public class AlertServiceImpl implements AlertService {
     }
 
     /**
-     * 执行 referAlert 操作。
+     * 执行referAlert操作。
+     *
+     * @param id 参数说明
+     * @param referralReason 参数说明
      */
     @Override
     public void referAlert(Long id, String referralReason) {

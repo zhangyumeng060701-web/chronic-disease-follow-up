@@ -48,7 +48,10 @@ public class FollowUpTaskController {
     }
 
     /**
-     * 执行 complete 操作。
+     * 完成任务
+     *
+     * @param id 参数说明
+     * @return 返回值
      */
     @PutMapping("/{id}/complete")
     @ApiOperation(value = "完成任务")
@@ -57,6 +60,12 @@ public class FollowUpTaskController {
         return Result.success();
     }
 
+    /**
+     * 取消任务
+     *
+     * @param id 参数说明
+     * @return 返回值
+     */
     @PutMapping("/{id}/cancel")
     @ApiOperation(value = "取消任务")
     public Result<Void> cancel(@PathVariable Long id) {

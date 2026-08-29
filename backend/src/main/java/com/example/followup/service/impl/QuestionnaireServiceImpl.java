@@ -33,6 +33,12 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     @Autowired
     private QuestionnaireMapper questionnaireMapper;
 
+    /**
+     * 查询listQuestionnaires。
+     *
+     * @param query 参数说明
+     * @return 返回值
+     */
     @Override
     public PageResponse<Questionnaire> listQuestionnaires(QuestionnaireQuery query) {
         LambdaQueryWrapper<Questionnaire> wrapper = new LambdaQueryWrapper<>();
@@ -46,7 +52,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     /**
-     * 执行 createQuestionnaire 操作。
+     * 新增createQuestionnaire。
+     *
+     * @param questionnaire 参数说明
+     * @return 返回值
      */
     @Override
     public Questionnaire createQuestionnaire(Questionnaire questionnaire) {
@@ -61,7 +70,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     /**
-     * 执行 updateQuestionnaire 操作。
+     * 更新updateQuestionnaire。
+     *
+     * @param id 参数说明
+     * @param questionnaire 参数说明
+     * @return 返回值
      */
     @Override
     public Questionnaire updateQuestionnaire(Long id, Questionnaire questionnaire) {
@@ -78,7 +91,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     /**
-     * 执行 toggleQuestionnaire 操作。
+     * 执行toggleQuestionnaire操作。
+     *
+     * @param id 参数说明
      */
     @Override
     public void toggleQuestionnaire(Long id) {
