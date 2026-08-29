@@ -17,12 +17,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OperationLog {
+
     /**
      * 执行operation操作。
      *
      * @return 返回值
      */
     String operation();
+
     /**
      * 执行targetType操作。
      *

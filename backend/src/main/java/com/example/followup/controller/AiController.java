@@ -91,8 +91,8 @@ public class AiController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
-            boolean finished = process.waitFor(50, TimeUnit.SECONDS);
-            if (!finished) {
+            boolean isFinished = process.waitFor(50, TimeUnit.SECONDS);
+            if (!isFinished) {
                 process.destroyForcibly();
                 return Map.of("code", 504, "message", "AI 思考超时，请稍后重试");
             }

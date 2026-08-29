@@ -23,18 +23,21 @@ import java.util.Map;
  * @version 1.0.0
  */
 public interface PatientPortalService {
+
     /**
      * 执行myPlans操作。
      *
      * @return 返回值
      */
     List<FollowUpPlanVO> myPlans();
+
     /**
      * 执行myVitals操作。
      *
      * @return 返回值
      */
     List<PatientVital> myVitals();
+
     /**
      * 执行reportVital操作。
      *
@@ -42,12 +45,14 @@ public interface PatientPortalService {
      * @return 返回值
      */
     PatientVital reportVital(VitalReportRequest request);
+
     /**
      * 执行activeQuestionnaires操作。
      *
      * @return 返回值
      */
     List<Questionnaire> activeQuestionnaires();
+
     /**
      * 提交submitQuestionnaire。
      *
@@ -55,30 +60,35 @@ public interface PatientPortalService {
      * @param request 参数说明
      */
     void submitQuestionnaire(Long questionnaireId, QuestionnaireSubmitRequest request);
+
     /**
      * 执行myMessages操作。
      *
      * @return 返回值
      */
     List<Message> myMessages();
+
     /**
      * 执行unreadMessageCount操作。
      *
      * @return 返回值
      */
     long unreadMessageCount();
+
     /**
      * 执行markMessageRead操作。
      *
      * @param id 参数说明
      */
     void markMessageRead(Long id);
+
     /**
      * 执行myFollowUps操作。
      *
      * @return 返回值
      */
     List<FollowUpVO> myFollowUps();
+
     /**
      * 新增createPatientFollowUp。
      *
@@ -86,6 +96,7 @@ public interface PatientPortalService {
      * @return 返回值
      */
     FollowUpVO createPatientFollowUp(PatientFollowUpRequest request);
+
     /**
      * 执行myRiskLevel操作。
      *

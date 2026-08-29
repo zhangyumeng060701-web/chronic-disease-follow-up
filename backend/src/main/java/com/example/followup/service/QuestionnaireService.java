@@ -15,6 +15,7 @@ import com.example.followup.entity.Questionnaire;
  * @version 1.0.0
  */
 public interface QuestionnaireService {
+
     /**
      * 查询listQuestionnaires。
      *
@@ -22,6 +23,7 @@ public interface QuestionnaireService {
      * @return 返回值
      */
     PageResponse<Questionnaire> listQuestionnaires(QuestionnaireQuery query);
+
     /**
      * 新增createQuestionnaire。
      *
@@ -29,6 +31,7 @@ public interface QuestionnaireService {
      * @return 返回值
      */
     Questionnaire createQuestionnaire(Questionnaire questionnaire);
+
     /**
      * 更新updateQuestionnaire。
      *
@@ -37,6 +40,7 @@ public interface QuestionnaireService {
      * @return 返回值
      */
     Questionnaire updateQuestionnaire(Long id, Questionnaire questionnaire);
+
     /**
      * 执行toggleQuestionnaire操作。
      *

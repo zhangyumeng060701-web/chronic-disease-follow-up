@@ -321,12 +321,12 @@ public class PatientPortalServiceImpl implements PatientPortalService {
                 + "，触发" + (DomainConstants.ALERT_LEVEL_RED.equals(level) ? "红色" : "黄色") + "预警");
         alert.setIsResolved(0);
         alert.setAlertStatus(DomainConstants.ALERT_STATUS_PENDING);
-        boolean red = DomainConstants.ALERT_LEVEL_RED.equals(level);
-        alert.setRecommendedActions(red ? "尽快复诊并复核用药方案" : "加强监测并评估用药与生活方式");
-        alert.setRecheckItems(red ? "血压、血糖、肾功能" : "血压、血糖");
-        alert.setReferralConditions(red ? "持续异常或出现明显不适" : "多次测量仍高于目标值");
+        boolean isRed = DomainConstants.ALERT_LEVEL_RED.equals(level);
+        alert.setRecommendedActions(isRed ? "尽快复诊并复核用药方案" : "加强监测并评估用药与生活方式");
+        alert.setRecheckItems(isRed ? "血压、血糖、肾功能" : "血压、血糖");
+        alert.setReferralConditions(isRed ? "持续异常或出现明显不适" : "多次测量仍高于目标值");
         alert.setEvidenceSource("基层慢病随访管理规范");
-        alert.setRiskLevel(red ? DomainConstants.RISK_HIGH : DomainConstants.RISK_MEDIUM);
+        alert.setRiskLevel(isRed ? DomainConstants.RISK_HIGH : DomainConstants.RISK_MEDIUM);
         alertMapper.insert(alert);
     }
 

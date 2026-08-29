@@ -73,8 +73,8 @@ public class FollowUpServiceImpl implements FollowUpService {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "开始日期不能晚于结束日期");
         }
         LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
-        boolean admin = SecurityUtils.isAdmin();
-        if (!admin) {
+        boolean isAdmin = SecurityUtils.isAdmin();
+        if (!isAdmin) {
             wrapper.eq(FollowUp::getDoctorId, SecurityUtils.currentUser().getUserId());
         }
         if (query.getPatientId() != null) {
@@ -103,7 +103,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         List<FollowUpVO> vos = page.getRecords().stream().map(f -> {
             FollowUpVO vo = VoMappers.toFollowUpVO(f);
             String patientName = nameMap.getOrDefault(f.getPatientId(), "");
-            vo.setPatientName(admin ? patientName : DesensitizationUtil.maskName(patientName));
+            vo.setPatientName(isAdmin ? patientName : DesensitizationUtil.maskName(patientName));
             return vo;
         }).collect(Collectors.toList());
 
@@ -199,9 +199,9 @@ public class FollowUpServiceImpl implements FollowUpService {
         // 只对比当前记录之前最近一次随访，避免连续异常被重复计算
         LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FollowUp::getPatientId, patientId)
-               .lt(FollowUp::getId, followUp.getId())
-               .orderByDesc(FollowUp::getFollowUpDate)
-               .last("LIMIT 1");
+            .lt(FollowUp::getId, followUp.getId())
+            .orderByDesc(FollowUp::getFollowUpDate)
+            .last("LIMIT 1");
         FollowUp previous = followUpMapper.selectList(wrapper).stream().findFirst().orElse(null);
         if (previous == null) {
             return;

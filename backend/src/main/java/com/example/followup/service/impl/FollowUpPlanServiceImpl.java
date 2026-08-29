@@ -67,11 +67,11 @@ public class FollowUpPlanServiceImpl implements FollowUpPlanService {
     @Override
     public PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query) {
         long start = System.currentTimeMillis();
-        boolean admin = SecurityUtils.isAdmin();
-        Long currentUserId = admin ? null : SecurityUtils.currentUser().getUserId();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        Long currentUserId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
         LambdaQueryWrapper<FollowUpPlan> wrapper = new LambdaQueryWrapper<>();
-        if (!admin) {
+        if (!isAdmin) {
             wrapper.eq(FollowUpPlan::getDoctorId, currentUserId);
         }
         if (query.getPatientId() != null) {

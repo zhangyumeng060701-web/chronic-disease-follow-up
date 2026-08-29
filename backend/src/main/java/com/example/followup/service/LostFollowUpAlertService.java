@@ -11,6 +11,7 @@ package com.example.followup.service;
  * @version 1.0.0
  */
 public interface LostFollowUpAlertService {
+
     /**
      * 执行generateLostFollowUpAlerts操作。
      *

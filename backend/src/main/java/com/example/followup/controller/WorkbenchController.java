@@ -59,8 +59,8 @@ public class WorkbenchController {
     @GetMapping("/workbench")
     @ApiOperation(value = "医生工作台：今日任务、待处理预警、待确认AI建议")
     public Result<Map<String, Object>> workbench() {
-        boolean admin = SecurityUtils.isAdmin();
-        Long currentUserId = admin ? null : SecurityUtils.currentUser().getUserId();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        Long currentUserId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
         List<Long> managedPatientIds = currentUserId == null
                 ? List.of()
@@ -84,7 +84,7 @@ public class WorkbenchController {
                         DomainConstants.TASK_STATUS_PENDING,
                         DomainConstants.TASK_STATUS_IN_PROGRESS,
                         DomainConstants.TASK_STATUS_CONTACTED);
-        if (!admin) {
+        if (!isAdmin) {
             taskWrapper.eq(FollowUpTask::getOwnerId, currentUserId);
         }
         taskWrapper.orderByAsc(FollowUpTask::getDueDate).last("LIMIT 5");

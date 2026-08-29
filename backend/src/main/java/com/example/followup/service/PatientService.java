@@ -17,6 +17,7 @@ import com.example.followup.dto.response.PatientVO;
  * @version 1.0.0
  */
 public interface PatientService {
+
     /**
      * 查询listPatients。
      *
@@ -24,6 +25,7 @@ public interface PatientService {
      * @return 返回值
      */
     PageResponse<PatientVO> listPatients(PatientQuery query);
+
     /**
      * 查询getPatientById。
      *
@@ -31,12 +33,14 @@ public interface PatientService {
      * @return 返回值
      */
     PatientVO getPatientById(Long id);
+
     /**
      * 新增addPatient。
      *
      * @param request 参数说明
      */
     void addPatient(PatientSaveRequest request);
+
     /**
      * 更新updatePatient。
      *
@@ -44,12 +48,14 @@ public interface PatientService {
      * @param request 参数说明
      */
     void updatePatient(Long id, PatientUpdateRequest request);
+
     /**
      * 删除deletePatient。
      *
      * @param id 参数说明
      */
     void deletePatient(Long id);
+
     /**
      * 导出exportPatientsCsv。
      *

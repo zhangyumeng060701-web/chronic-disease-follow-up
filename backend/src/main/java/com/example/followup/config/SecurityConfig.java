@@ -58,7 +58,7 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .antMatchers("/api/auth/login", "/api/patient/login", "/api/health",
-                         "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
+                    "/doc.html", "/webjars/**", "/swagger-resources/**", "/v2/api-docs/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

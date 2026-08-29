@@ -18,6 +18,7 @@ public interface OperationLogService {
     PageResponse<OperationLog> listLogs(LogQuery query);
 
     default void log(Long userId, String username, String operation, String targetType, Long targetId) {
+
         /**
          * 执行log操作。
          *

@@ -49,16 +49,16 @@ public class LegacySensitiveDataMigration implements ApplicationRunner {
                 .eq(Patient::getStatus, 1));
         int migrated = 0;
         for (Patient patient : patients) {
-            boolean changed = false;
+            boolean hasChanged = false;
             if (StringUtils.hasText(patient.getPhone()) && !patient.getPhone().startsWith("enc:")) {
                 patient.setPhone(sensitiveDataCipher.encrypt(patient.getPhone()));
-                changed = true;
+                hasChanged = true;
             }
             if (StringUtils.hasText(patient.getIdCard()) && !patient.getIdCard().startsWith("enc:")) {
                 patient.setIdCard(sensitiveDataCipher.encrypt(patient.getIdCard()));
-                changed = true;
+                hasChanged = true;
             }
-            if (changed) {
+            if (hasChanged) {
                 patientMapper.updateById(patient);
                 migrated++;
             }

@@ -107,6 +107,8 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             }
             else if (isModerateVital(vital)) {
                 score += 1;
+            } else {
+                // 当前指标不参与风险评分
             }
         }
 
@@ -327,34 +329,62 @@ public class ClinicalDecisionServiceImpl implements ClinicalDecisionService {
             evidence.add("无近期随访数据，采用系统默认分层");
             return StringUtils.hasText(fallback) ? fallback : DomainConstants.RISK_STABLE;
         }
-        boolean severe = false;
-        boolean moderate = false;
+        boolean isSevere = false;
+        boolean isModerate = false;
         for (FollowUpInput input : inputs) {
             if (input.getSystolicBp() != null) {
-                if (input.getSystolicBp() >= 180) { severe = true; evidence.add("收缩压≥180"); }
-                else if (input.getSystolicBp() >= 140) { moderate = true; evidence.add("收缩压≥140"); }
+                if (input.getSystolicBp() >= 180) {
+                    isSevere = true;
+                    evidence.add("收缩压≥180");
+                } else if (input.getSystolicBp() >= 140) {
+                    isModerate = true;
+                    evidence.add("收缩压≥140");
+                } else {
+                    // 无需额外分级证据
+                }
             }
             if (input.getDiastolicBp() != null) {
-                if (input.getDiastolicBp() >= 110) { severe = true; evidence.add("舒张压≥110"); }
-                else if (input.getDiastolicBp() >= 90) { moderate = true; evidence.add("舒张压≥90"); }
+                if (input.getDiastolicBp() >= 110) {
+                    isSevere = true;
+                    evidence.add("舒张压≥110");
+                } else if (input.getDiastolicBp() >= 90) {
+                    isModerate = true;
+                    evidence.add("舒张压≥90");
+                } else {
+                    // 无需额外分级证据
+                }
             }
             if (input.getFastingGlucose() != null) {
-                if (input.getFastingGlucose().compareTo(new BigDecimal("11.1")) >= 0) { severe = true; evidence.add("空腹血糖≥11.1"); }
-                else if (input.getFastingGlucose().compareTo(new BigDecimal("7.0")) >= 0) { moderate = true; evidence.add("空腹血糖≥7.0"); }
+                if (input.getFastingGlucose().compareTo(new BigDecimal("11.1")) >= 0) {
+                    isSevere = true;
+                    evidence.add("空腹血糖≥11.1");
+                } else if (input.getFastingGlucose().compareTo(new BigDecimal("7.0")) >= 0) {
+                    isModerate = true;
+                    evidence.add("空腹血糖≥7.0");
+                } else {
+                    // 无需额外分级证据
+                }
             }
             if (input.getPostprandialGlucose() != null) {
-                if (input.getPostprandialGlucose().compareTo(new BigDecimal("16.7")) >= 0) { severe = true; evidence.add("餐后血糖≥16.7"); }
-                else if (input.getPostprandialGlucose().compareTo(new BigDecimal("11.1")) >= 0) { moderate = true; evidence.add("餐后血糖≥11.1"); }
+                if (input.getPostprandialGlucose().compareTo(new BigDecimal("16.7")) >= 0) {
+                    isSevere = true;
+                    evidence.add("餐后血糖≥16.7");
+                } else if (input.getPostprandialGlucose().compareTo(new BigDecimal("11.1")) >= 0) {
+                    isModerate = true;
+                    evidence.add("餐后血糖≥11.1");
+                } else {
+                    // 无需额外分级证据
+                }
             }
             if ("间断".equals(input.getMedicationAdherence()) || "不服药".equals(input.getMedicationAdherence())) {
-                moderate = true;
+                isModerate = true;
                 evidence.add("用药依从性异常");
             }
         }
-        if (severe) {
+        if (isSevere) {
             return DomainConstants.RISK_HIGH;
         }
-        if (moderate) {
+        if (isModerate) {
             return DomainConstants.RISK_MEDIUM;
         }
         evidence.add("近期随访指标处于目标范围");

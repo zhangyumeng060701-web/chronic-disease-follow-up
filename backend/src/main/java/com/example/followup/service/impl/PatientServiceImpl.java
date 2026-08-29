@@ -95,8 +95,8 @@ public class PatientServiceImpl implements PatientService {
         vos.forEach(this::decryptSensitive);
         enrich(vos);
 
-        boolean admin = SecurityUtils.isAdmin();
-        if (!admin) {
+        boolean isAdmin = SecurityUtils.isAdmin();
+        if (!isAdmin) {
             vos.forEach(this::desensitize);
         }
 

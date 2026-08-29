@@ -66,8 +66,8 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public StatsOverview getOverview() {
         long start = System.currentTimeMillis();
-        boolean admin = SecurityUtils.isAdmin();
-        Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        Long currentDoctorId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
         Long totalPatients = patientMapper.selectCount(activePatientWrapper(currentDoctorId));
         List<Long> activePatientIds = activePatientIds(currentDoctorId);
@@ -102,7 +102,7 @@ public class StatsServiceImpl implements StatsService {
                 followUpTaskCompletionRate,
                 avgAlertResponseHours
         );
-        log.info("getOverview admin={} cost={}ms", admin, System.currentTimeMillis() - start);
+        log.info("getOverview isAdmin={} cost={}ms", isAdmin, System.currentTimeMillis() - start);
         return result;
     }
 
@@ -203,8 +203,8 @@ public class StatsServiceImpl implements StatsService {
         if (resolvedAlerts.isEmpty()) {
             return "-";
         }
-        long totalMinutes = 0;
-        long count = 0;
+        long totalMinutes = 0L;
+        long count = 0L;
         for (Alert alert : resolvedAlerts) {
             if (alert.getCreateTime() == null) {
                 continue;
@@ -244,8 +244,8 @@ public class StatsServiceImpl implements StatsService {
     }
 
     private List<TrendItem> getTrend(String type) {
-        boolean admin = SecurityUtils.isAdmin();
-        Long currentDoctorId = admin ? null : SecurityUtils.currentUser().getUserId();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        Long currentDoctorId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
         List<Long> activePatientIds = activePatientIds(currentDoctorId);
         List<TrendItem> result = new ArrayList<>();
         LocalDate now = LocalDate.now();
@@ -265,8 +265,8 @@ public class StatsServiceImpl implements StatsService {
 
             LambdaQueryWrapper<FollowUp> wrapper = new LambdaQueryWrapper<>();
             wrapper.between(FollowUp::getFollowUpDate, monthStart, monthEnd)
-                   .in(FollowUp::getPatientId, activePatientIds)
-                   .orderByDesc(FollowUp::getFollowUpDate);
+                .in(FollowUp::getPatientId, activePatientIds)
+                .orderByDesc(FollowUp::getFollowUpDate);
             List<FollowUp> records = followUpMapper.selectList(wrapper);
 
             Map<Long, FollowUp> latestMap = records.stream()
@@ -274,17 +274,17 @@ public class StatsServiceImpl implements StatsService {
                     .collect(Collectors.toMap(FollowUp::getPatientId, f -> f, (a, b) -> a));
 
             long total = latestMap.size();
-            long controlled = 0;
+            long controlled = 0L;
 
             if ("bp".equals(type)) {
                 controlled = latestMap.values().stream()
                         .filter(f -> f.getSystolicBp() != null && f.getSystolicBp() < 140
-                                  && f.getDiastolicBp() != null && f.getDiastolicBp() < 90)
+                                && f.getDiastolicBp() != null && f.getDiastolicBp() < 90)
                         .count();
             } else {
                 controlled = latestMap.values().stream()
                         .filter(f -> f.getFastingGlucose() != null
-                                  && f.getFastingGlucose().compareTo(new BigDecimal("7.0")) < 0)
+                                && f.getFastingGlucose().compareTo(new BigDecimal("7.0")) < 0)
                         .count();
             }
 
@@ -391,7 +391,7 @@ public class StatsServiceImpl implements StatsService {
         }
         LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(Alert::getPatientId, activePatientIds)
-               .eq(Alert::getIsResolved, 0);
+            .eq(Alert::getIsResolved, 0);
         if (alertType != null) {
             wrapper.eq(Alert::getAlertType, alertType);
         }

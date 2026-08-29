@@ -193,7 +193,8 @@ async function handleRefer(row) {
     const { value } = await ElMessageBox.prompt('请输入转门诊原因', '转门诊', {
       confirmButtonText: '确认转诊',
       cancelButtonText: '取消',
-      inputValidator: (value) => (value && value.trim() ? true : '转诊原因不能为空'),
+      inputValidator: (inputValue) =>
+        inputValue && inputValue.trim() ? true : '转诊原因不能为空',
     });
     await referAlert(row.id, { referralReason: value.trim() });
     ElMessage.success('已转门诊');

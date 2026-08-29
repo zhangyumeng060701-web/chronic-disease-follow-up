@@ -16,6 +16,7 @@ import com.example.followup.entity.Message;
  * @version 1.0.0
  */
 public interface MessageService {
+
     /**
      * 查询listMessages。
      *
@@ -23,6 +24,7 @@ public interface MessageService {
      * @return 返回值
      */
     PageResponse<Message> listMessages(MessageQuery query);
+
     /**
      * 新增createMessage。
      *
@@ -30,6 +32,7 @@ public interface MessageService {
      * @return 返回值
      */
     Message createMessage(MessageCreateRequest request);
+
     /**
      * 执行markRead操作。
      *

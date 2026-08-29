@@ -16,6 +16,7 @@ import com.example.followup.entity.PatientRiskAssessment;
  * @version 1.0.0
  */
 public interface ClinicalDecisionService {
+
     /**
      * 执行assessPatientRisk操作。
      *
@@ -23,6 +24,7 @@ public interface ClinicalDecisionService {
      * @return 返回值
      */
     PatientRiskAssessment assessPatientRisk(Long patientId);
+
     /**
      * 执行generateSuggestion操作。
      *
@@ -30,6 +32,7 @@ public interface ClinicalDecisionService {
      * @return 返回值
      */
     FollowUpSuggestion generateSuggestion(Long patientId);
+
     /**
      * 执行generateAISuggestion操作。
      *
@@ -37,6 +40,7 @@ public interface ClinicalDecisionService {
      * @return 返回值
      */
     FollowUpSuggestion generateAISuggestion(AISuggestionRequest request);
+
     /**
      * 查询listSuggestions。
      *
@@ -46,12 +50,14 @@ public interface ClinicalDecisionService {
      * @return 返回值
      */
     PageResponse<FollowUpSuggestion> listSuggestions(Integer page, Integer size, String status);
+
     /**
      * 执行confirmSuggestion操作。
      *
      * @param id 参数说明
      */
     void confirmSuggestion(Long id);
+
     /**
      * 执行rejectSuggestion操作。
      *

@@ -65,11 +65,11 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
     @Override
     public PageResponse<FollowUpTaskVO> listTasks(FollowUpTaskQuery query) {
         long start = System.currentTimeMillis();
-        boolean admin = SecurityUtils.isAdmin();
-        Long currentUserId = admin ? null : SecurityUtils.currentUser().getUserId();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        Long currentUserId = isAdmin ? null : SecurityUtils.currentUser().getUserId();
 
         LambdaQueryWrapper<FollowUpTask> wrapper = new LambdaQueryWrapper<>();
-        if (!admin) {
+        if (!isAdmin) {
             wrapper.eq(FollowUpTask::getOwnerId, currentUserId);
         }
         if (query.getPatientId() != null) {
@@ -144,11 +144,11 @@ public class FollowUpTaskServiceImpl implements FollowUpTaskService {
         }
         LambdaQueryWrapper<FollowUpTask> exists = new LambdaQueryWrapper<>();
         exists.eq(FollowUpTask::getPlanId, plan.getId())
-              .eq(FollowUpTask::getDueDate, plan.getNextFollowUpDate())
-              .in(FollowUpTask::getStatus,
-                      DomainConstants.TASK_STATUS_PENDING,
-                      DomainConstants.TASK_STATUS_IN_PROGRESS,
-                      DomainConstants.TASK_STATUS_CONTACTED);
+            .eq(FollowUpTask::getDueDate, plan.getNextFollowUpDate())
+            .in(FollowUpTask::getStatus,
+                    DomainConstants.TASK_STATUS_PENDING,
+                    DomainConstants.TASK_STATUS_IN_PROGRESS,
+                    DomainConstants.TASK_STATUS_CONTACTED);
         if (taskMapper.selectCount(exists) > 0) {
             return;
         }

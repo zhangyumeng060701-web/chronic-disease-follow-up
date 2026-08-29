@@ -16,6 +16,7 @@ import com.example.followup.dto.response.PageResponse;
  * @version 1.0.0
  */
 public interface FollowUpPlanService {
+
     /**
      * 查询listPlans。
      *
@@ -23,6 +24,7 @@ public interface FollowUpPlanService {
      * @return 返回值
      */
     PageResponse<FollowUpPlanVO> listPlans(FollowUpPlanQuery query);
+
     /**
      * 新增createPlan。
      *
@@ -30,6 +32,7 @@ public interface FollowUpPlanService {
      * @return 返回值
      */
     FollowUpPlanVO createPlan(FollowUpPlanSaveRequest request);
+
     /**
      * 更新updatePlan。
      *
@@ -38,6 +41,7 @@ public interface FollowUpPlanService {
      * @return 返回值
      */
     FollowUpPlanVO updatePlan(Long id, FollowUpPlanSaveRequest request);
+
     /**
      * 删除deletePlan。
      *

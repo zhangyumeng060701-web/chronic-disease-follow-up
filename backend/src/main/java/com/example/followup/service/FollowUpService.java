@@ -18,6 +18,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public interface FollowUpService {
+
     /**
      * 查询listFollowUps。
      *
@@ -25,6 +26,7 @@ public interface FollowUpService {
      * @return 返回值
      */
     PageResponse<FollowUpVO> listFollowUps(FollowUpQuery query);
+
     /**
      * 查询getFollowUpById。
      *
@@ -32,18 +34,21 @@ public interface FollowUpService {
      * @return 返回值
      */
     FollowUp getFollowUpById(Long id);
+
     /**
      * 新增addFollowUp。
      *
      * @param followUp 参数说明
      */
     void addFollowUp(FollowUp followUp);
+
     /**
      * 更新updateFollowUp。
      *
      * @param followUp 参数说明
      */
     void updateFollowUp(FollowUp followUp);
+
     /**
      * 删除deleteFollowUp。
      *
@@ -51,6 +56,7 @@ public interface FollowUpService {
      */
     void deleteFollowUp(Long id);
     /** 查询逾期未随访的患者记录（next_follow_up_date 早于当前日期） */
+
     /**
      * 查询listOverdueFollowUps。
      *

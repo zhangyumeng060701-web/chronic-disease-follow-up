@@ -34,9 +34,9 @@ public class FollowUpQuery {
     private LocalDate nextFollowUpDateBefore;
 
     @Min(value = 1, message = "页码不能小于1")
-    private long page = 1;
+    private long page = 1L;
 
     @Min(value = 1, message = "每页条数不能小于1")
     @Max(value = 100, message = "每页条数不能超过100")
-    private long size = 20;
+    private long size = 20L;
 }
