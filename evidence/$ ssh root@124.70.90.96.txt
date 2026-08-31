@@ -1,0 +1,97 @@
+$ ssh root@124.70.90.96
+The authenticity of host '124.70.90.96 (124.70.90.96)' can't be established.
+ED25519 key fingerprint is: SHA256:URgkzuJ3bVTVMqAz5nMDRC23A2qH2/Mn7RYtTrQhr98
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '124.70.90.96' (ED25519) to the list of known hosts.
+root@124.70.90.96's password: 
+Welcome to Ubuntu 22.04.5 LTS (GNU/Linux 5.15.0-173-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Mon Aug 31 11:48:41 AM CST 2026
+
+  System load:  0.0                Processes:             111
+  Usage of /:   23.1% of 39.26GB   Users logged in:       0
+  Memory usage: 72%                IPv4 address for eth0: 192.168.0.80
+  Swap usage:   15%
+
+ * Canonical Workshop gives developers fast, composable, reproducible, and
+   secure developer environments that are perfect for agentic workflows.
+
+   https://ubuntu.com/workshop
+
+Expanded Security Maintenance for Applications is not enabled.
+
+141 updates can be applied immediately.
+121 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+4 additional security updates can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+
+        Welcome to Huawei Cloud Service
+
+Last login: Thu Aug 27 16:51:52 2026 from 36.110.14.93
+root@ecs-dd81:~# systemctl status follow-up-backend --no-pager
+● follow-up-backend.service - Chronic Disease Follow-Up Backend
+     Loaded: loaded (/etc/systemd/system/follow-up-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2026-08-28 13:34:46 CST; 2 days ago
+   Main PID: 996405 (java)
+      Tasks: 30 (limit: 1008)
+     Memory: 251.4M
+        CPU: 3min 40.190s
+     CGroup: /system.slice/follow-up-backend.service
+             └─996405 java -Xmx256m -XX:MaxMetaspaceSize=128m -DDATA_ENCRYPT…
+
+Aug 28 13:34:46 ecs-dd81 systemd[1]: Started Chronic Disease Follow-Up B…end.
+Hint: Some lines were ellipsized, use -l to show in full.
+root@ecs-dd81:~# systemctl status nginx --no-pager
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2026-08-28 13:35:13 CST; 2 days ago
+       Docs: man:nginx(8)
+   Main PID: 996738 (nginx)
+      Tasks: 2 (limit: 1008)
+     Memory: 3.7M
+        CPU: 1.282s
+     CGroup: /system.slice/nginx.service
+             ├─996738 "nginx: master process /usr/sbin/nginx -g daemon on; m…
+             └─996740 "nginx: worker process" "" "" "" "" "" "" "" "" "" "" …
+
+Aug 28 13:35:13 ecs-dd81 systemd[1]: nginx.service: Deactivated successfully.
+Aug 28 13:35:13 ecs-dd81 systemd[1]: Stopped A high performance web serv…ver.
+Aug 28 13:35:13 ecs-dd81 systemd[1]: Starting A high performance web ser…r...
+Aug 28 13:35:13 ecs-dd81 systemd[1]: Started A high performance web serv…ver.
+Hint: Some lines were ellipsized, use -l to show in full.
+root@ecs-dd81:~# curl http://127.0.0.1:8080/api/health
+root@ecs-dd81:~# bash /root/chronic-disease-follow-up/deploy/monitor-health.shc-disease-follow-up/deploy/monitor-health.sh
+健康检查通过
+
+root@ecs-dd81:~# mysql -uroot -p -e \
+"select installed_rank, version, description, success
+ from follow_up.flyway_schema_history
+ order by installed_rank;"
+Enter password: 
++----------------+---------+---------------------------+---------+
+| installed_rank | version | description               | success |
++----------------+---------+---------------------------+---------+
+|              1 | 1       | init schema               |       1 |
+|              2 | 2       | follow up workflow        |       1 |
+|              3 | 3       | patient portal            |       1 |
+|              4 | 4       | clinical decision support |       1 |
+|              5 | 5       | data governance           |       1 |
+|              6 | 6       | ai suggestion quality     |       1 |
+|              7 | 7       | operation log detail      |       1 |
+|              8 | 8       | enlarge sensitive columns |       1 |
++----------------+---------+---------------------------+---------+
+root@ecs-dd81:~# bash /root/chronic-disease-follow-up/deploy/backup-mysql.sh
+数据库备份完成：/root/backups/follow_up_20260831_120254.sql
+root@ecs-dd81:~# ls -lh /root/backups
+total 76K
+-rw-r--r-- 1 root root 35K Aug 27 11:32 follow_up_20260827_113242.sql
+-rw-r--r-- 1 root root 38K Aug 31 12:02 follow_up_20260831_120254.sql
