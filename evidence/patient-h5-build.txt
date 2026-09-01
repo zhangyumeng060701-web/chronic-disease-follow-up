@@ -1,0 +1,22 @@
+# 患者端（patient-h5）构建复验记录
+
+- 时间：2026-09-01 09:04:37（Asia/Shanghai）
+- 基线：`main` / `e353705`
+- 工作树：复验时存在预先的 `backend/Dockerfile` 修改及 3 个文档删除；这些改动不影响本次患者端构建。
+- 工作目录：`patient-h5`
+- Node.js：`v24.14.0`
+- npm：`11.9.0`
+- 命令：`npm run build`
+- 结果：通过（exit code 0）
+
+关键输出：
+
+```text
+✓ 1644 modules transformed.
+dist/index.html 0.43 kB │ gzip: 0.33 kB
+dist/assets/index-Bdc2Kq4S.css 363.94 kB │ gzip: 48.87 kB
+dist/assets/index-7Yu9DZ46.js 1,083.34 kB │ gzip: 356.26 kB
+✓ built in 12.54s
+```
+
+说明：构建产生了 chunk 体积超过 500 kB 的 Vite 警告，但没有改变构建成功结果；患者端当前没有独立的 npm 测试脚本，本记录只证明构建通过。
